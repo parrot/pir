@@ -1,5 +1,5 @@
 # Copyright (C) 2007-2009, Parrot Foundation.
-# $Id: root.in 37200 2009-03-08 11:46:01Z fperrad $
+# $Id$
 
 ## arguments we want to run parrot with
 PARROT_ARGS =

@@ -1,6 +1,6 @@
 #! perl
 
-# $Id: harness 26420 2008-03-16 15:11:52Z bernhard $
+# $Id$
 
 # pragmata
 use strict;
