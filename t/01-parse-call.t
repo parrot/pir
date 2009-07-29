@@ -1,15 +1,22 @@
-#!perl
+#!parrot
 
-# Copyright (C) 2007, Parrot Foundation.
-# $Id$
+.include 't/common.pir'
+.sub "main" :main
+    .local pmc tests
 
-use strict;
-use warnings;
-use lib qw(t . lib ../lib ../../lib ../../../lib);
-use Parrot::Test tests => 10;
-use Test::More;
+    load_bytecode 'pir.pbc'
+    .include 'test_more.pir'
 
-language_output_like( 'PIR_PGE', <<'CODE', qr/Parse successful!/, 'long sub invocation' );
+    tests = 'get_tests'()
+    'test_parse'(tests)
+.end
+
+
+.sub "get_tests"
+    .local pmc tests
+    tests = new ['ResizablePMCArray']
+
+    $P0 = 'make_test'( <<'CODE', 'long sub invocation' )
 
 .sub main :main
     .local int x, y, z
@@ -34,8 +41,9 @@ language_output_like( 'PIR_PGE', <<'CODE', qr/Parse successful!/, 'long sub invo
 .end
 
 CODE
+    push tests, $P0
 
-language_output_like( 'PIR_PGE', <<'CODE', qr/Parse successful!/, 'long sub invocation 2' );
+    $P0 = 'make_test'( <<'CODE', 'long sub invocation 2' )
 
 .sub main :main
     .begin_call
@@ -49,9 +57,9 @@ language_output_like( 'PIR_PGE', <<'CODE', qr/Parse successful!/, 'long sub invo
 .end
 
 CODE
+    push tests, $P0
 
-
-language_output_like( 'PIR_PGE', <<'CODE', qr/Parse successful!/, 'short sub invocation' );
+    $P0 = 'make_test'( <<'CODE', 'short sub invocation', 'todo'=>'Failing' )
 
 .sub main :main
     .local int x, y, z
@@ -65,8 +73,9 @@ language_output_like( 'PIR_PGE', <<'CODE', qr/Parse successful!/, 'short sub inv
 .end
 
 CODE
+    push tests, $P0
 
-language_output_like( 'PIR_PGE', <<'CODE', qr/Parse successful!/, 'short yield' );
+    $P0 = 'make_test'( <<'CODE', 'short yield' )
 
 .sub main :main
     .yield(1,2,3)
@@ -75,8 +84,9 @@ language_output_like( 'PIR_PGE', <<'CODE', qr/Parse successful!/, 'short yield' 
 
 
 CODE
+    push tests, $P0
 
-language_output_like( 'PIR_PGE', <<'CODE', qr/Parse successful!/, 'long yield' );
+    $P0 = 'make_test'( <<'CODE', 'long yield' )
 
 .sub main :main
     .begin_yield
@@ -87,9 +97,10 @@ language_output_like( 'PIR_PGE', <<'CODE', qr/Parse successful!/, 'long yield' )
 .end
 
 CODE
+    push tests, $P0
 
 
-language_output_like( 'PIR_PGE', <<'CODE', qr/Parse successful!/, 'tail call' );
+    $P0 = 'make_test'( <<'CODE', 'tail call', 'todo' => 'Failing' )
 
 .sub main :main
     .return foo()
@@ -104,8 +115,9 @@ language_output_like( 'PIR_PGE', <<'CODE', qr/Parse successful!/, 'tail call' );
 .end
 
 CODE
+    push tests, $P0
 
-language_output_like( 'PIR_PGE', <<'CODE', qr/Parse successful!/, 'tail method call' );
+    $P0 = 'make_test'( <<'CODE', 'tail method call', 'todo' => 'Failing' )
 
 .sub main :main
     .return obj.foo()
@@ -120,8 +132,9 @@ language_output_like( 'PIR_PGE', <<'CODE', qr/Parse successful!/, 'tail method c
 .end
 
 CODE
+    push tests, $P0
 
-language_output_like( 'PIR_PGE', <<'CODE', qr/Parse successful!/, 'nci call' );
+    $P0 = 'make_test'( <<'CODE', 'nci call' )
 
 .sub main :main
     .local pmc x
@@ -131,8 +144,9 @@ language_output_like( 'PIR_PGE', <<'CODE', qr/Parse successful!/, 'nci call' );
 .end
 
 CODE
+    push tests, $P0
 
-language_output_like( 'PIR_PGE', <<'CODE', qr/Parse successful!/, 'long method call' );
+    $P0 = 'make_test'( <<'CODE', 'long method call' )
 
 .sub main :main
     .local pmc x
@@ -152,9 +166,10 @@ language_output_like( 'PIR_PGE', <<'CODE', qr/Parse successful!/, 'long method c
 
 
 CODE
+    push tests, $P0
 
 
-language_output_like( 'PIR_PGE', <<'CODE', qr/Parse successful!/, 'short sub call with flags' );
+    $P0 = 'make_test'( <<'CODE', 'short sub call with flags', 'todo' => 'Failing' )
 
 # the sub body is taken from PDD03
 .sub main :main
@@ -178,4 +193,9 @@ language_output_like( 'PIR_PGE', <<'CODE', qr/Parse successful!/, 'short sub cal
 .end
 
 CODE
+    push tests, $P0
+    
+    .return (tests)
+.end
+
 
