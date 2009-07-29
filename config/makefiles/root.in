@@ -139,7 +139,7 @@ help:
 	@echo ""
 
 test: all
-	$(PERL) t/harness
+	prove -e $(PARROT)
 
 # this target has nothing to do
 testclean:
