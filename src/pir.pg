@@ -18,7 +18,7 @@ grammar PIR::Grammar is PCT::Grammar;
 
 token TOP {
     ^ <program>
-    [ $ || <.syntax_error: end of file expected> ]
+    [ $ || <.panic: end of file expected> ]
    {*}
 }
 
@@ -39,9 +39,12 @@ token compilation_unit {
 
 rule sub_def {
     '.sub' <sub_id> <sub_pragma>* <.nl>
+    :: [
     <param_decl>*
     <labeled_pir_instr>*
     '.end'
+    || <.panic: "Malformed sub declaration">
+    ]
     {*}
 }
 
@@ -52,9 +55,11 @@ rule sub_id {
 
 rule sub_pragma {
     | <short_sub_pragma> {*} #= short_sub_pragma
-    | <vtable_pragma>  {*} #= vtable_pragma
-    | <multi_pragma>   {*} #= multi_pragma
-    | <outer_pragma>   {*} #= outer_pragma
+    | <vtable_pragma>    {*} #= vtable_pragma
+    | <nsentry_pragma>   {*} #= nsentry_pragma
+    | <subid_pragma>     {*} #= subid_pragma
+    | <multi_pragma>     {*} #= multi_pragma
+    | <outer_pragma>     {*} #= outer_pragma
 }
 
 token short_sub_pragma {
@@ -65,10 +70,21 @@ token short_sub_pragma {
     | ':main'
     | ':anon'
     | ':lex'
+    | ':method'
 }
 
 rule vtable_pragma {
     ':vtable' <parenthesized_string>?
+    {*}
+}
+
+rule nsentry_pragma {
+    ':nsentry' <parenthesized_string>?
+    {*}
+}
+
+rule subid_pragma {
+    ':subid' <parenthesized_string>?
     {*}
 }
 
@@ -330,13 +346,13 @@ rule instantiation {
 rule heredoc {
     '<<' <string_constant> <.nl>
     <heredoc_string>
-    [ <heredoc_label> | <syntax_error: heredoc label expected> ]
+    [ <heredoc_label> | <.panic: heredoc label expected> ]
 }
 
 token heredoc_label {
-    [ ^^ | <syntax_error: no whitespace allowed in front of a heredoc label> ]
+    [ ^^ | <.panic: no whitespace allowed in front of a heredoc label> ]
     <id>
-    [ $$ | <syntax_error: no whitespace allowed after a heredoc> ]
+    [ $$ | <.panic: no whitespace allowed after a heredoc> ]
 }
 
 # fix this:
