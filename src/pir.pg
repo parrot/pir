@@ -585,13 +585,12 @@ rule loadlib {
 }
 
 rule namespace {
-    '.namespace'
-    [ '[' <namespace_id> ']' ]?
+    '.namespace' '[' <namespace_id>? ']'
     {*}
 }
 
 rule hll_specifier {
-    '.HLL' <string_constant> <.comma> <string_constant>
+    '.HLL' <string_constant>
     {*}
 }
 

@@ -72,14 +72,14 @@ CODE
 CODE
     push tests, $P0
 
-    $P0 = 'make_test'( <<'CODE', 'Root namespace', 'todo' => 'Failing' )
+    $P0 = 'make_test'( <<'CODE', 'Root namespace' )
 
 .namespace []
 
 CODE
     push tests, $P0
 
-    $P0 = 'make_test'( <<'CODE', 'HLL', 'todo' => 'Failing' )
+    $P0 = 'make_test'( <<'CODE', 'HLL' )
 
 .HLL 'PIR'
 .HLL "PIR"
