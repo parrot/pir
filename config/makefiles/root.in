@@ -139,7 +139,7 @@ help:
 	@echo ""
 
 test: all
-	prove -e $(PARROT)
+	prove -v -r -e $(PARROT)
 
 # this target has nothing to do
 testclean:
