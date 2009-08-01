@@ -15,6 +15,22 @@
     .local pmc tests
     tests = new ['ResizablePMCArray']
 
+    $P0 = 'make_test'( <<'CODE', 'simple macro, no params' )
+
+.macro myMacro
+.endm
+
+CODE
+    push tests, $P0
+
+    $P0 = 'make_test'( <<'CODE', 'simple macro, params' )
+
+.macro doIt(A,B)
+.endm
+
+CODE
+    push tests, $P0
+
 
     $P0 = 'make_test'( <<'CODE', 'macro pasring', 'todo' => 'Failing' )
 
@@ -45,22 +61,6 @@
     .X(a,b)
 .end
 
-
-CODE
-    push tests, $P0
-
-    $P0 = 'make_test'( <<'CODE', 'simple macro, no params', 'todo' => 'Failing' )
-
-.macro myMacro
-.endm
-
-CODE
-    push tests, $P0
-
-    $P0 = 'make_test'( <<'CODE', 'simple macro, params', 'todo' => 'Failing' )
-
-.macro doIt(A,B)
-.endm
 
 CODE
     push tests, $P0

@@ -25,7 +25,7 @@
 CODE
     push tests, $P0
 
-    $P0 = 'make_test'( <<'CODE', '', 'todo' => 'Failing' )
+    $P0 = 'make_test'( <<'CODE', '' )
 
 .sub main
     x.hello()

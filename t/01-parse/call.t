@@ -59,7 +59,7 @@ CODE
 CODE
     push tests, $P0
 
-    $P0 = 'make_test'( <<'CODE', 'short sub invocation', 'todo'=>'Failing' )
+    $P0 = 'make_test'( <<'CODE', 'short sub invocation' )
 
 .sub main :main
     .local int x, y, z
@@ -100,7 +100,7 @@ CODE
     push tests, $P0
 
 
-    $P0 = 'make_test'( <<'CODE', 'tail call', 'todo' => 'Failing' )
+    $P0 = 'make_test'( <<'CODE', 'tail call' )
 
 .sub main :main
     .return foo()
@@ -117,7 +117,7 @@ CODE
 CODE
     push tests, $P0
 
-    $P0 = 'make_test'( <<'CODE', 'tail method call', 'todo' => 'Failing' )
+    $P0 = 'make_test'( <<'CODE', 'tail method call' )
 
 .sub main :main
     .return obj.foo()
@@ -169,7 +169,7 @@ CODE
     push tests, $P0
 
 
-    $P0 = 'make_test'( <<'CODE', 'short sub call with flags', 'todo' => 'Failing' )
+    $P0 = 'make_test'( <<'CODE', 'short sub call with flags' )
 
 # the sub body is taken from PDD03
 .sub main :main
