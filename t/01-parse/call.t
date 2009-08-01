@@ -112,6 +112,21 @@ CODE
 CODE
     push tests, $P0
 
+    $P0 = 'make_test'( <<'CODE', 'short method call' )
+
+.sub main :main
+    .local pmc f
+    f = new ['Foo']
+    f."foo"()
+.end
+
+.namespace ['Foo']
+.sub foo
+.end
+
+
+CODE
+    push tests, $P0
     $P0 = 'make_test'( <<'CODE', 'long method call' )
 
 .sub main :main
@@ -161,6 +176,7 @@ CODE
 CODE
     push tests, $P0
     
+
     .return (tests)
 .end
 
