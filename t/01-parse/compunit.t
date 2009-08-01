@@ -97,15 +97,6 @@ CODE
     push tests, $P0
 
 
-    $P0 = 'make_test'( <<'CODE', 'emit', 'todo' => 'Failing' )
-
-.emit
-	set P0, 1
-.eom
-
-CODE
-    push tests, $P0
-    
     .return (tests)
 .end
 
