@@ -16,7 +16,7 @@
     .local pmc tests
     tests = new ['ResizablePMCArray']
 
-    $P0 = 'make_test'(<<'CODE', '.tailcall syntax', 'todo' => 'Not implemented' )
+    $P0 = 'make_test'(<<'CODE', '.tailcall syntax')
 .sub 'foo'			
     .tailcall foo()
 .end

@@ -505,7 +505,7 @@ rule short_yield_stat {
 }
 
 rule tail_call {
-    '.return' <short_sub_call>
+    '.tailcall' <short_sub_call>
     {*}
 }
 
@@ -817,6 +817,7 @@ token pir_directive {
     | '.pcc_sub'
     | '.pragma'
     | '.return'
+    | '.tailcall'
     | '.sub'
     | '.result'
     | '.yield'

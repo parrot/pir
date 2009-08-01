@@ -100,40 +100,6 @@ CODE
     push tests, $P0
 
 
-    $P0 = 'make_test'( <<'CODE', 'tail call' )
-
-.sub main :main
-    .return foo()
-.end
-
-.sub foo
-    .return bar()
-.end
-
-.sub bar
-    .return(1)
-.end
-
-CODE
-    push tests, $P0
-
-    $P0 = 'make_test'( <<'CODE', 'tail method call' )
-
-.sub main :main
-    .return obj.foo()
-.end
-
-.sub foo
-    .return obj.bar()
-.end
-
-.sub bar
-    .return(1)
-.end
-
-CODE
-    push tests, $P0
-
     $P0 = 'make_test'( <<'CODE', 'nci call' )
 
 .sub main :main
