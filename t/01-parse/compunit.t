@@ -81,15 +81,8 @@ CODE
 
     $P0 = 'make_test'( <<'CODE', 'HLL', 'todo' => 'Failing' )
 
-.HLL 'PIR', 'PIRlib'
-.HLL "PIR", "PIRlib"
-
-CODE
-    push tests, $P0
-
-    $P0 = 'make_test'( <<'CODE', 'HLL map', 'todo' => 'Failing' )
-
-.HLL_map "Integer", "FooNumber"
+.HLL 'PIR'
+.HLL "PIR"
 
 CODE
     push tests, $P0
