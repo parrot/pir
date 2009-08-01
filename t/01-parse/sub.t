@@ -70,6 +70,31 @@ CODE
 
 CODE
     push tests, $P0
+    
+    $P0 = 'make_test'( <<'CODE', 'subid flag' )
+
+.sub bar :subid('subid2')
+.end
+
+CODE
+    push tests, $P0
+
+    $P0 = 'make_test'( <<'CODE', 'nsentry flag' )
+
+.sub bar :nsentry('nsentry2')
+.end
+
+CODE
+    push tests, $P0
+
+    $P0 = 'make_test'( <<'CODE', 'method flag' )
+
+.sub bar :method
+.end
+
+CODE
+    push tests, $P0
+
 
     $P0 = 'make_test'( <<'CODE', 'multi flag 1' )
 .sub main :multi(int)
@@ -120,7 +145,15 @@ CODE
     push tests, $P0
 
     $P0 = 'make_test'( <<'CODE', 'vtable flag' )
-.sub main :vtable('__set_int')
+
+.sub bar :vtable
+.end
+
+CODE
+    push tests, $P0
+
+    $P0 = 'make_test'( <<'CODE', 'vtable flag with explicit name' )
+.sub '' :vtable('get_integer')
 .end
 CODE
     push tests, $P0
