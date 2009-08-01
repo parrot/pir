@@ -10,12 +10,11 @@ a full PIR implementation using the Parrot compiler tools.
 
 =head1 STATUS
 
-Currently, only work is done on the parser. Only when
-the parser is completed should work be done on the further
-transformations (using TGE in the Parrot compiler tools).
-When the parser is changed, the generated parse tree will
-probably be different as well, so any work on the later
-transformation phases should be redone, which is a pain.
+Currently, only work is done on the parser. Only when the parser is
+completed should work be done on the further transformations.  When the
+parser is changed, the generated parse tree will probably be different
+as well, so any work on the later transformation phases should be
+redone, which is a pain.
 
 The following is an overview of what is parsed (mostly) correctly:
 
@@ -74,6 +73,10 @@ Thanks to Will "Coke" Coleda for helping setting up the test harness stuff.
 =head1 AUTHOR
 
 Klaas-Jan Stol <parrotcode@gmail.com>
+
+=head1 MAINTAINER
+
+Vasily Chekalkin <bacek@bacek.com> who gracefully took over from kjs.
 
 =cut
 
