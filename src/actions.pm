@@ -4,36 +4,36 @@
 class PIR::Grammar::Actions;
 
 method TOP($/) {
-    make $( $<program> );
+    make $<program>.ast;
 }
 
 method program($/) {
     my $program := PAST::Block.new( :blocktype('declaration'), :node($/) );
     for $<compilation_unit> {
-        $program.push( $($_) );
+        $program.push( $_.ast );
     }
     make $program;
 }
 
 method compilation_unit($/, $key) {
-    make $( $/{$key} );
+    make $/{$key}.ast;
 }
 
 method sub_def($/) {
     my $sub := PAST::Block.new( :blocktype('declaration'), :node($/) );
-    my $subname := $( $<sub_id> );
+    my $subname := $<sub_id>.ast;
     $sub.name($subname.name());
 
     if $<param_decl> {
         for $<param_decl> {
-            $sub.push( $($_) );
+            $sub.push( $_.ast );
         }
     }
 
     if $<labeled_pir_instr> {
         my $stmts := PAST::Stmts.new( :node($/) );
         for $<labeled_pir_instr> {
-            $stmts.push( $($_) );
+            $stmts.push( $_.ast );
         }
         $sub.push($stmts);
     }
@@ -44,7 +44,7 @@ method labeled_pir_instr($/) {
     my $instr;
 
     if $<instr> {
-        $instr := $($<instr>);
+        $instr := $<instr>.ast;
     }
 
     if $<label> {
@@ -58,19 +58,19 @@ method labeled_pir_instr($/) {
 }
 
 method instr($/, $key) {
-    make $( $/{$key} );
+    make $/{$key}.ast;
 }
 
 method pir_instr($/, $key) {
-    make $( $/{$key} );
+    make $/{$key}.ast;
 }
 
 method local_decl($/) {
     my $stmts := PAST::Stmts.new( :node($/) );
-    my $type := $( $<pir_type> );
+    my $type := $<pir_type>.ast;
 
     for $<local_id> {
-        my $local := $($_);
+        my $local := $_.ast;
         my $pir := '.local ' ~ $type.value() ~ ' ' ~ $local.name();
         $stmts.push( PAST::Op.new( :inline($pir), :node($/) ) );
     }
@@ -78,7 +78,7 @@ method local_decl($/) {
 }
 
 method local_id($/) {
-    my $past := $( $<id> );
+    my $past := $<id>.ast;
     if $<unique> {
         ## does this work?
         #$past.pirflags(':unique_reg');
@@ -87,16 +87,16 @@ method local_id($/) {
 }
 
 method sub_id($/, $key) {
-    make $( $/{$key} );
+    make $/{$key}.ast;
 }
 
 method param_decl($/) {
-    my $param := $( $<parameter> );
+    my $param := $<parameter>.ast;
     make $param;
 }
 
 method parameter($/) {
-    my $parameter := $($<id>);
+    my $parameter := $<id>.ast;
     # is the type usable at this point (where PCT only supports P registers?)
     my $type := ~$<pir_type>;
     #$parameter.type($type);
@@ -109,49 +109,49 @@ method pir_type($/) {
 }
 
 method assignment_stat($/, $key) {
-    make $( $/{$key} );
+    make $/{$key}.ast;
 }
 
 method simple_assignment($/) {
-    my $lhs := $( $<target> );
-    my $rhs := $( $<rhs> );
+    my $lhs := $<target>.ast;
+    my $rhs := $<rhs>.ast;
     make PAST::Op.new( $lhs, $rhs, :pasttype('bind'), :node($/) );
 }
 
 method rhs($/, $key) {
-    make $( $/{$key} );
+    make $/{$key}.ast;
 }
 
 method expression($/, $key) {
-    make $( $/{$key} );
+    make $/{$key}.ast;
 }
 
 method simple_expr($/, $key) {
-    make $( $/{$key} );
+    make $/{$key}.ast;
 }
 
 method unary_expr($/) {
-     make $( $<simple_expr> );
+     make $<simple_expr>.ast;
 }
 
 method binary_expr($/) {
-    make $( $<simple_expr>[0] );
+    make $<simple_expr>[0].ast;
 }
 
 method constant($/, $key) {
-    make $( $/{$key} );
+    make $/{$key}.ast;
 }
 
 method target($/) {
-    make $( $<normal_target> );
+    make $<normal_target>.ast;
 }
 
 method normal_target($/, $key) {
-    make $( $/{$key} );
+    make $/{$key}.ast;
 }
 
 method key($/) {
-    make $( $<simple_expr> );
+    make $<simple_expr>.ast;
 }
 
 method int_constant($/) {
