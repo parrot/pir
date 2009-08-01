@@ -55,7 +55,7 @@ CODE
 CODE
     push tests, $P0
 
-    $P0 = 'make_test'( <<'CODE', 'simple expressions', 'todo'=>'Failing' )
+    $P0 = 'make_test'( <<'CODE', 'simple expressions' )
 .sub main			
 	.local int x,y,z,a,b,c
 	x = 1 + 2

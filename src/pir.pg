@@ -246,8 +246,8 @@ token unary_operator {
 }
 
 rule expression {
-    #| <binary_expr> {*}  #= binary_expr
-    #| <unary_expr>  {*}  #= unary_expr
+    | <binary_expr> {*}  #= binary_expr
+    | <unary_expr>  {*}  #= unary_expr
     | <simple_expr> {*}  #= simple_expr
 }
 
