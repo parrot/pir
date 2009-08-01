@@ -23,8 +23,8 @@
 CODE
     push tests, $P0
 
-    $P0 = 'make_test'(<<'CODE', '.tailcall method syntax', 'todo' => 'Not implemented' )
-.sub 'foo' :method
+    $P0 = 'make_test'(<<'CODE', '.tailcall method syntax' )
+.sub 'foo'
     .tailcall self."foo"()
 .end
 CODE
