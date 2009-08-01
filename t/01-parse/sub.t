@@ -162,17 +162,6 @@ CODE
 .end
 CODE
     push tests, $P0
-
-    $P0 = 'make_test'( <<'CODE', 'more parameters', 'todo' => 'Failing' )
-.sub x
-  .param $P0
-  .param $P1 :slurpy
-  .param string "y" => a
-  .param int "x" => b :slurpy
-.end
-
-CODE
-    push tests, $P0
     
     .return (tests)
 .end
