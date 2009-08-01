@@ -565,7 +565,6 @@ token pragma {
     | <new_operators>   {*} #= new_operators
     | <loadlib>         {*} #= loadlib
     | <namespace>       {*} #= namespace
-    | <hll_mapping>     {*} #= hll_mapping
     | <hll_specifier>   {*} #= hll_specifier
     | <source_info>     {*} #= source_info
 }
@@ -593,11 +592,6 @@ rule namespace {
 
 rule hll_specifier {
     '.HLL' <string_constant> <.comma> <string_constant>
-    {*}
-}
-
-rule hll_mapping {
-    '.HLL_map' <string_constant> <.comma> <string_constant>
     {*}
 }
 
