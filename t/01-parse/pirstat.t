@@ -26,18 +26,6 @@
 CODE
     push tests, $P0
 
-    $P0 = 'make_test'( <<'CODE', 'namespace', 'todo' => 'Failing' )
-
-.sub main
-	.namespace x
-	.endnamespace x
-	
-	.namespace y
-.end
-
-CODE
-    push tests, $P0
-
     $P0 = 'make_test'( <<'CODE', 'const' )
 
 .sub main
