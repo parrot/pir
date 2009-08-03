@@ -67,12 +67,19 @@ method pir_instr($/, $key) {
 
 method local_decl($/) {
     my $stmts := PAST::Stmts.new( :node($/) );
-    my $type := $<pir_type>.ast;
+    my $type := ~$<pir_type>;
 
     for $<local_id> {
         my $local := $_.ast;
-        my $pir := '.local ' ~ $type.value() ~ ' ' ~ $local.name();
-        $stmts.push( PAST::Op.new( :inline($pir), :node($/) ) );
+        $stmts.push( PAST::Var.new(
+                $local,
+                :name($local.name),
+                :returns($type),
+                :scope('lexical'),
+                :isdecl(1)
+            ));
+        #my $pir := '.local ' ~ $type ~ ' ' ~ $local.name();
+        #$stmts.push( PAST::Op.new( :inline($pir), :node($/) ) );
     }
     make $stmts;
 }
