@@ -408,8 +408,7 @@ rule short_sub_call {
 }
 
 rule short_call_invocant {
-    | <target> [ \.<method> ]
-    | [ <target>\. ]? <method>
+    [ <target>\. ]? <method>
     {*}
 }
 
