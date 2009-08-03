@@ -9,6 +9,12 @@ attention:
 
 =over 4
 
+=item * C<var_ref>
+
+Currently C<< <id> >> rule is overused. We need to split it into
+C<< <id> >> and C<< <var_ref> >> rules to implement checks for
+undeclared variables.
+
 =item * C<heredoc>
 
 =item * C<macro>
