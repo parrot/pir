@@ -285,12 +285,11 @@ token simple_expr {
 
 
 rule keylist {
-    '[' <key> [ <separator> <key> ]* ']'
+    '[' <key> [ <.separator> <key> ]* ']'
 }
 
 token separator {
-    | ','
-    | ';'
+    ';'
 }
 
 rule key {
