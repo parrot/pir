@@ -77,13 +77,15 @@ method local_decl($/) {
 
     for $<local_id> {
         my $local := $_.ast;
-        $stmts.push( PAST::Var.new(
+        my $var := PAST::Var.new(
                 :node($local),
                 :name($local.name),
                 :returns($type),
                 :scope('lexical'),
                 :isdecl(1)
-            ));
+            );
+        $?SUB.symbol($var.name, :scope('lexical'));
+        $stmts.push($var);
         #my $pir := '.local ' ~ $type ~ ' ' ~ $local.name();
         #$stmts.push( PAST::Op.new( :inline($pir), :node($/) ) );
     }
@@ -160,7 +162,16 @@ method target($/) {
 }
 
 method normal_target($/, $key) {
-    make $/{$key}.ast;
+    if ($key eq 'id') {
+        my $var := $<id>.ast;
+        unless $?SUB.symbol($var.name) {
+            $/.panic('Undeclared variable: ' ~$var.name);
+        }
+        make $var;
+    }
+    else {
+        make $/{$key}.ast;
+    }
 }
 
 method key($/) {

@@ -18,6 +18,10 @@
 
     $P0 = 'make_test'(<<'CODE', 'simple assignments' )
 .sub main			
+    .local int a
+    .local num b
+    .local string c
+    .local pmc d, e
 	a = 1
 	b = 1.1
 	c = "hello"
