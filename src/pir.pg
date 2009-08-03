@@ -38,14 +38,15 @@ token compilation_unit {
 }
 
 rule sub_def {
-    '.sub' <sub_id> <sub_pragma>* <.nl>
-    :: [
-    <param_decl>*
+    '.sub' <sub_id> <sub_pragma>* <.nl> <param_decl>*
+    {*}                                     #= open
+
+    [
     <labeled_pir_instr>*
     '.end'
     || <.panic: "Malformed sub declaration">
     ]
-    {*}
+    {*}                                     #= close
 }
 
 rule sub_id {

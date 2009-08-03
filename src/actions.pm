@@ -3,6 +3,8 @@
 
 class PIR::Grammar::Actions;
 
+our $?SUB;
+
 method TOP($/) {
     make $<program>.ast;
 }
@@ -19,25 +21,29 @@ method compilation_unit($/, $key) {
     make $/{$key}.ast;
 }
 
-method sub_def($/) {
-    my $sub := PAST::Block.new( :blocktype('declaration'), :node($/) );
-    my $subname := $<sub_id>.ast;
-    $sub.name($subname.name());
+method sub_def($/, $key) {
+    our $?SUB;
+    if ($key eq 'open') {
+        $?SUB := PAST::Block.new( :blocktype('declaration'), :node($/) );
+        my $subname := $<sub_id>.ast;
+        $?SUB.name($subname.name());
 
-    if $<param_decl> {
-        for $<param_decl> {
-            $sub.push( $_.ast );
+        if $<param_decl> {
+            for $<param_decl> {
+                $?SUB.push( $_.ast );
+            }
         }
     }
-
-    if $<labeled_pir_instr> {
-        my $stmts := PAST::Stmts.new( :node($/) );
-        for $<labeled_pir_instr> {
-            $stmts.push( $_.ast );
+    else {
+        if $<labeled_pir_instr> {
+            my $stmts := PAST::Stmts.new( :node($/) );
+            for $<labeled_pir_instr> {
+                $stmts.push( $_.ast );
+            }
+            $?SUB.push($stmts);
         }
-        $sub.push($stmts);
+        make $?SUB;
     }
-    make $sub;
 }
 
 method labeled_pir_instr($/) {
@@ -72,7 +78,7 @@ method local_decl($/) {
     for $<local_id> {
         my $local := $_.ast;
         $stmts.push( PAST::Var.new(
-                $local,
+                :node($local),
                 :name($local.name),
                 :returns($type),
                 :scope('lexical'),
