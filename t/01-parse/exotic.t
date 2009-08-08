@@ -18,8 +18,9 @@
 
     $P0 = 'make_test'( <<'CODE', '' )
 .sub main
+    .local pmc x,y
 
-    x = y[x,y;x,y]
+    x = y[x;y;x;y]
 
 .end
 CODE
