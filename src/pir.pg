@@ -326,9 +326,9 @@ rule simple_assignment {
 }
 
 rule rhs {
-    | <expression>                            {*} #= expression
     | <short_sub_call>                        {*} #= short_sub_call
     | <target> <keylist>                      {*} #= target_keylist
+    | <expression>                            {*} #= expression
     | <pasm_instruction> \N*                  {*} #= pasm_instr
     | <heredoc>                               {*} #= heredoc
     | <instantiation>                         {*} #= instantiation
