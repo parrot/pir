@@ -1,13 +1,15 @@
 # Common functions for tests
 # Test with F<prove -e parrot t/common.pir>
 
+.sub '__init' :init :load
+    load_bytecode 'pir.pbc'
+    .include 'test_more.pir'
+.end
+
 # "Main" sub for self testing.
 .sub "self_test"
     .local pmc tests
     
-    load_bytecode 'pir.pbc'
-    .include 'test_more.pir'
-
     'plan'(7)
     tests = 'get_parse_tests'()
     "test_parse"(tests, 1)
@@ -120,6 +122,7 @@
 
     $S0 = t['test']
     $S1 = t['desc']
+
     push_eh past_fail
     # Compile throws exception in case of failure
     $P2 = compiler.'compile'($S0, 'target'=>'past')
