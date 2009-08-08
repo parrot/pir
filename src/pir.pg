@@ -706,7 +706,7 @@ token macro_target {
 }
 
 token id {
-    <!keyword> \w+
+    <!keyword> <ident>
     {*}
 }
 
