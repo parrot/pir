@@ -33,12 +33,12 @@
     # Compiling the file pasm_grammar takes ages
     # due to the large number of instructions.
 
-    load_bytecode 'languages/PIR/src/pasm/gen_pasm.pbc'
-    load_bytecode 'languages/PIR/src/pasm/gen_pasm_args.pbc'
-    load_bytecode 'languages/PIR/src/pasm/gen_pasm_instr.pbc'
-    load_bytecode 'languages/PIR/src/pasm/gen_pasm_io.pbc'
-    load_bytecode 'languages/PIR/src/pasm/gen_pasm_pmc.pbc'
-    load_bytecode 'languages/PIR/src/pasm/gen_pasm_core.pbc'
+    load_bytecode 'src/pasm/gen_pasm.pbc'
+    load_bytecode 'src/pasm/gen_pasm_args.pbc'
+    load_bytecode 'src/pasm/gen_pasm_instr.pbc'
+    load_bytecode 'src/pasm/gen_pasm_io.pbc'
+    load_bytecode 'src/pasm/gen_pasm_pmc.pbc'
+    load_bytecode 'src/pasm/gen_pasm_core.pbc'
         
     $P0 = new ['ResizablePMCArray']
     set_root_global 'heredoc', $P0
