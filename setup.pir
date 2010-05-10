@@ -41,7 +41,7 @@ No Configure step, no Makefile generated.
 
     $P2 = new 'Hash'
     $P2['src/gen_actions.pir'] = 'src/actions.pm'
-    $P0['pir_nqp'] = $P2
+    $P0['pir_nqprx'] = $P2
 
     $P3 = new 'Hash'
     $P3['pir.pbc'] = 'pir.pir'
@@ -50,6 +50,12 @@ No Configure step, no Makefile generated.
     $P7 = new 'Hash'
     $P7['parrot-pir'] = 'pir.pbc'
     $P0['installable_pbc'] = $P7
+
+    # Test
+    $S0 = get_parrot()
+    $S0 .= ' pir.pbc'
+    $P0['prove_exec'] = $S0
+
 
     .tailcall setup(args :flat, $P0 :flat :named)
 .end
