@@ -9,13 +9,17 @@ class PIR::Grammar is HLL::Grammar;
 # Top-level rules.
 rule TOP {
     <compilation_unit>
-}
-
-token compilation_unit {
-    <.newpad>
-    <statement_list>
     [ $ || <panic: "Confused"> ]
 }
+
+proto token compilation_unit { <...> }
+
+token compilation_unit:sym<sub> {
+    '.sub'
+    .'end'
+}
+
+token compilation_unit:sym<pragma> { <pragma> }
 
 rule statement_list {
     | $
