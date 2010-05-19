@@ -35,7 +35,13 @@ No Configure step, no Makefile generated.
     $P0['pir_nqprx'] = $P1
 
     $P3 = new 'Hash'
-    $P3['pir.pbc'] = 'pir.pir'
+    $P4 = split "\n", <<'SOURCES'
+pir.pir
+src/Compiler/Actions.pir
+src/Compiler/Grammar.pir
+src/Compiler.pir
+SOURCES
+    $P3['pir.pbc'] = $P4
     $P0['pbc_pir'] = $P3
 
     $P7 = new 'Hash'
