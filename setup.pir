@@ -29,19 +29,10 @@ No Configure step, no Makefile generated.
 
     # build
     $P1 = new 'Hash'
-    $P1['src/gen_grammar.pir']         = 'src/pir.pg'
-    $P1['src/pasm/gen_pasm.pir']       = 'src/pasm/pasm.pg'
-    $P1['src/pasm/gen_pasm_args.pir']  = 'src/pasm/pasm_args.pg'
-    $P1['src/pasm/gen_pasm_instr.pir'] = 'src/pasm/pasm_instr.pg'
-    $P1['src/pasm/gen_pasm_instr.pir'] = 'src/pasm/pasm_instr.pg'
-    $P1['src/pasm/gen_pasm_core.pir']  = 'src/pasm/pasm_core.pg'
-    $P1['src/pasm/gen_pasm_io.pir']    = 'src/pasm/pasm_io.pg'
-    $P1['src/pasm/gen_pasm_pmc.pir']   = 'src/pasm/pasm_pmc.pg'
-    $P0['pir_pge'] = $P1
-
-    $P2 = new 'Hash'
-    $P2['src/gen_actions.pir'] = 'src/actions.pm'
-    $P0['pir_nqprx'] = $P2
+    $P1['src/Compiler/Actions.pir'] = 'src/Compiler/Actions.pm'
+    $P1['src/Compiler/Grammar.pir'] = 'src/Compiler/Grammar.pm'
+    $P1['src/Compiler.pir']         = 'src/Compiler.pm'
+    $P0['pir_nqprx'] = $P1
 
     $P3 = new 'Hash'
     $P3['pir.pbc'] = 'pir.pir'
