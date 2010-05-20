@@ -24,7 +24,7 @@
 .sub 'main' :main
     .param pmc args
 
-    $P0 = compreg 'PIR'
+    $P0 = compreg 'PIRATE'
     $P0.'command_line'(args)
     exit 0
 .end
