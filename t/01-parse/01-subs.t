@@ -29,6 +29,15 @@ $res := parse($c, q{
 
 ok($res, ":main pragma parsed");
 
+$res := parse($c, q{
+.sub "foo" :init :load :anon
+.end
+});
+
+ok($res, "Multiple pragmas parsed");
+
+
+
 done_testing();
 
 
