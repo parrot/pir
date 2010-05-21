@@ -15,11 +15,22 @@ rule TOP {
 proto token compilation_unit { <...> }
 
 token compilation_unit:sym<sub> {
-    '.sub' <.ws> <subname> <.nl>
+    <.newpad>
+    '.sub' <.ws> <subname> [ <.ws> <sub_pragma> ]* <.nl>
     '.end' <.terminator>
 }
 
 #token compilation_unit:sym<pragma> { }
+
+proto regex sub_pragma { <...> }
+token sub_pragma:sym<main>       { ':' <sym> }
+token sub_pragma:sym<init>       { ':' <sym> }
+token sub_pragma:sym<load>       { ':' <sym> }
+token sub_pragma:sym<immmediate> { ':' <sym> }
+token sub_pragma:sym<postcomp>   { ':' <sym> }
+token sub_pragma:sym<anon>       { ':' <sym> }
+token sub_pragma:sym<method>     { ':' <sym> }
+# Add vtable, nsentry, subid, multi and outer
 
 rule statement_list {
     | $
