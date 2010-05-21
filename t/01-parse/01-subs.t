@@ -1,4 +1,4 @@
-#! parrot-nqp
+#! /usr/bin/env parrot-nqp
 
 Q:PIR{
     .include "test_more.pir"
