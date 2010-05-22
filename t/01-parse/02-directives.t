@@ -11,7 +11,7 @@ my $res;
 
 ########## .local
 
-for <int number string pmc> -> $type {
+for <int num string pmc> -> $type {
     $res := parse($c, qq{
     .sub "main"
         .local $type foo

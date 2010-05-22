@@ -62,13 +62,14 @@ rule pir_directive:sym<lex> {
 
 token pir_type {
     | int
-    | number
+    | num
     | pmc
     | string
 }
 
+# Up to 100 registers
 token pir_register {
-    '$' <type=INSP> <integer>
+    '$' <type=INSP> <digit>+
 }
 
 token INSP {
