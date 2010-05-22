@@ -12,10 +12,6 @@ TODO - This is the TODO file for a PIR implementation in NQP.
 
 Parsing of charset/encoding
 
-=item * C<keys>
-
-Keyed access is not implemented.
-
 =item * C<heredoc>
 
 =item * C<macro>

@@ -81,6 +81,22 @@ $res := parse($c, q{
 });
 ok($res, "Assign reorder with key");
 
+########## keyed
+$res := parse($c, q{
+.sub main
+	.local pmc x, y
+	x = y["Foo";"Bar";"Baz"]
+.end
+});
+ok($res, "get keyed");
+
+$res := parse($c, q{
+.sub main
+	.local pmc x, y
+	y["Foo";"Bar";"Baz"] = 42
+.end
+});
+ok($res, "set keyed");
 
 done_testing();
 
