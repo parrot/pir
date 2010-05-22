@@ -29,9 +29,9 @@ No Configure step, no Makefile generated.
 
     # build
     $P1 = new 'Hash'
-    $P1['src/Compiler/Actions.pir'] = 'src/Compiler/Actions.pm'
-    $P1['src/Compiler/Grammar.pir'] = 'src/Compiler/Grammar.pm'
-    $P1['src/Compiler.pir']         = 'src/Compiler.pm'
+    $P1['src/PIR/Compiler/Actions.pir'] = 'src/PIR/Compiler/Actions.pm'
+    $P1['src/PIR/Compiler/Grammar.pir'] = 'src/PIR/Compiler/Grammar.pm'
+    $P1['src/PIR/Compiler.pir']         = 'src/PIR/Compiler.pm'
 
     # Functions for testing.
     $P1['t/parse.pir'] = 't/parse.nqp'
@@ -41,9 +41,9 @@ No Configure step, no Makefile generated.
     $P3 = new 'Hash'
     $P4 = split "\n", <<'SOURCES'
 pir.pir
-src/Compiler/Actions.pir
-src/Compiler/Grammar.pir
-src/Compiler.pir
+src/PIR/Compiler/Actions.pir
+src/PIR/Compiler/Grammar.pir
+src/PIR/Compiler.pir
 SOURCES
     $P3['pir.pbc'] = $P4
 
