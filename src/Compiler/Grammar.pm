@@ -185,8 +185,13 @@ rule pir_instruction:sym<unless_op> {
     'unless' <lhs=value> <relop> <rhs=value> 'goto' <ident>
 }
 
+# XXX Conflicting with "op_assign"
 rule pir_instruction:sym<assign> {
     <variable> '=' <value>
+}
+
+rule pir_instruction:sym<op_assign> {
+    <variable> '=' <op=ident> <op_params>
 }
 
 rule pir_instruction:sym<unary> {
@@ -205,17 +210,13 @@ rule pir_instruction:sym<inplace> {
     <variable> <mathop> '=' <rhs=value>
 }
 
-rule pir_instruction:sym<op_assign> {
-    <variable> '=' <op=ident> <op_params>
-}
 
-token pir_instruction:sym<call> {
+rule pir_instruction:sym<call> {
     <call>
 }
 
-# XXX switch to "rule" breaks it...
-token pir_instruction:sym<call_assign> {
-    <variable> <.ws> '=' <.ws> <call>
+rule pir_instruction:sym<call_assign> {
+    <variable> '=' <call>
 }
 
 rule pir_instruction:sym<call_assign_many> {

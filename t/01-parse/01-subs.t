@@ -219,7 +219,7 @@ $res := parse($c, q{
     (array :slurpy, hash :slurpy :named, method :optional, $I0 :opt_flag) = foo.'method'()
 .end
 });
-ok($res, "array = foo.'method'()");
+ok($res, "(...) = foo.'method'()");
 
 
 
