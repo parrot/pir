@@ -55,6 +55,9 @@ proto regex pir_directive { <...> }
 rule pir_directive:sym<local> {
     '.local' <pir_type> [<.ws><ident><.ws>] ** ',' <.nl>
 }
+rule pir_directive:sym<lex> {
+    '.lex' <string_constant> ',' <pir_register> <.nl>
+}
 
 
 token pir_type {
@@ -62,6 +65,14 @@ token pir_type {
     | number
     | pmc
     | string
+}
+
+token pir_register {
+    '$' <type=INSP> <integer>
+}
+
+token INSP {
+     I | N | S | P
 }
 
 token subname {

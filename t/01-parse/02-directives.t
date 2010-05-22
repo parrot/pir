@@ -9,6 +9,8 @@ Q:PIR{
 my $c := pir::compreg__Ps('PIRATE');
 my $res;
 
+########## .local
+
 for <int number string pmc> -> $type {
     $res := parse($c, qq{
     .sub "main"
@@ -41,6 +43,15 @@ $res := parse($c, q{
 .end
 });
 ok($res, "Multiple .local");
+
+########## .lex
+$res := parse($c, q{
+.sub "main"
+    .lex "$!", $P0
+.end
+});
+ok($res, ".lex parsed");
+
 
 
 done_testing();
