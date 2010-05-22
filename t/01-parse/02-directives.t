@@ -39,7 +39,7 @@ $res := parse($c, q{
     .local pmc foo, bar
     .local int foo, bar
     .local string foo, bar
-    .local number foo, bar
+    .local num foo, bar
 .end
 });
 ok($res, "Multiple .local");
