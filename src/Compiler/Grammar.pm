@@ -8,15 +8,15 @@ class PIR::Grammar is HLL::Grammar;
 
 # Top-level rules.
 rule TOP {
-    <compilation_unit>*
+    [ <compilation_unit> <.terminator> ]*
     [ $ || <panic: "Confused"> ]
 }
 
 proto token compilation_unit { <...> }
 
-token compilation_unit:sym<sub> {
+rule compilation_unit:sym<sub> {
     <.newpad>
-    '.sub' <.ws> <subname> 
+    '.sub' <subname> 
     [
     || [ <.ws> <sub_pragma> ]*
     || <panic: "Unknown .sub pragma">
@@ -29,21 +29,21 @@ token compilation_unit:sym<sub> {
     || <statement>
     || <!before '.end'> <panic: "Erm... What?">
     ]*
-    '.end' <.terminator>
+    '.end'
 }
 
 
 
-token compilation_unit:sym<namespace> {
-    '.namespace' <.ws> '[' <namespace_key>? ']' <.terminator>
+rule compilation_unit:sym<namespace> {
+    '.namespace' '[' <namespace_key>? ']'
 }
 
-token compilation_unit:sym<loadlib> {
-    '.loadlib' <.ws> <quote> <.terminator>
+rule compilation_unit:sym<loadlib> {
+    '.loadlib' <quote>
 }
 
-token compilation_unit:sym<HLL> {
-    '.HLL' <.ws> <quote> <.terminator>
+rule compilation_unit:sym<HLL> {
+    '.HLL' <quote>
 }
 
 #token compilation_unit:sym<pragma> { }
@@ -79,8 +79,11 @@ rule statement_list {
 
 # Don't put newline here.
 rule statement {
+    [
     || <pir_directive>
     || <labeled_instruction>
+    ]
+    <.nl>
 }
 
 # TODO Some of combination of flags/type doesn't make any sense
@@ -102,19 +105,19 @@ rule named_flag {
 # Various .local, .lex, etc
 proto regex pir_directive { <...> }
 rule pir_directive:sym<local> {
-    '.local' <pir_type> [<.ws><ident><.ws>] ** ',' <.nl>
+    '.local' <pir_type> [ <ident> ] ** ','
 }
 
 rule pir_directive:sym<lex> {
-    '.lex' <string_constant> ',' <pir_register> <.nl>
+    '.lex' <string_constant> ',' <pir_register>
 }
 
 rule pir_directive:sym<const> {
-    '.const' <const_declaration> <.nl>
+    '.const' <const_declaration>
 }
 
 rule pir_directive:sym<globalconst> {
-    '.globalconst' <const_declaration> <.nl>
+    '.globalconst' <const_declaration>
 }
 
 proto regex const_declaration { <...> }
@@ -133,85 +136,86 @@ rule const_declaration:sym<pmc> {
 }
 
 rule pir_directive:sym<file> {
-    '.file' <string_constant> <.nl>
+    '.file' <string_constant>
 }
 rule pir_directive:sym<line> {
-    '.line' <int_constant> <.nl>
+    '.line' <int_constant>
 }
 rule pir_directive:sym<annotate> {
-    '.annotate' <string_constant> ',' <constant> <.nl>
+    '.annotate' <string_constant> ',' <constant>
 }
 
-token labeled_instruction {
-    <.ws> [ <label=ident> ':' <.ws>]? [ <pir_instruction> | <op> ]? <.nl>
+rule labeled_instruction {
+    <label>? [ <pir_instruction> | <op> ]?
 }
+
+token label { <ident> ':' }
 
 # raw pasm ops.
 # TODO Check in OpLib
-token op {
-    <op=ident> [ [<.ws> [ <value> | <pir_key> ]<.ws>] ** ',']?
+rule op {
+    <op=ident> [ [ <value> | <pir_key> ] ** ',']?
 }
 
 # Some syntax sugar
 proto regex pir_instruction { <...> }
 
-token pir_instruction:sym<goto> { 'goto' <.ws> <ident> }
+rule pir_instruction:sym<goto> { 'goto' <ident> }
 
-token pir_instruction:sym<if>   {
-    'if' <.ws> <variable> <.ws> 'goto' <.ws> <ident>
+rule pir_instruction:sym<if>   {
+    'if' <variable> 'goto' <ident>
 }
-token pir_instruction:sym<unless>   {
-    'unless' <.ws> <variable> <.ws> 'goto' <.ws> <ident>
+rule pir_instruction:sym<unless>   {
+    'unless' <variable> 'goto' <ident>
 }
-token pir_instruction:sym<if_null>   {
-    'if' <.ws> 'null' <.ws> <variable> <.ws> 'goto' <.ws> <ident>
+rule pir_instruction:sym<if_null>   {
+    'if' 'null' <variable> 'goto' <ident>
 }
-token pir_instruction:sym<unless_null>   {
-    'unless' <.ws> 'null' <.ws> <variable> <.ws> 'goto' <.ws> <ident>
+rule pir_instruction:sym<unless_null>   {
+    'unless' 'null' <variable> 'goto' <ident>
 }
-token pir_instruction:sym<if_op>   {
-    'if' <.ws> <lhs=value> <.ws> <relop> <.ws> <rhs=value>
-         <.ws> 'goto' <.ws> <ident>
+rule pir_instruction:sym<if_op>   {
+    'if' <lhs=value> <relop> <rhs=value> 'goto' <ident>
 }
-token pir_instruction:sym<unless_op>   {
-    'unless' <.ws> <lhs=value> <.ws> <relop> <.ws> <rhs=value>
-         <.ws> 'goto' <.ws> <ident>
+rule pir_instruction:sym<unless_op>   {
+    'unless' <lhs=value> <relop> <rhs=value> 'goto' <ident>
 }
 
-token pir_instruction:sym<assign>   {
-    <variable> <.ws> '=' <.ws> <value>
+rule pir_instruction:sym<assign>   {
+    <variable> '=' <value>
 }
 
-token pir_instruction:sym<unary>   {
-    <variable> <.ws> '=' <.ws> <unary> <.ws> <value>
+rule pir_instruction:sym<unary>   {
+    <variable> '=' <unary> <value>
 }
 
-token pir_instruction:sym<binary_math>   {
-    <variable> <.ws> '=' <.ws> <lhs=value> <.ws> <mathop> <.ws> <rhs=value>
+rule pir_instruction:sym<binary_math>   {
+    <variable> '=' <lhs=value> <mathop> <rhs=value>
 }
-token pir_instruction:sym<binary_logic>   {
-    <variable> <.ws> '=' <.ws> <lhs=value> <.ws> <relop> <.ws> <rhs=value>
+rule pir_instruction:sym<binary_logic>   {
+    <variable> '=' <lhs=value> <relop> <rhs=value>
 }
 
 
-token pir_instruction:sym<inplace>   {
-    <variable> <.ws> <mathop> '=' <.ws> <rhs=value>
+rule pir_instruction:sym<inplace>   {
+    <variable> <mathop> '=' <rhs=value>
 }
 
-token pir_instruction:sym<op_assign>   {
-    <variable> <.ws> '=' <.ws> <op=ident> [ [<.ws> [ <value> | <pir_key> ]<.ws>] ** ',']?
+rule pir_instruction:sym<op_assign>   {
+    <variable> '=' <op=ident> [ [ <value> | <pir_key> ] ** ',']?
 }
 
 token pir_instruction:sym<call> {
     <call>
 }
 
+# XXX switch to "rule" breaks it...
 token pir_instruction:sym<call_assign> {
     <variable> <.ws> '=' <.ws> <call>
 }
 
-token pir_instruction:sym<call_assign_many> {
-    '(' <results>? ')' <.ws> '=' <.ws> <call>
+rule pir_instruction:sym<call_assign_many> {
+    '(' <results>? ')' '=' <call>
 }
 
 # TODO 
