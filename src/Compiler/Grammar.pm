@@ -55,8 +55,32 @@ proto regex pir_directive { <...> }
 rule pir_directive:sym<local> {
     '.local' <pir_type> [<.ws><ident><.ws>] ** ',' <.nl>
 }
+
 rule pir_directive:sym<lex> {
     '.lex' <string_constant> ',' <pir_register> <.nl>
+}
+
+rule pir_directive:sym<const> {
+    '.const' <const_declaration> <.nl>
+}
+
+rule pir_directive:sym<globalconst> {
+    '.globalconst' <const_declaration> <.nl>
+}
+
+proto regex const_declaration { <...> }
+token const_declaration:sym<int> {
+    <sym> <.ws> <variable> <.ws> '=' <.ws> <int_constant>
+}
+token const_declaration:sym<num> {
+    <sym> <.ws> <variable> <.ws> '=' <.ws> <float_constant>
+}
+token const_declaration:sym<string> {
+    <sym> <.ws> <variable> <.ws> '=' <.ws> <string_constant>
+}
+# .const "Sub" foo = "sub_id"
+token const_declaration:sym<pmc> {
+    <string_constant> <.ws> <variable> <.ws> '=' <.ws> <string_constant>
 }
 
 
@@ -76,6 +100,11 @@ token INSP {
      I | N | S | P
 }
 
+token variable {
+    | <pir_register>
+    | <ident>
+}
+
 token subname {
     | <string_constant>
     | <ident>
@@ -89,7 +118,24 @@ token pod_comment {
 
 token terminator { $ | <.nl> }
 
+token constant {
+    | <int_constant>
+    | <float_constant>
+    | <string_constant>
+}
+
+token int_constant {
+    | '0b' \d+
+    | '0x' \d+
+    | ['-']? \d+
+}
+
+token float_constant {
+    ['-']? \d+\.\d+
+}
+
 # There is no iterpolation of strings in PIR
+# TODO charset/encoding handling.
 proto token string_constant { <...> }
 token string_constant:sym<apos> { <?[']> <quote_EXPR: ':q'>  }
 token string_constant:sym<dblq> { <?["]> <quote_EXPR: ':q'> }

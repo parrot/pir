@@ -52,6 +52,34 @@ $res := parse($c, q{
 });
 ok($res, ".lex parsed");
 
+########## .const
+$res := parse($c, q{
+.sub "main"
+    .const string answer = "42"
+.end
+});
+ok($res, ".const string");
+
+$res := parse($c, q{
+.sub "main"
+    .const int answer = 42
+.end
+});
+ok($res, ".const int");
+
+$res := parse($c, q{
+.sub "main"
+    .const num answer = 42.0
+.end
+});
+ok($res, ".const num");
+
+$res := parse($c, q{
+.sub "main"
+    .const "Sub" answer = "42"
+.end
+});
+ok($res, ".const 'Sub'");
 
 
 done_testing();
