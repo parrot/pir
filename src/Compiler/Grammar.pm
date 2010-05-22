@@ -21,7 +21,7 @@ token compilation_unit:sym<sub> {
     || [ <.ws> <sub_pragma> ]*
     || <panic: "Unknown .sub pragma">
     ]
-    <.nl>
+    \h* <.nl>
     [
     || <statement_list>
     || <panic: "Erm... What?">
@@ -135,7 +135,9 @@ token op {
 
 # Some syntax sugar
 proto regex pir_instruction { <...> }
+
 token pir_instruction:sym<goto> { 'goto' <.ws> <ident> }
+
 token pir_instruction:sym<if>   {
     'if' <.ws> <variable> <.ws> 'goto' <.ws> <ident>
 }
@@ -157,6 +159,17 @@ token pir_instruction:sym<unless_op>   {
          <.ws> 'goto' <.ws> <ident>
 }
 
+token pir_instruction:sym<assign>   {
+    <variable> <.ws> '=' <.ws> <value>
+}
+
+token pir_instruction:sym<unary>   {
+    <variable> <.ws> '=' <.ws> <unary> <.ws> <value>
+}
+
+token pir_instruction:sym<binary>   {
+    <variable> <.ws> '=' <.ws> <lhs=value> <.ws> <binary> <.ws> <rhs=value>
+}
 
 token relop {
     '<' | '<=' | '==' | '!=' | '>=' | '>'
@@ -167,9 +180,10 @@ token unary {
 }
 
 token binary {
-    | '+' | '-' | '*' | '/' | '%' | '**'    # maths
+    | '+' | '-' | '**' | '/' | '%' | '*'    # maths
     | '.'                                   # for strings only
     | '<<' | '>>'                           # arithmetic shift
+    | '>>>'                                 # logical shift
     | '&&' | '||' | '~~'                    # logical
     | '&' | '|' | '~'                       # bitwise
     | <relop>
@@ -222,13 +236,13 @@ token terminator { $ | <.nl> }
 rule pir_key { <quote> ** ';' }
 
 token constant {
-    | <int_constant>
+      <int_constant>
     | <float_constant>
     | <string_constant>
 }
 
 token int_constant {
-    | '0b' \d+
+      '0b' \d+
     | '0x' \d+
     | ['-']? \d+
 }
