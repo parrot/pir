@@ -207,10 +207,6 @@ token value {
     | <variable>
 }
 
-token variable {
-    <ident>  # TODO Check it in lexicals
-}
-
 token pir_type {
     | int
     | num
@@ -229,7 +225,7 @@ token INSP {
 
 token variable {
     | <pir_register>
-    | <ident>
+    | <ident>  # TODO Check it in lexicals
 }
 
 token subname {
