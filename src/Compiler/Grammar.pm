@@ -129,6 +129,15 @@ token pir_instruction:sym<goto> { 'goto' <.ws> <ident> }
 token pir_instruction:sym<if>   {
     'if' <.ws> <variable> <.ws> 'goto' <.ws> <ident>
 }
+token pir_instruction:sym<unless>   {
+    'unless' <.ws> <variable> <.ws> 'goto' <.ws> <ident>
+}
+token pir_instruction:sym<if_null>   {
+    'if' <.ws> 'null' <.ws> <variable> <.ws> 'goto' <.ws> <ident>
+}
+token pir_instruction:sym<unless_null>   {
+    'unless' <.ws> 'null' <.ws> <variable> <.ws> 'goto' <.ws> <ident>
+}
 
 
 token value {
