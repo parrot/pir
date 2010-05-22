@@ -192,6 +192,35 @@ $res := parse($c, q{
 });
 ok($res, ".tailcall foo.'method'(...)");
 
+########## .call
+
+$res := parse($c, q{
+.sub "foo"
+    .local pmc foo, array, hash
+    .local string method
+    foo.'method'()
+.end
+});
+ok($res, "foo.'method'()");
+
+$res := parse($c, q{
+.sub "foo"
+    .local pmc foo, array, hash
+    .local string method
+    array = foo.'method'()
+.end
+});
+ok($res, "array = foo.'method'()");
+
+$res := parse($c, q{
+.sub "foo"
+    .local pmc foo, array, hash
+    .local string method
+    (array :slurpy, hash :slurpy :named, method :optional, $I0 :opt_flag) = foo.'method'()
+.end
+});
+ok($res, "array = foo.'method'()");
+
 
 
 done_testing();

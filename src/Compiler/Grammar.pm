@@ -202,6 +202,18 @@ token pir_instruction:sym<op_assign>   {
     <variable> <.ws> '=' <.ws> <op=ident> [ [<.ws><value><.ws>] ** ',']?
 }
 
+token pir_instruction:sym<call> {
+    <call>
+}
+
+token pir_instruction:sym<call_assign> {
+    <variable> <.ws> '=' <.ws> <call>
+}
+
+token pir_instruction:sym<call_assign_many> {
+    '(' <results>? ')' <.ws> '=' <.ws> <call>
+}
+
 # TODO 
 #token pir_instruction:sym<call> {
 #}
@@ -233,6 +245,20 @@ token param_flag {
     | <named_flag>
 }
 
+rule results {
+    <result> ** ','
+}
+
+rule result {
+    <variable> <result_flag>*
+}
+
+token result_flag {
+    | ':slurpy'
+    | ':optional'
+    | ':opt_flag'
+    | <named_flag>
+}
 
 token unary {
     '!' | '-' | '~'
