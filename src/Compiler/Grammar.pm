@@ -171,10 +171,6 @@ token pir_instruction:sym<binary>   {
     <variable> <.ws> '=' <.ws> <lhs=value> <.ws> <binary> <.ws> <rhs=value>
 }
 
-token relop {
-    '<' | '<=' | '==' | '!=' | '>=' | '>'
-}
-
 token unary {
     '!' | '-' | '~'
 }
@@ -182,11 +178,15 @@ token unary {
 token binary {
     | '+' | '-' | '**' | '/' | '%' | '*'    # maths
     | '.'                                   # for strings only
-    | '<<' | '>>'                           # arithmetic shift
     | '>>>'                                 # logical shift
+    | '<<' | '>>'                           # arithmetic shift
     | '&&' | '||' | '~~'                    # logical
     | '&' | '|' | '~'                       # bitwise
     | <relop>
+}
+
+token relop {
+    '<=' | '<' | '==' | '!=' | '>=' | '>'
 }
 
 
