@@ -1,10 +1,6 @@
 #! /usr/bin/env parrot-nqp
 
-Q:PIR{
-    # We want Test::More features for testing. Not NQP's builtin.
-    .include "test_more.pir"
-    load_bytecode "pir.pbc"
-};
+pir::load_bytecode('t/common.pbc');
 
 my $c := pir::compreg__Ps('PIRATE');
 my $res;
@@ -69,16 +65,5 @@ ok($res, "unless \$S0 == \$P0 goto label");
 
 
 done_testing();
-
-
-
-sub parse($c, $code) {
-    $res := 0;
-    try {
-        $c.compile(:target('parse'), $code);
-        $res := 1;
-    }
-    $res;
-}
 
 # vim: ft=perl6

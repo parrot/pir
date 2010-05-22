@@ -1,10 +1,6 @@
 #! /usr/bin/env parrot-nqp
 
-Q:PIR{
-    # We want Test::More features for testing. Not NQP's builtin.
-    .include "test_more.pir"
-    load_bytecode "pir.pbc"
-};
+pir::load_bytecode('t/common.pbc');
 
 my $c := pir::compreg__Ps('PIRATE');
 my $res;
@@ -20,7 +16,7 @@ ok($res, "Unary operations");
 
 $res := parse($c, q{
 .sub main
-#	.local int x,y,z,a,b,c
+	.local int x,y,z,a,b,c
 	x = 1 + 2
 	x = 1 * 2
 	y = 2 / 4
@@ -40,7 +36,7 @@ ok($res, "Binary operations");
 
 $res := parse($c, q{
 .sub main
-#	.local int x,y,z,a,b,c
+	.local int x,y,z,a,b,c
 	a = b <  c
 	a = b <= c
 	a = b == c
@@ -52,16 +48,5 @@ $res := parse($c, q{
 ok($res, "Binary logical operations");
 
 done_testing();
-
-
-
-sub parse($c, $code) {
-    $res := 0;
-    try {
-        $c.compile(:target('parse'), $code);
-        $res := 1;
-    }
-    $res;
-}
 
 # vim: ft=perl6
