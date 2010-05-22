@@ -47,6 +47,23 @@ $res := parse($c, q{
 });
 ok($res, "Binary logical operations");
 
+
+$res := parse($c, q{
+.sub main
+	.local int x
+	x = 0
+	x += 1
+	x *= 5
+	x /= 2
+	x -= 1
+	x %= 2
+	x <<= 1
+	x >>= 1
+	x >>>= 1
+.end
+});
+ok($res, "In-place assign");
+
 done_testing();
 
 # vim: ft=perl6
