@@ -66,8 +66,8 @@ rule statement_list {
 
 # Don't put newline here.
 rule statement {
-    | <pir_directive>
-    | <labeled_instruction>
+    || <pir_directive>
+    || <labeled_instruction>
 }
 
 # Various .local, .lex, etc
@@ -114,7 +114,7 @@ rule pir_directive:sym<annotate> {
 }
 
 token labeled_instruction {
-    <.ws> [ <label=ident> ':' <.ws>]? <op>? <.nl>
+    <.ws> [ <label=ident> ':' <.ws>]? [ <pir_instruction> | <op> ]? <.nl>
 }
 
 # raw pasm ops.
@@ -122,6 +122,14 @@ token labeled_instruction {
 token op {
     <op=ident> [ [<.ws><value><.ws>] ** ',']?
 }
+
+# Some syntax sugar
+proto regex pir_instruction { <...> }
+token pir_instruction:sym<goto> { 'goto' <.ws> <ident> }
+token pir_instruction:sym<if>   {
+    'if' <.ws> <variable> <.ws> 'goto' <.ws> <ident>
+}
+
 
 token value {
     | <constant>
