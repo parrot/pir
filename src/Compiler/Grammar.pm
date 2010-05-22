@@ -22,6 +22,9 @@ token compilation_unit:sym<sub> {
     || <panic: "Unknown .sub pragma">
     ]
     \h* <.nl>
+
+    <param_decl>*
+
     [
     || <statement>
     || <!before '.end'> <panic: "Erm... What?">
@@ -78,6 +81,10 @@ rule statement_list {
 rule statement {
     || <pir_directive>
     || <labeled_instruction>
+}
+
+rule param_decl {
+    '.param' <pir_type> <ident> <.nl>
 }
 
 # Various .local, .lex, etc
@@ -181,6 +188,10 @@ token pir_instruction:sym<inplace>   {
 
 token pir_instruction:sym<op_assign>   {
     <variable> <.ws> '=' <.ws> <op=ident> [ [<.ws><value><.ws>] ** ',']?
+}
+
+# TODO 
+token pir_instruction:sym<call> {
 }
 
 token unary {

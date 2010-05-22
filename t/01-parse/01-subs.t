@@ -89,6 +89,17 @@ $res := parse($c, q{
 });
 ok($res, "Complex :multi");
 
+########## .param
+$res := parse($c, q{
+.sub "foo"
+    .param int a
+    .param num b
+    .param string c
+    .param pmc d
+.end
+});
+ok($res, "Simple .param");
+
 
 
 done_testing();
