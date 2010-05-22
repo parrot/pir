@@ -69,18 +69,18 @@ rule pir_directive:sym<globalconst> {
 }
 
 proto regex const_declaration { <...> }
-token const_declaration:sym<int> {
-    <sym> <.ws> <variable> <.ws> '=' <.ws> <int_constant>
+rule const_declaration:sym<int> {
+    <sym> <variable> '=' <int_constant>
 }
-token const_declaration:sym<num> {
-    <sym> <.ws> <variable> <.ws> '=' <.ws> <float_constant>
+rule const_declaration:sym<num> {
+    <sym> <variable> '=' <float_constant>
 }
-token const_declaration:sym<string> {
-    <sym> <.ws> <variable> <.ws> '=' <.ws> <string_constant>
+rule const_declaration:sym<string> {
+    <sym> <variable> '=' <string_constant>
 }
 # .const "Sub" foo = "sub_id"
-token const_declaration:sym<pmc> {
-    <string_constant> <.ws> <variable> <.ws> '=' <.ws> <string_constant>
+rule const_declaration:sym<pmc> {
+    <string_constant> <variable> '=' <string_constant>
 }
 
 
