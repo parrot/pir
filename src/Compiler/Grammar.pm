@@ -21,6 +21,18 @@ token compilation_unit:sym<sub> {
     '.end' <.terminator>
 }
 
+token compilation_unit:sym<namespace> {
+    '.namespace' <.ws> '[' <pir_key>? ']' <.terminator>
+}
+
+token compilation_unit:sym<loadlib> {
+    '.loadlib' <.ws> <quote> <.terminator>
+}
+
+token compilation_unit:sym<HLL> {
+    '.HLL' <.ws> <quote> <.terminator>
+}
+
 #token compilation_unit:sym<pragma> { }
 
 proto regex sub_pragma { <...> }
@@ -75,18 +87,6 @@ rule pir_directive:sym<globalconst> {
     '.globalconst' <const_declaration> <.nl>
 }
 
-rule pir_directive:sym<file> {
-    '.file' <string_constant> <.nl>
-}
-rule pir_directive:sym<line> {
-    '.line' <int_constant> <.nl>
-}
-rule pir_directive:sym<annotate> {
-    '.annotate' <string_constant> ',' <constant> <.nl>
-}
-
-
-
 proto regex const_declaration { <...> }
 rule const_declaration:sym<int> {
     <sym> <variable> '=' <int_constant>
@@ -100,6 +100,16 @@ rule const_declaration:sym<string> {
 # .const "Sub" foo = "sub_id"
 rule const_declaration:sym<pmc> {
     <string_constant> <variable> '=' <string_constant>
+}
+
+rule pir_directive:sym<file> {
+    '.file' <string_constant> <.nl>
+}
+rule pir_directive:sym<line> {
+    '.line' <int_constant> <.nl>
+}
+rule pir_directive:sym<annotate> {
+    '.annotate' <string_constant> ',' <constant> <.nl>
 }
 
 
