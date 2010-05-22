@@ -53,7 +53,7 @@ rule statement {
 # Various .local, .lex, etc
 proto regex pir_directive { <...> }
 rule pir_directive:sym<local> {
-    '.local' <pir_type> [ <ident> ** ',' ] <.nl>
+    '.local' <pir_type> [<.ws><ident><.ws>] ** ',' <.nl>
 }
 
 
