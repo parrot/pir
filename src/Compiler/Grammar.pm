@@ -207,21 +207,32 @@ token pir_instruction:sym<op_assign>   {
 #}
 
 rule pir_instruction:sym<return> {
-    '.return' '(' <results>? ')'
+    '.return' '(' <params>? ')'
 }
 
-rule results {
-    <result> ** ','
+rule pir_instruction:sym<tailcall> {
+    '.tailcall' <call>
 }
 
-rule result {
-    <value> <result_flag>*
+proto regex call { <...> }
+token call:sym<pmc>     { <variable> '(' <params>? ')' }
+token call:sym<sub>     { <quote> '(' <params>? ')' }
+token call:sym<dynamic> { <value> '.' <variable> '(' <params>? ')' }
+token call:sym<method>  { <value> '.' <quote> '(' <params>? ')' }
+
+rule params {
+    <param> ** ','
 }
 
-token result_flag {
+rule param {
+    <value> <param_flag>*
+}
+
+token param_flag {
     | ':flat'
     | <named_flag>
 }
+
 
 token unary {
     '!' | '-' | '~'

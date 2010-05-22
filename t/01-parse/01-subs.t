@@ -142,6 +142,57 @@ $res := parse($c, q{
 });
 ok($res, ".return (42, '42', 41.9999)");
 
+########## .tailcall
+$res := parse($c, q{
+.sub "foo"
+    .tailcall "bar"()
+.end
+});
+ok($res, ".tailcall 'bar'()");
+
+$res := parse($c, q{
+.sub "foo"
+    .local pmc foo
+    .tailcall foo()
+.end
+});
+ok($res, ".tailcall foo()");
+
+$res := parse($c, q{
+.sub "foo"
+    .local pmc foo
+    .tailcall foo(42, array :flat, hash :flat :named)
+.end
+});
+ok($res, ".tailcall foo(42...)");
+
+$res := parse($c, q{
+.sub "foo"
+    .local pmc foo
+    .tailcall foo.'bar'()
+.end
+});
+ok($res, ".tailcall foo.'bar'()");
+
+$res := parse($c, q{
+.sub "foo"
+    .local pmc foo
+    .local string method
+    .tailcall foo.method()
+.end
+});
+ok($res, ".tailcall foo.method()");
+
+$res := parse($c, q{
+.sub "foo"
+    .local pmc foo, array, hash
+    .local string method
+    .tailcall foo.'method'(42, array :flat, hash :flat :named)
+.end
+});
+ok($res, ".tailcall foo.'method'(...)");
+
+
 
 done_testing();
 
