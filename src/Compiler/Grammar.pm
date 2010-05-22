@@ -203,8 +203,8 @@ token pir_instruction:sym<op_assign>   {
 }
 
 # TODO 
-token pir_instruction:sym<call> {
-}
+#token pir_instruction:sym<call> {
+#}
 
 rule pir_instruction:sym<return> {
     '.return' '(' <results>? ')'
