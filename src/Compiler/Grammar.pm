@@ -206,6 +206,23 @@ token pir_instruction:sym<op_assign>   {
 token pir_instruction:sym<call> {
 }
 
+rule pir_instruction:sym<return> {
+    '.return' '(' <results>? ')'
+}
+
+rule results {
+    <result> ** ','
+}
+
+rule result {
+    <value> <result_flag>*
+}
+
+token result_flag {
+    | ':flat'
+    | <named_flag>
+}
+
 token unary {
     '!' | '-' | '~'
 }

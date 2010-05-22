@@ -112,6 +112,36 @@ $res := parse($c, q{
 });
 ok($res, "Complex .param");
 
+########## .return
+$res := parse($c, q{
+.sub "foo"
+    .return ()
+.end
+});
+ok($res, ".return ()");
+
+$res := parse($c, q{
+.sub "foo"
+    .return ("42")
+.end
+});
+ok($res, ".return ('42')");
+
+$res := parse($c, q{
+.sub "foo"
+    .return (42, "42", 41.9999)
+.end
+});
+ok($res, ".return (42, '42', 41.9999)");
+
+$res := parse($c, q{
+.sub "foo"
+    .local pmc array, hash
+    .return ("42" :named, array :flat, hash :flat :named)
+.end
+});
+ok($res, ".return (42, '42', 41.9999)");
+
 
 done_testing();
 
