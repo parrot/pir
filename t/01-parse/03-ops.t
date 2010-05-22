@@ -31,6 +31,23 @@ $res := parse($c, q{
 ok($res, "label: parsed");
 
 
+$res := parse($c, q{
+.sub "foo"
+    .local string foo
+    trace 0
+.end
+});
+ok($res, "trace 0");
+
+$res := parse($c, q{
+.sub "foo"
+    .local string foo
+    substr $S0, foo, 0, 1
+.end
+});
+ok($res, "substr \$S0, foo, 0, 1");
+
+
 done_testing();
 
 

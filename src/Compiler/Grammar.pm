@@ -118,17 +118,13 @@ token labeled_instruction {
 }
 
 # raw pasm ops.
-rule op {
-    <op> [ <value> ** ',']?
-}
-
+# TODO Check in OpLib
 token op {
-    <ident> # TODO Check in OpLib
+    <op=ident> [ [<.ws><value><.ws>] ** ',']?
 }
 
 token value {
     | <constant>
-    | <pir_register>
     | <variable>
 }
 
