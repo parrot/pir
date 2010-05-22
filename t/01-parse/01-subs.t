@@ -72,3 +72,4 @@ sub parse($c, $code) {
     $res;
 }
 
+# vim: ft=perl6

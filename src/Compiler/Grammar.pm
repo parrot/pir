@@ -17,6 +17,7 @@ proto token compilation_unit { <...> }
 token compilation_unit:sym<sub> {
     <.newpad>
     '.sub' <.ws> <subname> [ <.ws> <sub_pragma> ]* <.nl>
+    <statement_list>
     '.end' <.terminator>
 }
 
@@ -46,27 +47,35 @@ rule statement_list {
 
 # Don't put newline here.
 rule statement {
-    <EXPR>
+    | <pir_directive>
 }
 
-token terminator {
-    | $
-    | \n
+# Various .local, .lex, etc
+proto regex pir_directive { <...> }
+rule pir_directive:sym<local> {
+    '.local' <pir_type> [ <ident> ** ',' ] <.nl>
+}
+
+
+token pir_type {
+    | int
+    | number
+    | pmc
+    | string
 }
 
 token subname {
-    [
     | <string_constant>
     | <ident>
-    ]
 }
-
 
 token pod_comment {
     ^^ '=' <pod_directive>
     .* \n
     ^^ '=cut'
 }
+
+token terminator { $ | <.nl> }
 
 # There is no iterpolation of strings in PIR
 proto token string_constant { <...> }
