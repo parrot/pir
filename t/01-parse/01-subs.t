@@ -1,6 +1,7 @@
 #! /usr/bin/env parrot-nqp
 
 Q:PIR{
+    # We want Test::More features for testing. Not NQP's builtin.
     .include "test_more.pir"
     load_bytecode "pir.pbc"
 };
