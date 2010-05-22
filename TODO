@@ -1,121 +1,25 @@
+TODO
+
 =head1 NAME
 
-TODO - This is the TODO file for a PIR implementation in PGE.
+TODO - This is the TODO file for a PIR implementation in NQP.
 
 =head1 PARSING
 
-Currently parsing is mostly done. Some areas require particular
-attention:
-
 =over 4
 
-=item * C<var_ref>
+=item * C<strings>
 
-Currently C<< <id> >> rule is overused. We need to split it into
-C<< <id> >> and C<< <var_ref> >> rules to implement checks for
-undeclared variables.
+Parsing of charset/encoding
+
+=item * C<keys>
+
+Keyed access is not implemented.
 
 =item * C<heredoc>
 
 =item * C<macro>
 
-=back
-
-=head1 OPTIMISING
-
-Optimising isn't started yet. General roadmap:
-
-=over 4
-
-=item * 
-
-Implement PASTing.
-
-=item *
-
-Convert PAST to Lambda-lifted form
-
-=item *
-
-Optimise using full power of FP notation.
-
-=over 4
-
-=item * 
-
-Dead Code Elimination. E.g. unused variables, etc.
-
-=item *
-
-Constant propagation.
-
-=item *
-
-(Put more stuff here)
 
 =back
-
-=item *
-
-Convert back to PAST using "lambda dropping".
-
-=back
-
-=head1 "Lambda lifting" and "lambda dropping"
-
-To avoid hassles with SSA and Phi function used for analyse imperative
-languages I'm going to convert PIR to functional representation.
-
-Consider next PIR fragment:
- 
-  # Print even values from array
-  .sub "foo"
-      .param pmc array
-      $P0 = iter array
-   loop:
-      unless $P0 goto done
-      $P1 = shift $P0
-      $I0 = $P1 % 2
-      if $I0 goto loop
-      say $P1
-      goto loop
-   done:
-      
-  .end
-
-This code can be represented as:
-
-  foo(array) =
-    $P0 = iter array
-    loop($P0)
-
-  loop($P0) =
-    unless $P0 tailcall done()
-    $P1 = shift $P0
-    $I0 = $P1 % 2
-    if $I0 tailcall loop($P0)
-    say $P1
-    tailcall loop($P0)
-
-  done() =
-
-Every line with assignment statement introduce new "static context". RHS
-evaluated in parent static context. LHS bind value in "child" static
-context. Which give us next easy ways to optimise out unused variables,
-constant propagating, etc.
-
-After optimisation we use lambda-dropping to inline function and convert
-it back to PAST for further processing.
-    
-
-=head1 PBC Emitting
-
-After (or in parallel with) optimisation implementation we can start
-work on emitting PBC directly from POST tree without serialisation to
-PIR and invoking IMCC/PIRC. Current Packfile PMCs are robust enough for
-generating PBC. What we'll need a some kind of "SerializableSub" for
-generate PBC properly without attaching to current interp.
-
-=cut
-
 
