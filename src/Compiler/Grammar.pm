@@ -273,9 +273,9 @@ rule namespace_key { <quote> ** ';' }
 rule pir_key { '[' <value> ** ';' ']' }
 
 token constant {
-      <int_constant>
     | <float_constant>
     | <string_constant>
+    | <int_constant>
 }
 
 token int_constant {
