@@ -37,8 +37,15 @@ token sub_pragma:sym<vtable>     { ':' <sym> '(' <string_constant> ')' }
 token sub_pragma:sym<outer>      { ':' <sym> '(' <string_constant> ')' }
 token sub_pragma:sym<subid>      { ':' <sym> '(' <string_constant> ')' }
 
-#token sub_pragma:sym<multi>      { ':' <sym> '(' <key> ')' }
+token sub_pragma:sym<multi>      { ':' <sym> '(' [<.ws><multi_type><.ws>] ** ',' ')' }
 
+# TODO Do more strict parsing.
+token multi_type {
+    | '_'               # any
+    | <quote>           # "Foo"
+    | '[' <pir_key> ']' # ["Foo";"Bar"]
+    | <ident>           # Integer
+}
 
 rule statement_list {
     | $
@@ -130,7 +137,7 @@ token pod_comment {
 
 token terminator { $ | <.nl> }
 
-rule pir_key { <ident> ** ';' }
+rule pir_key { <quote> ** ';' }
 
 token constant {
     | <int_constant>
@@ -150,9 +157,11 @@ token float_constant {
 
 # There is no iterpolation of strings in PIR
 # TODO charset/encoding handling.
-proto token string_constant { <...> }
-token string_constant:sym<apos> { <?[']> <quote_EXPR: ':q'>  }
-token string_constant:sym<dblq> { <?["]> <quote_EXPR: ':q'> }
+token string_constant { <quote> }
+
+proto token quote { <...> }
+token quote:sym<apos> { <?[']> <quote_EXPR: ':q'>  }
+token quote:sym<dblq> { <?["]> <quote_EXPR: ':q'> }
 
 # Don't be very strict on pod comments (for now?)
 token pod_directive { <ident> }

@@ -57,6 +57,42 @@ $res := parse($c, q{
 });
 ok($res, ":subid pragma parsed");
 
+$res := parse($c, q{
+.sub "foo" :multi(_)
+.end
+});
+ok($res, ":multi(_) parsed");
+
+$res := parse($c, q{
+.sub "foo" :multi(_,_)
+.end
+});
+ok($res, ":multi(_,_) parsed");
+
+$res := parse($c, q{
+.sub "foo" :multi("Foo")
+.end
+});
+ok($res, ":multi('Foo') parsed");
+
+$res := parse($c, q{
+.sub "foo" :multi(Integer)
+.end
+});
+ok($res, ":multi(Integer) parsed");
+
+$res := parse($c, q{
+.sub "foo" :multi(["Foo";"Bar"])
+.end
+});
+ok($res, ":multi(['Foo';'Bar']) parsed");
+
+$res := parse($c, q{
+.sub "foo" :multi(_, ["Foo";"Bar"], Integer)
+.end
+});
+ok($res, "Complex :multi");
+
 
 
 done_testing();
