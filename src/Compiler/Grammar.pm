@@ -83,8 +83,20 @@ rule statement {
     || <labeled_instruction>
 }
 
+# TODO Some of combination of flags/type doesn't make any sense
 rule param_decl {
-    '.param' <pir_type> <ident> <.nl>
+    '.param' <pir_type> <name=ident> <get_flags>* <.nl>
+}
+
+token get_flags {
+    | ':slurpy'
+    | ':optional'
+    | ':opt_flag'
+    | <named_flag>
+}
+
+rule named_flag {
+    ':named' [ '(' <quote> ')' ]?
 }
 
 # Various .local, .lex, etc

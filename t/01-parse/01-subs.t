@@ -100,6 +100,17 @@ $res := parse($c, q{
 });
 ok($res, "Simple .param");
 
+$res := parse($c, q{
+.sub "foo"
+    .param pmc argv :slurpy         # slurpy array
+    .param pmc key :named           # named parameter
+    .param pmc value :named('key')  # named parameter
+    .param string x :optional       # optional parameter
+    .param int has_x :opt_flag      # flag 0/1 x was passed
+    .param pmc kw :slurpy :named    # slurpy hash
+.end
+});
+ok($res, "Complex .param");
 
 
 done_testing();
