@@ -167,8 +167,16 @@ token pir_instruction:sym<unary>   {
     <variable> <.ws> '=' <.ws> <unary> <.ws> <value>
 }
 
-token pir_instruction:sym<binary>   {
-    <variable> <.ws> '=' <.ws> <lhs=value> <.ws> <binary> <.ws> <rhs=value>
+token pir_instruction:sym<binary_math>   {
+    <variable> <.ws> '=' <.ws> <lhs=value> <.ws> <mathop> <.ws> <rhs=value>
+}
+token pir_instruction:sym<binary_logic>   {
+    <variable> <.ws> '=' <.ws> <lhs=value> <.ws> <relop> <.ws> <rhs=value>
+}
+
+
+token pir_instruction:sym<inplace>   {
+    <variable> <.ws> <mathop> '=' <.ws> <rhs=value>
 }
 
 token unary {
@@ -176,13 +184,17 @@ token unary {
 }
 
 token binary {
+    | <mathop>
+    | <relop>
+}
+
+token mathop {
     | '+' | '-' | '**' | '/' | '%' | '*'    # maths
     | '.'                                   # for strings only
     | '>>>'                                 # logical shift
     | '<<' | '>>'                           # arithmetic shift
     | '&&' | '||' | '~~'                    # logical
     | '&' | '|' | '~'                       # bitwise
-    | <relop>
 }
 
 token relop {
