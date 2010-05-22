@@ -67,6 +67,7 @@ rule statement_list {
 # Don't put newline here.
 rule statement {
     | <pir_directive>
+    | <labeled_instruction>
 }
 
 # Various .local, .lex, etc
@@ -112,6 +113,28 @@ rule pir_directive:sym<annotate> {
     '.annotate' <string_constant> ',' <constant> <.nl>
 }
 
+token labeled_instruction {
+    <.ws> [ <label=ident> ':' <.ws>]? <op>? <.nl>
+}
+
+# raw pasm ops.
+rule op {
+    <op> [ <value> ** ',']?
+}
+
+token op {
+    <ident> # TODO Check in OpLib
+}
+
+token value {
+    | <constant>
+    | <pir_register>
+    | <variable>
+}
+
+token variable {
+    <ident>  # TODO Check it in lexicals
+}
 
 token pir_type {
     | int
