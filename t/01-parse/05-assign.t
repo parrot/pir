@@ -64,6 +64,16 @@ $res := parse($c, q{
 });
 ok($res, "In-place assign");
 
+$res := parse($c, q{
+.sub main
+	.local pmc x
+	x = new "Hash"
+.end
+});
+ok($res, "Assign reorder");
+
+
+
 done_testing();
 
 # vim: ft=perl6
