@@ -81,6 +81,14 @@ $res := parse($c, q{
 });
 ok($res, "Assign reorder with key");
 
+$res := parse($c, q{
+.sub main
+	.local pmc x
+	x = get_root_global ["Hash"], "bang"
+.end
+});
+ok($res, "Assign reorder with key and param");
+
 ########## keyed
 $res := parse($c, q{
 .sub main

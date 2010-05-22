@@ -154,7 +154,11 @@ token label { <ident> ':' }
 # raw pasm ops.
 # TODO Check in OpLib
 rule op {
-    <op=ident> [ [ <value> | <pir_key> ] ** ',']?
+    <op=ident> <op_params>?
+}
+
+rule op_params {
+    [ <value> | <pir_key> ] ** ','
 }
 
 # Some syntax sugar
@@ -162,47 +166,47 @@ proto regex pir_instruction { <...> }
 
 rule pir_instruction:sym<goto> { 'goto' <ident> }
 
-rule pir_instruction:sym<if>   {
+rule pir_instruction:sym<if> {
     'if' <variable> 'goto' <ident>
 }
-rule pir_instruction:sym<unless>   {
+rule pir_instruction:sym<unless> {
     'unless' <variable> 'goto' <ident>
 }
-rule pir_instruction:sym<if_null>   {
+rule pir_instruction:sym<if_null> {
     'if' 'null' <variable> 'goto' <ident>
 }
-rule pir_instruction:sym<unless_null>   {
+rule pir_instruction:sym<unless_null> {
     'unless' 'null' <variable> 'goto' <ident>
 }
-rule pir_instruction:sym<if_op>   {
+rule pir_instruction:sym<if_op> {
     'if' <lhs=value> <relop> <rhs=value> 'goto' <ident>
 }
-rule pir_instruction:sym<unless_op>   {
+rule pir_instruction:sym<unless_op> {
     'unless' <lhs=value> <relop> <rhs=value> 'goto' <ident>
 }
 
-rule pir_instruction:sym<assign>   {
+rule pir_instruction:sym<assign> {
     <variable> '=' <value>
 }
 
-rule pir_instruction:sym<unary>   {
+rule pir_instruction:sym<unary> {
     <variable> '=' <unary> <value>
 }
 
-rule pir_instruction:sym<binary_math>   {
+rule pir_instruction:sym<binary_math> {
     <variable> '=' <lhs=value> <mathop> <rhs=value>
 }
-rule pir_instruction:sym<binary_logic>   {
+rule pir_instruction:sym<binary_logic> {
     <variable> '=' <lhs=value> <relop> <rhs=value>
 }
 
 
-rule pir_instruction:sym<inplace>   {
+rule pir_instruction:sym<inplace> {
     <variable> <mathop> '=' <rhs=value>
 }
 
-rule pir_instruction:sym<op_assign>   {
-    <variable> '=' <op=ident> [ [ <value> | <pir_key> ] ** ',']?
+rule pir_instruction:sym<op_assign> {
+    <variable> '=' <op=ident> <op_params>
 }
 
 token pir_instruction:sym<call> {

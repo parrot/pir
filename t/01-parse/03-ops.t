@@ -59,6 +59,14 @@ $res := parse($c, q{
 });
 ok($res, "new foo, ['parrot';'Hash']");
 
+$res := parse($c, q{
+.sub "foo"
+    .local pmc foo
+    get_root_global $P29, ["parrot"], "P6metaclass"
+.end
+});
+ok($res, "get_root_global");
+
 
 done_testing();
 
