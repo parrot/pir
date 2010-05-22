@@ -16,10 +16,20 @@ proto token compilation_unit { <...> }
 
 token compilation_unit:sym<sub> {
     <.newpad>
-    '.sub' <.ws> <subname> [ <.ws> <sub_pragma> ]* <.nl>
-    <statement_list>
+    '.sub' <.ws> <subname> 
+    [
+    || [ <.ws> <sub_pragma> ]*
+    || <panic: "Unknown .sub pragma">
+    ]
+    <.nl>
+    [
+    || <statement_list>
+    || <panic: "Erm... What?">
+    ]
     '.end' <.terminator>
 }
+
+
 
 token compilation_unit:sym<namespace> {
     '.namespace' <.ws> '[' <pir_key>? ']' <.terminator>
