@@ -9,7 +9,7 @@ class PIR::Grammar is HLL::Grammar;
 # Top-level rules.
 rule TOP {
     [ <compilation_unit> <.terminator> ]*
-    [ $ || <panic: "Confused"> ]
+    [ $ || <.panic: "Confused"> ]
 }
 
 proto token compilation_unit { <...> }
@@ -19,7 +19,7 @@ rule compilation_unit:sym<sub> {
     '.sub' <subname> 
     [
     || [ <.ws> <sub_pragma> ]*
-    || <panic: "Unknown .sub pragma">
+    || <.panic: "Unknown .sub pragma">
     ]
     \h* <.nl>
 
@@ -27,7 +27,7 @@ rule compilation_unit:sym<sub> {
 
     [
     || <statement>
-    || <!before '.end'> <panic: "Erm... What?">
+    || <!before '.end'> <.panic: "Erm... What?">
     ]*
     '.end'
 }
