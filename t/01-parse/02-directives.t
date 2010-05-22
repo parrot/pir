@@ -7,14 +7,16 @@ Q:PIR{
 };
 
 my $c := pir::compreg__Ps('PIRATE');
+my $res;
 
-
-my $res := parse($c, q{
-.sub "main"
-    .local pmc foo
-.end
-});
-ok($res, ".local pmc foo");
+for <int number string pmc> -> $type {
+    $res := parse($c, qq{
+    .sub "main"
+        .local $type foo
+    .end
+    });
+    ok($res, ".local $type foo");
+}
 
 $res := parse($c, q{
 .sub "main"
@@ -22,6 +24,24 @@ $res := parse($c, q{
 .end
 });
 ok($res, ".local pmc foo, bar");
+
+$res := parse($c, q{
+.sub "main"
+    .local wrongtype foo
+.end
+});
+ok(!$res, ".local wrongtype foo not parsed");
+
+$res := parse($c, q{
+.sub "main"
+    .local pmc foo, bar
+    .local int foo, bar
+    .local string foo, bar
+    .local number foo, bar
+.end
+});
+ok($res, "Multiple .local");
+
 
 done_testing();
 
