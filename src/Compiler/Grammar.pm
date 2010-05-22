@@ -23,9 +23,9 @@ token compilation_unit:sym<sub> {
     ]
     \h* <.nl>
     [
-    || <statement_list>
-    || <panic: "Erm... What?">
-    ]
+    || <statement>
+    || <!before '.end'> <panic: "Erm... What?">
+    ]*
     '.end' <.terminator>
 }
 
