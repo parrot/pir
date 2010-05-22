@@ -199,7 +199,7 @@ token pir_instruction:sym<inplace>   {
 }
 
 token pir_instruction:sym<op_assign>   {
-    <variable> <.ws> '=' <.ws> <op=ident> [ [<.ws><value><.ws>] ** ',']?
+    <variable> <.ws> '=' <.ws> <op=ident> [ [<.ws> [ <value> | <pir_key> ]<.ws>] ** ',']?
 }
 
 token pir_instruction:sym<call> {

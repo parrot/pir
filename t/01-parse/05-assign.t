@@ -73,6 +73,14 @@ $res := parse($c, q{
 ok($res, "Assign reorder");
 
 
+$res := parse($c, q{
+.sub main
+	.local pmc x
+	x = new ["Hash"]
+.end
+});
+ok($res, "Assign reorder with key");
+
 
 done_testing();
 
