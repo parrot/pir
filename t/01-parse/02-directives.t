@@ -81,6 +81,21 @@ $res := parse($c, q{
 });
 ok($res, ".const 'Sub'");
 
+$res := parse($c, q{
+.sub "main"
+    .file "test.pir"
+    .line 42
+.end
+});
+ok($res, ".file/.line");
+
+$res := parse($c, q{
+.sub "main"
+    .annotate "file", "test.p6"
+    .annotate "line", 42
+.end
+});
+ok($res, ".annotate");
 
 done_testing();
 

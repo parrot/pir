@@ -68,6 +68,18 @@ rule pir_directive:sym<globalconst> {
     '.globalconst' <const_declaration> <.nl>
 }
 
+rule pir_directive:sym<file> {
+    '.file' <string_constant> <.nl>
+}
+rule pir_directive:sym<line> {
+    '.line' <int_constant> <.nl>
+}
+rule pir_directive:sym<annotate> {
+    '.annotate' <string_constant> ',' <constant> <.nl>
+}
+
+
+
 proto regex const_declaration { <...> }
 rule const_declaration:sym<int> {
     <sym> <variable> '=' <int_constant>
@@ -117,6 +129,8 @@ token pod_comment {
 }
 
 token terminator { $ | <.nl> }
+
+rule pir_key { <ident> ** ';' }
 
 token constant {
     | <int_constant>
