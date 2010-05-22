@@ -38,6 +38,19 @@ $res := parse($c, q{
 });
 ok($res, "Binary operations");
 
+$res := parse($c, q{
+.sub main
+#	.local int x,y,z,a,b,c
+	a = b <  c
+	a = b <= c
+	a = b == c
+	a = b != c
+	a = b >= c
+	a = b >  c
+.end
+});
+ok($res, "Binary logical operations");
+
 done_testing();
 
 
