@@ -32,7 +32,7 @@ token compilation_unit:sym<sub> {
 
 
 token compilation_unit:sym<namespace> {
-    '.namespace' <.ws> '[' <pir_key>? ']' <.terminator>
+    '.namespace' <.ws> '[' <namespace_key>? ']' <.terminator>
 }
 
 token compilation_unit:sym<loadlib> {
@@ -65,7 +65,7 @@ token sub_pragma:sym<multi>      { ':' <sym> '(' [<.ws><multi_type><.ws>] ** ','
 token multi_type {
     | '_'               # any
     | <quote>           # "Foo"
-    | '[' <pir_key> ']' # ["Foo";"Bar"]
+    | '[' <namespace_key> ']' # ["Foo";"Bar"]
     | <ident>           # Integer
 }
 
@@ -130,7 +130,7 @@ token labeled_instruction {
 # raw pasm ops.
 # TODO Check in OpLib
 token op {
-    <op=ident> [ [<.ws><value><.ws>] ** ',']?
+    <op=ident> [ [<.ws> [ <value> | <pir_key> ]<.ws>] ** ',']?
 }
 
 # Some syntax sugar
@@ -241,7 +241,9 @@ token pod_comment {
 
 token terminator { $ | <.nl> }
 
-rule pir_key { <quote> ** ';' }
+rule namespace_key { <quote> ** ';' }
+
+rule pir_key { '[' <value> ** ';' ']' }
 
 token constant {
       <int_constant>
