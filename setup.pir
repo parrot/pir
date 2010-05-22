@@ -49,9 +49,6 @@ SOURCES
     $P0['installable_pbc'] = $P7
 
     # Test
-    $S0 = get_parrot()
-    $S0 .= ' pir.pbc'
-    $P0['prove_exec'] = $S0
     $P0['prove_files'] = 't/*.t t/*/*.t'
 
     .tailcall setup(args :flat, $P0 :flat :named)
