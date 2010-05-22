@@ -148,6 +148,32 @@ token pir_instruction:sym<if_null>   {
 token pir_instruction:sym<unless_null>   {
     'unless' <.ws> 'null' <.ws> <variable> <.ws> 'goto' <.ws> <ident>
 }
+token pir_instruction:sym<if_op>   {
+    'if' <.ws> <lhs=value> <.ws> <relop> <.ws> <rhs=value>
+         <.ws> 'goto' <.ws> <ident>
+}
+token pir_instruction:sym<unless_op>   {
+    'unless' <.ws> <lhs=value> <.ws> <relop> <.ws> <rhs=value>
+         <.ws> 'goto' <.ws> <ident>
+}
+
+
+token relop {
+    '<' | '<=' | '==' | '!=' | '>=' | '>'
+}
+
+token unary {
+    '!' | '-' | '~'
+}
+
+token binary {
+    | '+' | '-' | '*' | '/' | '%' | '**'    # maths
+    | '.'                                   # for strings only
+    | '<<' | '>>'                           # arithmetic shift
+    | '&&' | '||' | '~~'                    # logical
+    | '&' | '|' | '~'                       # bitwise
+    | <relop>
+}
 
 
 token value {
