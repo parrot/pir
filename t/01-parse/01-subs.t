@@ -23,12 +23,14 @@ $res := parse($c, q{
 
 ok(!$res, "Wrong pragma was caught");
 
-$res := parse($c, q{
-.sub "foo" :main
+for <main init load immediate postcomp anon method nsentry> -> $pragma {
+$res := parse($c, qq{
+.sub "foo" :$pragma
 .end
 });
 
-ok($res, ":main pragma parsed");
+ok($res, ":$pragma pragma parsed");
+}
 
 $res := parse($c, q{
 .sub "foo" :init :load :anon
@@ -36,6 +38,24 @@ $res := parse($c, q{
 });
 
 ok($res, "Multiple pragmas parsed");
+
+$res := parse($c, q{
+.sub "foo" :vtable("get_string")
+.end
+});
+ok($res, ":vtable pragma parsed");
+
+$res := parse($c, q{
+.sub "foo" :outer("outer")
+.end
+});
+ok($res, ":outer pragma parsed");
+
+$res := parse($c, q{
+.sub "foo" :subid("subid")
+.end
+});
+ok($res, ":subid pragma parsed");
 
 
 

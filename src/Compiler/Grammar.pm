@@ -26,11 +26,18 @@ proto regex sub_pragma { <...> }
 token sub_pragma:sym<main>       { ':' <sym> }
 token sub_pragma:sym<init>       { ':' <sym> }
 token sub_pragma:sym<load>       { ':' <sym> }
-token sub_pragma:sym<immmediate> { ':' <sym> }
+token sub_pragma:sym<immediate>  { ':' <sym> }
 token sub_pragma:sym<postcomp>   { ':' <sym> }
 token sub_pragma:sym<anon>       { ':' <sym> }
 token sub_pragma:sym<method>     { ':' <sym> }
-# Add vtable, nsentry, subid, multi and outer
+token sub_pragma:sym<nsentry>    { ':' <sym> }
+
+token sub_pragma:sym<vtable>     { ':' <sym> '(' <string_constant> ')' }
+token sub_pragma:sym<outer>      { ':' <sym> '(' <string_constant> ')' }
+token sub_pragma:sym<subid>      { ':' <sym> '(' <string_constant> ')' }
+
+#token sub_pragma:sym<multi>      { ':' <sym> '(' <key> ')' }
+
 
 rule statement_list {
     | $
