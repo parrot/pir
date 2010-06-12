@@ -15,6 +15,7 @@ rule TOP {
 proto token compilation_unit { <...> }
 
 rule compilation_unit:sym<sub> {
+    #<?DEBUG>
     <.newpad>
     '.sub' <subname> 
     [
@@ -146,7 +147,7 @@ rule pir_directive:sym<annotate> {
 }
 
 rule labeled_instruction {
-    <label>? [ <pir_instruction> | <op> ]?
+    <label>? [ <pir_instruction> || <op> ]?
 }
 
 token label { <ident> ':' }
@@ -198,10 +199,11 @@ rule pir_instruction:sym<unary> {
     <variable> '=' <unary> <value>
 }
 
-rule pir_instruction:sym<binary_math> {
+# Keep name short to LTM foo.bar vs foo.'bar'() in call
+rule pir_instruction:sym<bmath> {
     <variable> '=' <lhs=value> <mathop> <rhs=value>
 }
-rule pir_instruction:sym<binary_logic> {
+rule pir_instruction:sym<blogic> {
     <variable> '=' <lhs=value> <relop> <rhs=value>
 }
 
