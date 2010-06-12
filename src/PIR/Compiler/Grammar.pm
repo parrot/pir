@@ -187,11 +187,12 @@ rule pir_instruction:sym<unless_op> {
 }
 
 # XXX Conflicting with "op_assign"
-rule pir_instruction:sym<assign> {
+# Keep name short. LTM
+rule pir_instruction:sym<a> {
     <variable> '=' <value>
 }
 
-rule pir_instruction:sym<op_assign> {
+rule pir_instruction:sym<op_assign_long_long_long_name> {
     <variable> '=' <op=ident> <op_params>
 }
 
