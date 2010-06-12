@@ -326,7 +326,7 @@ token INSP {
 
 token variable {
     | <pir_register>
-    | <ident>  # TODO Check it in lexicals
+    | <!before keyword> <ident>  # TODO Check it in lexicals
 }
 
 token subname {
@@ -345,6 +345,11 @@ token terminator { $ | <.nl> }
 rule namespace_key { <quote> ** ';' }
 
 rule pir_key { '[' <value> ** ';' ']' }
+
+token keyword {
+    | goto | if | int | null
+    | num | pmc | string | unless
+}
 
 token constant {
     | <float_constant>
