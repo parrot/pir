@@ -29,9 +29,9 @@ No Configure step, no Makefile generated.
 
     # build
     $P1 = new 'Hash'
-    $P1['src/PIR/Compiler/Actions.pir'] = 'src/PIR/Compiler/Actions.pm'
-    $P1['src/PIR/Compiler/Grammar.pir'] = 'src/PIR/Compiler/Grammar.pm'
-    $P1['src/PIR/Compiler.pir']         = 'src/PIR/Compiler.pm'
+    $P1['src/PIR/Actions.pir']  = 'src/PIR/Actions.pm'
+    $P1['src/PIR/Grammar.pir']  = 'src/PIR/Grammar.pm'
+    $P1['src/PIR/Compiler.pir'] = 'src/PIR/Compiler.pm'
 
     # Functions for testing.
     $P1['t/parse.pir'] = 't/parse.nqp'
