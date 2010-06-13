@@ -16,6 +16,9 @@ Parsing of charset/encoding
 
 =item * C<macro>
 
+=item * C<fatarrow>
+
+Parsing "key" => "value" for param passing.
 
 =back
 
