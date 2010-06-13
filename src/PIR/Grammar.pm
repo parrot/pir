@@ -47,6 +47,10 @@ rule compilation_unit:sym<HLL> {
     '.HLL' <quote>
 }
 
+rule compilation_unit:sym<line> {
+    '.line' \d+ ',' <quote>
+}
+
 #token compilation_unit:sym<pragma> { }
 
 proto regex sub_pragma { <...> }
