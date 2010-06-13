@@ -103,6 +103,65 @@
     .end_call
 .end
 
+# TEST args flags 1
+.sub main
+    foo(x :flat)
+.end
+
+# TEST args flags 2
+.sub main :main
+    .local pmc x, y
+    foo(x, 'y' => y)
+.end
+
+# TEST args flags 3
+.sub main :main
+    .local pmc x, y
+    foo(x, y :named('y'))
+.end
+
+# TEST args flags 4
+.sub main :main
+    .local pmc x, y
+    foo(x :flat :named)
+.end
+
+# TEST args flags 5
+.sub main :main
+    .local pmc x, y
+    foo(x :flat :named)
+.end
+
+# TEST args flags 6
+.sub main :main
+    .local pmc x, y
+    foo(a, b, c :flat, 'x' => 3, 'y' => 4, z :flat :named('z'))
+.end
+
+# TEST result flags 1
+.sub main :main
+    .local pmc x, y
+    (i, j) = foo()
+.end
+
+# TEST result flags 2
+.sub main :main
+    .local pmc x, y
+    ( j :optional ) = foo()
+.end
+
+# TEST result flags 3
+.sub main :main
+    .local pmc x, y
+    ( ar :slurpy ) = foo()
+.end
+
+# TEST result flags 4
+.sub main :main
+    .local pmc x, y
+    ( value :named('key') ) = foo()
+.end
+
 # TEST short sub call with flags
 
 # the sub body is taken from PDD03
