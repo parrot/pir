@@ -1,21 +1,3 @@
-# TEST const defs # TODO
-
-.const int iConst = 42
-
-.const num nConst = 3.14
-
-.const string sConst = "Hello World"
-
-.const pmc pConst = "is a PMC const a string?"
-
-# TEST loadlib directive
-
-.loadlib "Hitchhikers"
-
-# TEST n_operators directive # TODO
-
-.pragma n_operators 1
-
 # TEST namespaces 1
 
 .namespace ['']
@@ -40,12 +22,12 @@
 .HLL 'PIR'
 .HLL "PIR"
 
-# TEST source line info # TODO
-
-.line 42
-
 # TEST source line info with file # TODO
 
 .line 42, "Hitchhikers.pir"
 
+
+# TEST loadlib directive
+
+.loadlib "t/common.pbc"
 
