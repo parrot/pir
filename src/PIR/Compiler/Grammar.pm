@@ -386,7 +386,7 @@ token ws {
     <!ww>
         [
         | ^^ \v+ # newlines accepted only by themselfs
-        | '#' \N*
+        | '#' \N* \n
         | ^^ <.pod_comment>
         | \h+
         ]*
