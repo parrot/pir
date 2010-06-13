@@ -1,0 +1,17 @@
+# TEST globalconst
+
+.sub main
+	.globalconst int x = 42
+	.globalconst num pi = 3.14
+	.globalconst string hi = "hello"	
+.end
+
+
+# TEST const
+
+.sub main
+	.const int x = 42
+	.const num pi = 3.14
+	.const string hi = "hello"
+.end
+
