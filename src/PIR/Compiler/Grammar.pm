@@ -257,7 +257,8 @@ rule params {
 }
 
 rule param {
-    <value> <param_flag>*
+    | <string_constant> '=>' <value>
+    | <value> <param_flag>*
 }
 
 token param_flag {
