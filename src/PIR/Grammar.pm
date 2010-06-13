@@ -61,10 +61,11 @@ token sub_pragma:sym<immediate>  { ':' <sym> }
 token sub_pragma:sym<postcomp>   { ':' <sym> }
 token sub_pragma:sym<anon>       { ':' <sym> }
 token sub_pragma:sym<method>     { ':' <sym> }
-token sub_pragma:sym<nsentry>    { ':' <sym> }
+token sub_pragma:sym<lex>        { ':' <sym> }
 
-token sub_pragma:sym<vtable>     { ':' <sym> '(' <string_constant> ')' }
-token sub_pragma:sym<outer>      { ':' <sym> '(' <string_constant> ')' }
+token sub_pragma:sym<nsentry>    { ':' <sym> [ '(' <string_constant> ')' ]? }
+token sub_pragma:sym<vtable>     { ':' <sym> [ '(' <string_constant> ')' ]? }
+token sub_pragma:sym<outer>      { ':' <sym> '(' <subname> ')' }
 token sub_pragma:sym<subid>      { ':' <sym> '(' <string_constant> ')' }
 
 token sub_pragma:sym<multi>      { ':' <sym> '(' [<.ws><multi_type><.ws>] ** ',' ')' }
