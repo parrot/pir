@@ -22,7 +22,7 @@
 .HLL 'PIR'
 .HLL "PIR"
 
-# TEST source line info with file # TODO
+# TEST source line info with file
 
 .line 42, "Hitchhikers.pir"
 
