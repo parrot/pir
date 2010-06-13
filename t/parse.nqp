@@ -19,7 +19,7 @@ sub parse($c, $code) {
 #
 # Helper grammar to parse test data
 
-grammar Test {
+grammar TestDataGrammar {
     rule TOP {
         ^
         <testcase>+
@@ -32,7 +32,7 @@ grammar Test {
     }
 
     token start { ^^ '# TEST ' }
-    regex name  { \N+ }
+    token name  { \N+ }
 
     token body  { <line>+ }
     token line  { <!before <start> > .*? \n }
@@ -43,13 +43,13 @@ our sub parse_tests($file)
 {
     pir::load_bytecode('nqp-setting.pbc');
     my $data  := slurp($file);
-    my $match := Test.parse($data);
+    my $match := TestDataGrammar.parse($data);
     $match<testcase>;
 }
 
 our sub run_tests_from_datafile($file)
 {
-    my $c := pir::compreg__Ps('PIRATE');
+    my $c     := pir::compreg__Ps('PIRATE');
     my $tests := parse_tests($file);
 
     for $tests -> $t {
