@@ -41,9 +41,22 @@ grammar Test {
 
 our sub parse_tests($file)
 {
+    pir::load_bytecode('nqp-setting.pbc');
     my $data  := slurp($file);
     my $match := Test.parse($data);
     $match<testcase>;
+}
+
+our sub run_tests_from_datafile($file)
+{
+    my $c := pir::compreg__Ps('PIRATE');
+    my $tests := parse_tests($file);
+
+    for $tests -> $t {
+        ok(parse($c, $t<body>), $t<name>);
+    }
+
+    done_testing();
 }
 
 # vim: ft=perl6
