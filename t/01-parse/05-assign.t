@@ -106,6 +106,19 @@ $res := parse($c, q{
 });
 ok($res, "set keyed");
 
+
+$res := parse($c, q{
+.sub main			
+	.local string s
+	s = ascii:"Hello World"
+	s = binary:"Hello WOrld"
+	s = unicode:"Hello world"
+	s = iso-8859-1:"Hello world"		 
+	s = utf8:unicode:"Hello World"
+.end
+});
+todo($res, "String encodings");
+
 done_testing();
 
 # vim: ft=perl6
