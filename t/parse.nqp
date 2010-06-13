@@ -16,3 +16,34 @@ sub parse($c, $code) {
     }
     $res;
 }
+#
+# Helper grammar to parse test data
+
+grammar Test {
+    rule TOP {
+        ^
+        <testcase>+
+        $ || <.panic: "Can't parse test data">
+    };
+
+    token testcase {
+        <start> <name> \n
+        <body>
+    }
+
+    token start { ^^ '# TEST ' }
+    regex name  { \N+ }
+
+    token body  { <line>+ }
+    token line  { <!before <start> > .*? \n }
+};
+
+
+our sub parse_tests($file)
+{
+    my $data  := slurp($file);
+    my $match := Test.parse($data);
+    $match<testcase>;
+}
+
+# vim: ft=perl6
