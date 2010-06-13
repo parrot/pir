@@ -390,7 +390,7 @@ token nl { \v+ }
 token ws {
     <!ww>
         [
-        | ^^ \v+ # newlines accepted only by themselfs
+        | ^^ \h* \v+ # newlines accepted only by themselfs
         | ^^ '#' \N* \n
         | '#' \N*
         | ^^ <.pod_comment>
