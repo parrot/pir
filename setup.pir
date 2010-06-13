@@ -41,8 +41,8 @@ No Configure step, no Makefile generated.
     $P3 = new 'Hash'
     $P4 = split "\n", <<'SOURCES'
 pir.pir
-src/PIR/Compiler/Actions.pir
-src/PIR/Compiler/Grammar.pir
+src/PIR/Actions.pir
+src/PIR/Grammar.pir
 src/PIR/Compiler.pir
 SOURCES
     $P3['pir.pbc'] = $P4

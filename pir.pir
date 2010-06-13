@@ -16,8 +16,8 @@
 .end
 
 
-.include 'src/PIR/Compiler/Actions.pir'
-.include 'src/PIR/Compiler/Grammar.pir'
+.include 'src/PIR/Actions.pir'
+.include 'src/PIR/Grammar.pir'
 .include 'src/PIR/Compiler.pir'
 
 .namespace []
