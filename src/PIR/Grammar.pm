@@ -118,6 +118,37 @@ rule pir_directive:sym<lex> {
     '.lex' <string_constant> ',' <pir_register>
 }
 
+rule pir_directive:sym<file> {
+    '.file' <string_constant>
+}
+rule pir_directive:sym<line> {
+    '.line' <int_constant>
+}
+rule pir_directive:sym<annotate> {
+    '.annotate' <string_constant> ',' <constant>
+}
+
+# PCC
+rule pir_directive:sym<.begin_call>     { <sym> }
+rule pir_directive:sym<.end_call>       { <sym> }
+rule pir_directive:sym<.begin_return>   { <sym> }
+rule pir_directive:sym<.end_return>     { <sym> }
+rule pir_directive:sym<.begin_yield>    { <sym> }
+rule pir_directive:sym<.end_yield>      { <sym> }
+
+rule pir_directive:sym<.call>           { <sym> <subname> [',' <continuation=pir_register> ]? }
+
+rule pir_directive:sym<.set_arg> { 
+    <sym> <value> <param_flag>*
+}
+rule pir_directive:sym<.set_return> { 
+    <sym> <value> <param_flag>*
+}
+rule pir_directive:sym<.get_result> { 
+    <sym> <value> <param_flag>*
+}
+
+# PIR Constants 
 rule pir_directive:sym<const> {
     '.const' <const_declaration>
 }
@@ -141,15 +172,6 @@ rule const_declaration:sym<pmc> {
     <string_constant> <variable> '=' <string_constant>
 }
 
-rule pir_directive:sym<file> {
-    '.file' <string_constant>
-}
-rule pir_directive:sym<line> {
-    '.line' <int_constant>
-}
-rule pir_directive:sym<annotate> {
-    '.annotate' <string_constant> ',' <constant>
-}
 
 rule labeled_instruction {
     <label>? [ <pir_instruction> || <op> ]?

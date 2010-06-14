@@ -1,4 +1,4 @@
-# TEST long sub invocation # TODO
+# TEST long sub invocation 
 .sub main :main
     .local int x, y, z
     .begin_call
@@ -22,7 +22,7 @@
 .end
 
 
-# TEST long sub invocation 2 # TODO
+# TEST long sub invocation 2
 
 .sub main :main
     .begin_call
