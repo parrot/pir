@@ -113,7 +113,9 @@ rule pir_directive:sym<.end_return>     { <sym> }
 rule pir_directive:sym<.begin_yield>    { <sym> }
 rule pir_directive:sym<.end_yield>      { <sym> }
 
-rule pir_directive:sym<.call> { <sym> <subname> [',' <continuation=pir_register> ]? }
+rule pir_directive:sym<.call>       { <sym> <value> [',' <continuation=pir_register> ]? }
+rule pir_directive:sym<.meth_call>  { <sym> <value> [',' <continuation=pir_register> ]? }
+rule pir_directive:sym<.nci_call>   { <sym> <value> [',' <continuation=pir_register> ]? }
 
 rule pir_directive:sym<.invocant>   { <sym> <value> }
 rule pir_directive:sym<.set_arg>    { <sym> <value> <arg_flag>* }

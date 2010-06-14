@@ -63,7 +63,7 @@
     .end_yield
 .end
 
-# TEST nci call # TODO
+# TEST nci call
 .sub main :main
     .local pmc x
     .begin_call
@@ -84,7 +84,7 @@
 .end
 
 
-# TEST long method call # TODO
+# TEST long method call
 
 .sub main :main
     .local pmc x
