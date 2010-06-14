@@ -79,7 +79,7 @@ token sub_pragma:sym<vtable>     { ':' <sym> [ '(' <string_constant> ')' ]? }
 token sub_pragma:sym<outer>      { ':' <sym> '(' <subname> ')' }
 token sub_pragma:sym<subid>      { ':' <sym> '(' <string_constant> ')' }
 
-token sub_pragma:sym<multi>      { ':' <sym> '(' [<.ws><multi_type><.ws>] ** ',' ')' }
+token sub_pragma:sym<multi>      { ':' <sym> '(' [ [<.ws><multi_type><.ws>] ** ',' ]? ')' }
 
 # TODO Do more strict parsing.
 token multi_type {
@@ -106,8 +106,6 @@ rule process_heredoc {
     #<?DEBUG>
     $<content>=[.*?] \n $<heredoc><ident> \n
     {
-        pir::load_bytecode("yaml_dumper.pbc");
-        yaml(%*HEREDOC<node><heredoc>);
         %*HEREDOC<node><doc> := $/;
     }
 }
@@ -125,6 +123,7 @@ rule pir_directive:sym<.lex>        { <sym> <string_constant> ',' <pir_register>
 rule pir_directive:sym<.file>       { <sym> <string_constant> }
 rule pir_directive:sym<.line>       { <sym> <int_constant> }
 rule pir_directive:sym<.annotate>   { <sym> <string_constant> ',' <constant> }
+rule pir_directive:sym<.include>    { <sym> <quote> }
 
 # PCC
 rule pir_directive:sym<.begin_call>     { <sym> }
@@ -261,10 +260,10 @@ token keyed_var {
 
 # Short PCC call.
 proto regex call { <...> }
-token call:sym<pmc>     { <variable> '(' <args>? ')' }
-token call:sym<sub>     { <quote> '(' <args>? ')' }
-token call:sym<dynamic> { <value> '.' <variable> '(' <args>? ')' }
-token call:sym<method>  { <value> '.' <quote> '(' <args>? ')' }
+rule call:sym<pmc>     { <variable> '(' <args>? ')' }
+rule call:sym<sub>     { <quote> '(' <args>? ')' }
+rule call:sym<dynamic> { <value> '.' <variable> '(' <args>? ')' }
+rule call:sym<method>  { <value> '.' <quote> '(' <args>? ')' }
 
 rule args {
     <arg> ** ','
