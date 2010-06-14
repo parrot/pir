@@ -7,7 +7,7 @@
   print "Foo"
 .end
 
-.sub str :vtable
+.sub str :vtable('get_string')
 
 .end
 
