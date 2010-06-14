@@ -13,3 +13,4 @@ t/parse.pir
 *.gz
 *.patch
 
+*.swp
