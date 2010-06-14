@@ -14,11 +14,5 @@ Parsing of charset/encoding
 
 =item * C<heredoc>
 
-=item * C<macro>
-
-=item * C<fatarrow>
-
-Parsing "key" => "value" for param passing.
-
 =back
 
