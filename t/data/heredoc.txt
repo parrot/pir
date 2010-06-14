@@ -1,0 +1,8 @@
+# TEST Heredoc simple
+.sub main
+    $S0 = <<"FOO"
+    some long string content here
+    across multiple lines
+FOO
+    say $S0
+.end

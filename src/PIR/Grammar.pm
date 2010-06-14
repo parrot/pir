@@ -7,7 +7,12 @@
 class PIR::Grammar is HLL::Grammar;
 
 # Top-level rules.
-rule TOP {
+method TOP() {
+    my %*HEREDOC;
+    self.top;
+}
+
+rule top {
     [ <compilation_unit> <.terminator> ]*
     [ $ || <.panic: "Confused"> ]
 }
@@ -91,12 +96,21 @@ rule statement_list {
 
 # Don't put newline here.
 rule statement {
-    [
     || <pir_directive>
-    || <labeled_instruction>
-    ]
-    <.nl>
+    || 
+        <labeled_instruction> <.nl>
+        <process_heredoc>?
 }
+
+rule process_heredoc {
+    #<?DEBUG>
+    $<content>=[.*?] \n $<heredoc><ident> \n
+    {
+        %*HEREDOC<node><heredoc> := ~$<content>;
+        %*HEREDOC<node><HEREDOC> := $/;
+    }
+}
+
 
 # TODO Some of combination of flags/type doesn't make any sense
 rule param_decl {
@@ -256,7 +270,7 @@ rule args {
 }
 
 rule arg {
-    | <string_constant> '=>' <value>
+    | <quote> '=>' <value>
     | <value> <arg_flag>*
 }
 
@@ -342,7 +356,7 @@ token variable {
 }
 
 token subname {
-    | <string_constant>
+    | <quote>
     | <ident>
 }
 
@@ -375,7 +389,20 @@ token float_constant {
 
 # There is no iterpolation of strings in PIR
 # TODO charset/encoding handling.
-token string_constant { <quote> }
+token string_constant { 
+    | <quote>
+    | $<heredoc>=['<<' <heredoc_start>] {
+        %*HEREDOC<label> := $<heredoc_start><ident>;
+        %*HEREDOC<node>  := $/;
+        #pir::assign(%*HEREDOC<node>, $/);
+      } # Heredoc
+}
+
+token heredoc_start {
+    | <ident>
+    | '"' <ident> '"'
+    | "'" <ident> "'"
+}
 
 proto token quote { <...> }
 token quote:sym<apos> { <?[']> <quote_EXPR: ':q'>  }
