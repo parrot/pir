@@ -190,10 +190,9 @@ rule pir_instruction:sym<unless_op> {
     'unless' <lhs=value> <relop> <rhs=value> 'goto' <ident>
 }
 
-# XXX Conflicting with "op_assign"
-# Keep name short. LTM
-rule pir_instruction:sym<a> {
-    <variable> '=' <value>
+# Manual LTM
+rule pir_instruction:sym<assign> {
+    <variable> '=' <value> <?before \h* \v>
 }
 
 rule pir_instruction:sym<op_assign_long_long_long_name> {
@@ -204,12 +203,12 @@ rule pir_instruction:sym<unary> {
     <variable> '=' <unary> <value>
 }
 
-# Keep name short to LTM foo.bar vs foo.'bar'() in call
-rule pir_instruction:sym<bmath> {
-    <variable> '=' <lhs=value> <mathop> <rhs=value>
+# Manual LTM
+rule pir_instruction:sym<binary_math> {
+    <variable> '=' <lhs=value> <mathop> <rhs=value> <?before \h* \n>
 }
-rule pir_instruction:sym<blogic> {
-    <variable> '=' <lhs=value> <relop> <rhs=value>
+rule pir_instruction:sym<binary_logic> {
+    <variable> '=' <lhs=value> <relop> <rhs=value> <?before \h* \n>
 }
 
 
