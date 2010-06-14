@@ -1,0 +1,15 @@
+
+*.pbc
+*.c
+*.o
+*.obj
+*.exe
+installable_*
+
+src/PIR/*.pir
+t/parse.pir
+
+*.tar
+*.gz
+*.patch
+
