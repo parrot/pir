@@ -1,0 +1,9 @@
+# TEST .tailcall syntax'
+.sub 'foo'			
+    .tailcall foo()
+.end
+
+# TEST .tailcall method syntax'
+.sub 'foo'
+    .tailcall self."foo"()
+.end

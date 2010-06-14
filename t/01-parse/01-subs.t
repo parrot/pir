@@ -222,8 +222,9 @@ $res := parse($c, q{
 ok($res, "(...) = foo.'method'()");
 
 
-run_tests_from_datafile("t/data/sub.txt");
-#done_testing();
+run_tests_from_datafile("t/data/sub.txt", keep_going => 1);
+run_tests_from_datafile("t/data/tail.txt", keep_going => 1);
+done_testing();
 
 
 # vim: ft=perl6
