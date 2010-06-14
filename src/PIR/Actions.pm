@@ -18,7 +18,8 @@ method TOP($/) { make $<top>.ast; }
 method top($/) {
     my $past := PAST::Stmts.new;
     for $<compilation_unit> {
-        $past.push($_.ast);
+        my $child := $_.ast;
+        $past.push($child) if $child;
     }
     #make $<compilation_unit>.ast;
     make $past;
