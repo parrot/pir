@@ -1,7 +1,7 @@
 # Copyright (C) 2007-2008, Parrot Foundation.
 # $Id$
 
-.HLL 'PIR'
+.HLL 'PIRATE'
 
 .namespace []
 
