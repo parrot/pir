@@ -115,11 +115,15 @@ rule pir_directive:sym<.end_yield>      { <sym> }
 
 rule pir_directive:sym<.call> { <sym> <subname> [',' <continuation=pir_register> ]? }
 
+rule pir_directive:sym<.invocant>   { <sym> <value> }
 rule pir_directive:sym<.set_arg>    { <sym> <value> <arg_flag>* }
 rule pir_directive:sym<.set_return> { <sym> <value> <arg_flag>* }
+rule pir_directive:sym<.set_yield>  { <sym> <value> <arg_flag>* }
 rule pir_directive:sym<.get_result> { <sym> <value> <result_flag>* }
 
 rule pir_directive:sym<.return>     { <sym> '(' <args>? ')' }
+rule pir_directive:sym<.yield>      { <sym> '(' <args>? ')' }
+
 rule pir_directive:sym<.tailcall>   { <sym> <call> }
 
 # PIR Constants 
@@ -232,7 +236,7 @@ token keyed_var {
     <variable> <pir_key>
 }
 
-
+# Short PCC call.
 proto regex call { <...> }
 token call:sym<pmc>     { <variable> '(' <args>? ')' }
 token call:sym<sub>     { <quote> '(' <args>? ')' }
