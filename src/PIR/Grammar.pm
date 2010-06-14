@@ -94,10 +94,10 @@ rule statement {
 
 # TODO Some of combination of flags/type doesn't make any sense
 rule param_decl {
-    '.param' <pir_type> <name=ident> <get_flags>* <.nl>
+    '.param' <pir_type> <name=ident> <return_flag>* <.nl>
 }
 
-token get_flags {
+token return_flag {
     | ':slurpy'
     | ':optional'
     | ':opt_flag'
@@ -128,16 +128,11 @@ rule pir_directive:sym<.call> { <sym> <subname> [',' <continuation=pir_register>
 
 rule pir_directive:sym<.set_arg>    { <sym> <value> <param_flag>* }
 rule pir_directive:sym<.set_return> { <sym> <value> <param_flag>* }
-rule pir_directive:sym<.get_result> { <sym> <value> <param_flag>* }
+rule pir_directive:sym<.get_result> { <sym> <value> <return_flag>* }
 
 # PIR Constants 
-rule pir_directive:sym<const> {
-    '.const' <const_declaration>
-}
-
-rule pir_directive:sym<globalconst> {
-    '.globalconst' <const_declaration>
-}
+rule pir_directive:sym<.const>       { <sym> <const_declaration> }
+rule pir_directive:sym<.globalconst> { <sym> <const_declaration> }
 
 proto regex const_declaration { <...> }
 rule const_declaration:sym<int> {
