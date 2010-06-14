@@ -130,6 +130,9 @@ rule pir_directive:sym<.set_arg>    { <sym> <value> <param_flag>* }
 rule pir_directive:sym<.set_return> { <sym> <value> <param_flag>* }
 rule pir_directive:sym<.get_result> { <sym> <value> <return_flag>* }
 
+rule pir_directive:sym<.return>     { <sym> '(' <params>? ')' }
+rule pir_directive:sym<.tailcall>   { <sym> <call> }
+
 # PIR Constants 
 rule pir_directive:sym<.const>       { <sym> <const_declaration> }
 rule pir_directive:sym<.globalconst> { <sym> <const_declaration> }
@@ -241,14 +244,6 @@ token keyed_var {
 }
 
 
-rule pir_instruction:sym<return> {
-    '.return' '(' <params>? ')'
-}
-
-rule pir_instruction:sym<tailcall> {
-    '.tailcall' <call>
-}
-
 proto regex call { <...> }
 token call:sym<pmc>     { <variable> '(' <params>? ')' }
 token call:sym<sub>     { <quote> '(' <params>? ')' }
@@ -338,12 +333,6 @@ token subname {
     | <ident>
 }
 
-token pod_comment {
-    ^^ '=' <pod_directive>
-    .* \n
-    ^^ '=cut'
-}
-
 token terminator { $ | <.nl> }
 
 rule namespace_key { <quote> ** ';' }
@@ -379,9 +368,6 @@ proto token quote { <...> }
 token quote:sym<apos> { <?[']> <quote_EXPR: ':q'>  }
 token quote:sym<dblq> { <?["]> <quote_EXPR: ':q'> }
 
-# Don't be very strict on pod comments (for now?)
-token pod_directive { <ident> }
-
 token nl { \v+ }
 
 # Any "whitespace" including pod comments
@@ -395,6 +381,16 @@ token ws {
         | \h+
         ]*
 }
+
+token pod_comment {
+    ^^ '=' <pod_directive>
+    .* \n
+    ^^ '=cut'
+}
+
+# Don't be very strict on pod comments (for now?)
+token pod_directive { <ident> }
+
 
 # Special rule to push new Lexpad.
 token newpad { <?> } # always match.
