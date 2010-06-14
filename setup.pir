@@ -46,10 +46,7 @@ src/PIR/Compiler.pir
 SOURCES
     $P3['pir.pbc'] = $P4
 
-    $P4 = split "\n", <<'SOURCES'
-t/parse.pir
-SOURCES
-    $P3['t/common.pbc'] = $P4
+    $P3['t/common.pbc'] = 't/parse.pir'
 
     $P0['pbc_pir'] = $P3
 
