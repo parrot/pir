@@ -1,42 +1,32 @@
-#!parrot
-
-.sub "get_tests"
-    .local pmc tests
-    tests = new ['ResizablePMCArray']
-
-    $P0 = 'make_test'( <<'CODE', 'simple macro, no params' )
+# TEST simple macro, no params
 
 .macro myMacro
 .endm
 
-CODE
-    push tests, $P0
-
-    $P0 = 'make_test'( <<'CODE', 'simple macro, params' )
+# TEST simple macro, params
 
 .macro doIt(A,B)
 .endm
 
-CODE
-    push tests, $P0
 
-
-    $P0 = 'make_test'( <<'CODE', 'macro pasring', 'todo' => 'Failing' )
-
-.sub main
-    .local int i
-.end
-
+# TEST macro parsing simple
 .macro X(a, b)
     .a = .b
+.endm
+
+# TEST macro parsing label
+.macro X(a, b)
     .label $a:
 .endm
 
 
+# TEST macro call
 .sub main
     .local int e,f
     .X(e,f)
 .end
+
+# TEST macro call 2
 
 .macro X(a,b)
     .label $x: foo()
@@ -51,10 +41,7 @@ CODE
 .end
 
 
-CODE
-    push tests, $P0
-
-    $P0 = 'make_test'( <<'CODE', '.macro_const' )
+# TEST .macro_const
 
 .macro_const answer 42
 
@@ -65,18 +52,14 @@ CODE
 .macro_const a I10
 .macro_const b P20
 
-CODE
-    push tests, $P0
+# TEST .macro_const usage
+.macro_const answer 42
+.sub "main"
+    say .answer
+.end
 
-
-    $P0 = 'make_test'( <<'CODE', '.include' )
+# TEST .include
 
 .include "Hello"
-
-CODE
-    push tests, $P0
-    
-    .return (tests)
-.end
 
 

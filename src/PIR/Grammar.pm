@@ -35,21 +35,27 @@ rule compilation_unit:sym<sub> {
 
 
 
-rule compilation_unit:sym<namespace> {
-    '.namespace' '[' <namespace_key>? ']'
+rule compilation_unit:sym<.namespace>   { <sym> '[' <namespace_key>? ']' }
+rule compilation_unit:sym<.loadlib>     { <sym> <quote> }
+rule compilation_unit:sym<.HLL>         { <sym> <quote> }
+rule compilation_unit:sym<.line>        { <sym> \d+ ',' <quote> }
+rule compilation_unit:sym<.include>     { <sym> <quote> }
+rule compilation_unit:sym<.macro_const> { <sym> <ident> <value> }
+
+# Macros. TODO. Args can be multilines enclosed in { }.
+rule compilation_unit:sym<macro> { 
+    '.macro' <name=ident> [ '(' <args>* ')' ]? <.nl>
+    [
+    || <statement>
+    || <macro_statement> <.nl>
+    || <!before '.endm'> <.panic: "Can't find end of macro definition">
+    ]*
+    '.endm'
 }
 
-rule compilation_unit:sym<loadlib> {
-    '.loadlib' <quote>
-}
-
-rule compilation_unit:sym<HLL> {
-    '.HLL' <quote>
-}
-
-rule compilation_unit:sym<line> {
-    '.line' \d+ ',' <quote>
-}
+proto regex macro_statement { <...> }
+rule  macro_statement:sym<.macro_local> { <sym> <pir_type> [ <ident> ] ** ',' }
+token macro_statement:sym<.label> { <sym> <.ws> '$' <ident> ':' <pir_instruction>? }
 
 #token compilation_unit:sym<pragma> { }
 
@@ -332,6 +338,7 @@ token INSP {
 token variable {
     | <pir_register>
     | <!before keyword> <ident>  # TODO Check it in lexicals
+    | '.' <ident>                # Macro
 }
 
 token subname {
