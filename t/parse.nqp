@@ -21,7 +21,6 @@ sub parse($c, $code) {
 
 grammar TestDataGrammar {
     rule TOP {
-        ^
         <testcase>+
         $ || <.panic: "Can't parse test data">
     };
@@ -47,7 +46,7 @@ our sub parse_tests($file)
     $match<testcase>;
 }
 
-our sub run_tests_from_datafile($file)
+our sub run_tests_from_datafile($file, :$keep_going?)
 {
     my $c     := pir::compreg__Ps('PIRATE');
     my $tests := parse_tests($file);
@@ -56,7 +55,7 @@ our sub run_tests_from_datafile($file)
         ok(parse($c, $t<body>), $t<name>);
     }
 
-    done_testing();
+    done_testing() unless $keep_going;
 }
 
 # vim: ft=perl6
