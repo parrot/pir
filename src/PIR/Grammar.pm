@@ -126,11 +126,11 @@ rule pir_directive:sym<.end_yield>      { <sym> }
 
 rule pir_directive:sym<.call> { <sym> <subname> [',' <continuation=pir_register> ]? }
 
-rule pir_directive:sym<.set_arg>    { <sym> <value> <param_flag>* }
-rule pir_directive:sym<.set_return> { <sym> <value> <param_flag>* }
+rule pir_directive:sym<.set_arg>    { <sym> <value> <arg_flag>* }
+rule pir_directive:sym<.set_return> { <sym> <value> <arg_flag>* }
 rule pir_directive:sym<.get_result> { <sym> <value> <return_flag>* }
 
-rule pir_directive:sym<.return>     { <sym> '(' <params>? ')' }
+rule pir_directive:sym<.return>     { <sym> '(' <args>? ')' }
 rule pir_directive:sym<.tailcall>   { <sym> <call> }
 
 # PIR Constants 
@@ -245,21 +245,21 @@ token keyed_var {
 
 
 proto regex call { <...> }
-token call:sym<pmc>     { <variable> '(' <params>? ')' }
-token call:sym<sub>     { <quote> '(' <params>? ')' }
-token call:sym<dynamic> { <value> '.' <variable> '(' <params>? ')' }
-token call:sym<method>  { <value> '.' <quote> '(' <params>? ')' }
+token call:sym<pmc>     { <variable> '(' <args>? ')' }
+token call:sym<sub>     { <quote> '(' <args>? ')' }
+token call:sym<dynamic> { <value> '.' <variable> '(' <args>? ')' }
+token call:sym<method>  { <value> '.' <quote> '(' <args>? ')' }
 
-rule params {
-    <param> ** ','
+rule args {
+    <arg> ** ','
 }
 
-rule param {
+rule arg {
     | <string_constant> '=>' <value>
-    | <value> <param_flag>*
+    | <value> <arg_flag>*
 }
 
-token param_flag {
+token arg_flag {
     | ':flat'
     | <named_flag>
 }
