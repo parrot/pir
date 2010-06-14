@@ -1,5 +1,4 @@
 #!/usr/bin/env parrot
-# $Id$
 
 =head1 NAME
 
@@ -36,7 +35,7 @@ No Configure step, no Makefile generated.
     # Functions for testing.
     $P1['t/parse.pir'] = 't/parse.nqp'
 
-    $P0['pir_nqprx'] = $P1
+    $P0['pir_nqp'] = $P1
 
     $P3 = new 'Hash'
     $P4 = split "\n", <<'SOURCES'
@@ -59,7 +58,9 @@ SOURCES
     $P0['installable_pbc'] = $P7
 
     # Test
-    $P0['prove_files'] = 't/*.t t/*/*.t'
+    $S0 = get_nqp()
+    $P0['test_exec'] = $S0
+    $P0['test_files'] = 't/*/*.t'
 
     .tailcall setup(args :flat, $P0 :flat :named)
 .end
