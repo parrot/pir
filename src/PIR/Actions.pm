@@ -45,8 +45,6 @@ method compilation_unit:sym<.namespace> ($/) {
 }
 
 method compilation_unit:sym<sub> ($/) {
-    our $BLOCK;
-
     my $past := $BLOCK;
 
     $past.name( $<subname>.ast );
@@ -56,7 +54,11 @@ method compilation_unit:sym<sub> ($/) {
         $BLOCK[0].push( $_.ast );
     }
 
-
+    if $<statement> {
+        for $<statement> {
+            $BLOCK.push( $_.ast );
+        }
+    }
 
     make $past;
 }
@@ -76,6 +78,51 @@ method param_decl($/) {
     $BLOCK.symbol($name, :scope('lexical') );
 
     make $past;
+}
+
+method statement($/) {
+    make $<pir_directive> ?? $<pir_directive>.ast !! $<labeled_instruction>.ast;
+}
+
+method labeled_instruction($/) {
+    # TODO Handle C<label> and _just_ label.
+    my $child := $<pir_instruction>[0] // $<op>[0]; # // $/.CURSOR.panic("NYI");
+    make $child.ast if $child;
+}
+
+method op($/) {
+    my $past := PAST::Op.new(
+        :pasttype('pirop'),
+        :pirop(~$<name>),
+    );
+
+    for $<op_params> {
+        $past.push( $_.ast );
+    }
+
+    make $past;
+}
+
+method op_params($/) { make $<value>[0] ?? $<value>[0].ast !! $<pir_key>[0].ast }
+
+method value($/) { make $<constant> ?? $<constant>.ast !! $<variable>.ast }
+
+method constant($/) {
+    my $past;
+    if $<int_constant> {
+        $past := $<int_constant>.ast;
+    }
+    elsif $<float_constant> {
+        $past := $<float_constant>.ast;
+    }
+    else {
+        $past := $<string_constant>.ast;
+    }
+    make $past;
+}
+
+method string_constant($/) {
+    make $<quote>.ast;
 }
 
 method subname($/) {

@@ -181,7 +181,7 @@ token label { <ident> ':' }
 # raw pasm ops.
 # TODO Check in OpLib
 rule op {
-    <op=ident> <op_params>?
+    <name=ident> <op_params>?
 }
 
 rule op_params {
