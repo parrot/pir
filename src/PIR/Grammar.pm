@@ -94,18 +94,7 @@ rule statement {
 
 # TODO Some of combination of flags/type doesn't make any sense
 rule param_decl {
-    '.param' <pir_type> <name=ident> <return_flag>* <.nl>
-}
-
-token return_flag {
-    | ':slurpy'
-    | ':optional'
-    | ':opt_flag'
-    | <named_flag>
-}
-
-rule named_flag {
-    ':named' [ '(' <quote> ')' ]?
+    '.param' <pir_type> <name=ident> <param_flag>* <.nl>
 }
 
 # Various .local, .lex, etc
@@ -128,7 +117,7 @@ rule pir_directive:sym<.call> { <sym> <subname> [',' <continuation=pir_register>
 
 rule pir_directive:sym<.set_arg>    { <sym> <value> <arg_flag>* }
 rule pir_directive:sym<.set_return> { <sym> <value> <arg_flag>* }
-rule pir_directive:sym<.get_result> { <sym> <value> <return_flag>* }
+rule pir_directive:sym<.get_result> { <sym> <value> <result_flag>* }
 
 rule pir_directive:sym<.return>     { <sym> '(' <args>? ')' }
 rule pir_directive:sym<.tailcall>   { <sym> <call> }
@@ -259,17 +248,28 @@ rule arg {
     | <value> <arg_flag>*
 }
 
-token arg_flag {
-    | ':flat'
-    | <named_flag>
-}
-
 rule results {
     <result> ** ','
 }
 
 rule result {
     <variable> <result_flag>*
+}
+
+token arg_flag {
+    | ':flat'
+    | <named_flag>
+}
+
+token param_flag {
+    | ':slurpy'
+    | ':optional'
+    | ':opt_flag'
+    | <named_flag>
+}
+
+rule named_flag {
+    ':named' [ '(' <quote> ')' ]?
 }
 
 token result_flag {
