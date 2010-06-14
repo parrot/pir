@@ -7,17 +7,17 @@
     .set_arg 3
     .call foo
     .local int a, b, c
-    .result a
-    .result b
-    .result c
+    .get_result a
+    .get_result b
+    .get_result c
     .end_call
 .end
 
 .sub foo
     .begin_return
-    .return 4
-    .return 5
-    .return 6
+    .set_return 4
+    .set_return 5
+    .set_return 6
     .end_return
 .end
 
