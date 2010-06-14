@@ -35,7 +35,7 @@ method newpad($/) {
 }
 
 method compilation_unit:sym<.HLL> ($/) {
-    our $*HLL := ~$<quote>;
+    our $*HLL := $<quote>.ast<value>;
 }
 
 method compilation_unit:sym<.namespace> ($/) {
@@ -47,7 +47,7 @@ method compilation_unit:sym<sub> ($/) {
 
     my $past := $BLOCK;
 
-    $past.name( ~$<subname> );
+    $past.name( $<subname>.ast );
 
 
     make $past;
@@ -56,7 +56,7 @@ method compilation_unit:sym<sub> ($/) {
 
 
 method subname($/) {
-    make $<ident> ?? $<ident>.ast !! $<quote>.ast;
+    make $<ident> ?? ~$<ident> !! ~($<quote>.ast<value>);
 }
 
 method quote:sym<apos>($/) { make $<quote_EXPR>.ast; }
