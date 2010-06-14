@@ -32,8 +32,12 @@ method newpad($/) {
         hll         => $*HLL,
         namespace   => $*NAMESPACE,
 
+        # TODO HACK PCT Creates dummy sub. Mark first sub with :main
+        pirflags    => ($BLOCK ?? "" !! ":main"),
+
         PAST::Stmts.new(),  # This is for .param
     );
+
 }
 
 method compilation_unit:sym<.HLL> ($/) {
