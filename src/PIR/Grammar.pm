@@ -106,8 +106,9 @@ rule process_heredoc {
     #<?DEBUG>
     $<content>=[.*?] \n $<heredoc><ident> \n
     {
-        %*HEREDOC<node><heredoc> := ~$<content>;
-        %*HEREDOC<node><HEREDOC> := $/;
+        pir::load_bytecode("yaml_dumper.pbc");
+        yaml(%*HEREDOC<node><heredoc>);
+        %*HEREDOC<node><doc> := $/;
     }
 }
 
@@ -390,12 +391,11 @@ token float_constant {
 # There is no iterpolation of strings in PIR
 # TODO charset/encoding handling.
 token string_constant { 
+    [
     | <quote>
-    | $<heredoc>=['<<' <heredoc_start>] {
-        %*HEREDOC<label> := $<heredoc_start><ident>;
-        %*HEREDOC<node>  := $/;
-        #pir::assign(%*HEREDOC<node>, $/);
-      } # Heredoc
+    |  $<heredoc>=['<<' <heredoc_start>] # Heredoc
+    ]
+    { %*HEREDOC<node> := $/; $<bang> := "FOO"; }
 }
 
 token heredoc_start {
@@ -424,8 +424,7 @@ token ws {
 
 token pod_comment {
     ^^ '=' <pod_directive>
-    .* \n
-    ^^ '=cut'
+    .*? \n '=cut' \n
 }
 
 # Don't be very strict on pod comments (for now?)
