@@ -31,6 +31,8 @@ method newpad($/) {
     $BLOCK := PAST::Block.new(
         hll         => $*HLL,
         namespace   => $*NAMESPACE,
+
+        PAST::Stmts.new(),  # This is for .param
     );
 }
 
@@ -48,12 +50,33 @@ method compilation_unit:sym<sub> ($/) {
     my $past := $BLOCK;
 
     $past.name( $<subname>.ast );
+    # TODO Handle pragmas. Extend PAST:Block for all of them?
+
+    for $<param_decl> {
+        $BLOCK[0].push( $_.ast );
+    }
+
 
 
     make $past;
 }
 
+method param_decl($/) {
+    my $name := ~$<name>;
+    my $past := PAST::Var.new(
+        :name($name),
+        :scope('register'),
+        :isdecl(1),
+        :node($/),
+        :multitype(~$<pir_type>),
+    );
 
+    # TODO Handle param flags. Extend PAST::Var to support all of them.
+
+    $BLOCK.symbol($name, :scope('lexical') );
+
+    make $past;
+}
 
 method subname($/) {
     make $<ident> ?? ~$<ident> !! ~($<quote>.ast<value>);
