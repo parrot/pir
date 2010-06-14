@@ -9,6 +9,9 @@ class PIR::Grammar is HLL::Grammar;
 # Top-level rules.
 method TOP() {
     my %*HEREDOC;
+
+    my $*NAMESPACE;
+    my $*HLL;
     self.top;
 }
 
@@ -36,6 +39,7 @@ rule compilation_unit:sym<sub> {
     || <!before '.end'> <.panic: "Erm... What?">
     ]*
     '.end'
+    <.endpad>
 }
 
 
@@ -432,6 +436,7 @@ token pod_directive { <ident> }
 
 # Special rule to push new Lexpad.
 token newpad { <?> } # always match.
+token endpad { <?> } # always match.
+
 
 # vim: ft=perl6
-
