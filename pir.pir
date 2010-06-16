@@ -20,8 +20,11 @@
 .include 'src/PIR/Grammar.pir'
 .include 'src/PIR/Compiler.pir'
 
+.HLL 'parrot'
 .include 'src/POST/Constant.pir'
 .include 'src/POST/Register.pir'
+
+.HLL 'PIRATE'
 
 .namespace []
 .sub 'main' :main
