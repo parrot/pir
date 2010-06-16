@@ -7,6 +7,7 @@
 class PIR::Actions is HLL::Actions;
 
 has $!BLOCK;
+has $!MAIN;
 
 INIT {
     pir::load_bytecode("nqp-setting.pbc");
@@ -20,6 +21,10 @@ method top($/) {
         my $child := $_.ast;
         $past.push($child) if $child;
     }
+
+    # Remember :main sub.
+    $past<main_sub> := $!MAIN;
+
     make $past;
 }
 
@@ -32,11 +37,17 @@ method compilation_unit:sym<.namespace> ($/) {
 }
 
 method compilation_unit:sym<sub> ($/) {
+    my $name := $<subname>.ast;
+
     $!BLOCK := POST::Sub.new(
-        :name( $<subname>.ast ),
+        :name( $name ),
     );
 
     # TODO Handle pragmas.
+
+    # TODO Handle :main pragma
+    $!MAIN := $name unless $!MAIN;
+
 
     #for $<param_decl> {
     #    $BLOCK[0].push( $_.ast );
