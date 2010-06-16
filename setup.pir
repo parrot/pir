@@ -32,6 +32,7 @@ No Configure step, no Makefile generated.
     $P1['src/PIR/Grammar.pir']  = 'src/PIR/Grammar.pm'
     $P1['src/PIR/Compiler.pir'] = 'src/PIR/Compiler.pm'
 
+    $P1['src/POST/Compiler.pir'] = 'src/POST/Compiler.pm'
     $P1['src/POST/Constant.pir'] = 'src/POST/Constant.pm'
     $P1['src/POST/Register.pir'] = 'src/POST/Register.pm'
 
@@ -43,9 +44,12 @@ No Configure step, no Makefile generated.
     $P3 = new 'Hash'
     $P4 = split "\n", <<'SOURCES'
 pir.pir
+
 src/PIR/Actions.pir
 src/PIR/Grammar.pir
 src/PIR/Compiler.pir
+
+src/POST/Compiler.pir
 src/POST/Constant.pir
 src/POST/Register.pir
 SOURCES
