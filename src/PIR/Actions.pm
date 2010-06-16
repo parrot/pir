@@ -6,39 +6,22 @@
 
 class PIR::Actions is HLL::Actions;
 
+has $!BLOCK;
+
 INIT {
     pir::load_bytecode("nqp-setting.pbc");
 }
 
-# We can have only one .sub at time.
-our $BLOCK;
-
 method TOP($/) { make $<top>.ast; }
 
 method top($/) {
-    my $past := PAST::Stmts.new;
+    pir::trace(4);
+    my $past := POST::Node.new;
     for $<compilation_unit> {
         my $child := $_.ast;
         $past.push($child) if $child;
     }
-    #make $<compilation_unit>.ast;
     make $past;
-}
-
-method newpad($/) {
-    our $BLOCK;
-    our $*HLL;
-    our $*NAMESPACE;
-    $BLOCK := PAST::Block.new(
-        hll         => $*HLL,
-        namespace   => $*NAMESPACE,
-
-        # TODO HACK PCT Creates dummy sub. Mark first sub with :main
-        pirflags    => ($BLOCK ?? "" !! ":main"),
-
-        PAST::Stmts.new(),  # This is for .param
-    );
-
 }
 
 method compilation_unit:sym<.HLL> ($/) {
@@ -50,22 +33,24 @@ method compilation_unit:sym<.namespace> ($/) {
 }
 
 method compilation_unit:sym<sub> ($/) {
-    my $past := $BLOCK;
+    $!BLOCK := POST::Sub.new(
+        :name( $<subname>.ast ),
+    );
 
-    $past.name( $<subname>.ast );
-    # TODO Handle pragmas. Extend PAST:Block for all of them?
+    # TODO Handle pragmas.
 
-    for $<param_decl> {
-        $BLOCK[0].push( $_.ast );
-    }
+    #for $<param_decl> {
+    #    $BLOCK[0].push( $_.ast );
+    #}
 
     if $<statement> {
         for $<statement> {
-            $BLOCK.push( $_.ast );
+            my $past := $_.ast;
+            $!BLOCK.push( $past ) if $past;
         }
     }
 
-    make $past;
+    make $!BLOCK;
 }
 
 method param_decl($/) {
@@ -80,7 +65,7 @@ method param_decl($/) {
 
     # TODO Handle param flags. Extend PAST::Var to support all of them.
 
-    $BLOCK.symbol($name, :scope('lexical') );
+    $!BLOCK.symbol($name, :scope('lexical') );
 
     make $past;
 }
@@ -96,14 +81,15 @@ method labeled_instruction($/) {
 }
 
 method op($/) {
-    my $past := PAST::Op.new(
-        :pasttype('pirop'),
+    my $past := POST::Op.new(
         :pirop(~$<name>),
     );
 
     for $<op_params> {
         $past.push( $_.ast );
     }
+
+    # TODO Validate via OpLib
 
     make $past;
 }

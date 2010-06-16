@@ -11,7 +11,7 @@
     .local pmc hllns, parrotns, imports
     hllns = get_hll_namespace
     parrotns = get_root_namespace ['parrot']
-    imports = split ' ', 'PAST PCT HLL Regex Hash ResizablePMCArray'
+    imports = split ' ', 'PAST POST PCT HLL Regex Hash ResizablePMCArray'
     parrotns.'export_to'(hllns, imports)
 .end
 
@@ -24,7 +24,11 @@
 .sub 'main' :main
     .param pmc args
 
+    .local pmc stages
+    # We actually create POST tree from Parse.
+    stages = split ' ', 'parse postshortcut pbc'
     $P0 = compreg 'PIRATE'
+    $P0.'stages'(stages)
     $P0.'command_line'(args)
     exit 0
 .end

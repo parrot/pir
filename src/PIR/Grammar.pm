@@ -24,7 +24,6 @@ proto token compilation_unit { <...> }
 
 rule compilation_unit:sym<sub> {
     #<?DEBUG>
-    <.newpad>
     '.sub' <subname> 
     [
     || [ <.ws> <sub_pragma> ]*
@@ -39,7 +38,6 @@ rule compilation_unit:sym<sub> {
     || <!before '.end'> <.panic: "Erm... What?">
     ]*
     '.end'
-    <.endpad>
 }
 
 
@@ -432,11 +430,6 @@ token pod_comment {
 
 # Don't be very strict on pod comments (for now?)
 token pod_directive { <ident> }
-
-
-# Special rule to push new Lexpad.
-token newpad { <?> } # always match.
-token endpad { <?> } # always match.
 
 
 # vim: ft=perl6
