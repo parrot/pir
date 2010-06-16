@@ -20,6 +20,8 @@
 .include 'src/PIR/Grammar.pir'
 .include 'src/PIR/Compiler.pir'
 
+.include 'src/POST/Register.pir'
+
 .namespace []
 .sub 'main' :main
     .param pmc args
