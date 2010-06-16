@@ -1,12 +1,13 @@
 # Copyright (C) 2007-2008, Parrot Foundation.
 # $Id$
 
-.HLL 'PIRATE'
+#.HLL 'PIRATE'
 
 .namespace []
 
 .sub '' :anon :load :init
     load_bytecode 'HLL.pbc'
+    load_bytecode 'nqp-setting.pbc'
 
     .local pmc hllns, parrotns, imports
     hllns = get_hll_namespace
@@ -40,6 +41,43 @@
     exit 0
 .end
 
+
+.HLL 'parrot'
+
+.namespace ['PackfileRawSegment']
+.sub 'push' :method
+    .param int value
+    push self, value
+.end
+
+.namespace ['PackfileFixupTable']
+.sub 'push' :method
+    .param pmc value
+    $I0 = elements self
+    self[$I0] = value
+.end
+
+.namespace ['PackfileConstantTable']
+.sub 'push' :method
+    .param pmc value
+    $I0 = elements self
+    self[$I0] = value
+    .return($I0)
+.end
+
+.namespace ['StringBuilder']
+.sub 'push' :method
+    .param string value
+    push self, value
+.end
+
+
+.namespace ['PackfileConstantTable']
+.sub 'get_or_create_string' :method
+    .param string str
+    $I0 = self.'get_or_create_constant'(str)
+    .return ($I0)
+.end
 
 
 =head1 LICENSE
