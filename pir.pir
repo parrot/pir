@@ -20,6 +20,7 @@
 .include 'src/PIR/Grammar.pir'
 .include 'src/PIR/Compiler.pir'
 
+.include 'src/POST/Constant.pir'
 .include 'src/POST/Register.pir'
 
 .namespace []
