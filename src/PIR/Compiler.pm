@@ -6,26 +6,45 @@ INIT {
     PIR::Compiler.parseactions(PIR::Actions);
 }
 
-=begin
 our method pbc($post, *%adverbs) {
-    pir::say(%adverbs<output>);
-    my $pbc := "World";
+    #pir::trace(4);
+    my $packfile := POST::Compiler.pbc($post, %adverbs);
 
-    # Closure to invoke PBC.
-    sub() {
-        pir::say("Aloha, " ~ $pbc);
+    my $main_sub := $post<main_sub>;
+
+    my $unlink;
+    my $filename := ~%adverbs<output>;
+    if !$filename {
+        # TODO Add mkstemp into OS PMC.
+        $filename := "/tmp/temp.pbc";
+        $unlink   := 1;
     }
+
+    my $handle := pir::new__Ps('FileHandle');
+    $handle.open($filename, 'w');
+    $handle.print(~$packfile);
+    $handle.close();
+
+    return sub() {
+        #pir::trace(1);
+        pir::load_bytecode($filename);
+
+        #if $unlink {
+        #    my $os := pir::new__PS("OS");
+        #    $os.rm($filename);
+        #}
+
+        Q:PIR<
+            %r = find_lex '$main_sub'
+            $S99 = %r
+            %r = find_sub_not_null $S99
+            %r()
+        >;
+    };
 }
-=end
 
 our method postshortcut($source, *%adverbs) {
-    pir::say("hi");
-    my $astgrammar_name := self.astgrammar();
-    my $typeof := pir::typeof__SP($astgrammar_name);
-    pir::say($typeof);
-    pir::say($astgrammar_name);
-    my $post := $source.ast;
-    $post;
+    $source.ast;
 }
 
 # vim: filetype=perl6:
