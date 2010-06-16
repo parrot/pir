@@ -15,7 +15,6 @@ INIT {
 method TOP($/) { make $<top>.ast; }
 
 method top($/) {
-    pir::trace(4);
     my $past := POST::Node.new;
     for $<compilation_unit> {
         my $child := $_.ast;
@@ -113,7 +112,10 @@ method constant($/) {
 }
 
 method string_constant($/) {
-    make $<quote>.ast;
+    make POST::Constant.new(
+        :type<sc>,
+        :value($<quote>.ast<value>),
+    );
 }
 
 method subname($/) {
