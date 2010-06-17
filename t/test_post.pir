@@ -5,7 +5,7 @@
     .param string test_name
     .param string code
     .param string expected
-    .param pmc    adverbs   :slurpy :named
+    .param pmc    adverbs
 
     .include "test_more.pir"
     load_bytecode "pir.pbc"
@@ -38,8 +38,23 @@
 
   fail:
     pop_eh
+    .local pmc exception
+    .get_results (exception)
+
+    $S0 = adverbs['fail_like']
+    if null $S0 goto check_fail
+    $S1 = exception
+    $I0 = index $S1, $S0
+    $I1 = $I0 != -1
+    ok($I1, test_name)
+    diag(exception)
+    diag($S0)
+    .return()
+
+  check_fail:
     $I0 = adverbs['fail']
     ok($I0, test_name)
+    .return()
 
 #    CATCH {
 #        ok(%adverbs<fail>, $test_name);
