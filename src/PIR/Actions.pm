@@ -33,7 +33,7 @@ method compilation_unit:sym<.HLL> ($/) {
 }
 
 method compilation_unit:sym<.namespace> ($/) {
-    our $*NAMESPACE := $<namespace_key>[0].ast;
+    our $*NAMESPACE := $<namespace_key>[0] ?? $<namespace_key>[0].ast !! undef;
 }
 
 method compilation_unit:sym<sub> ($/) {
