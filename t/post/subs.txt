@@ -68,4 +68,14 @@ CODE
     }
 }
 RESULT
+
+test_post( "Empty sub", <<'CODE', <<'RESULT', "fail_like" => "Register 'foo' not predeclared");
+.sub "main"
+    say foo
+.end
+CODE
+dummy
+RESULT
+
+
 # vim: ft=perl6
