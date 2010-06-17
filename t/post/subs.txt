@@ -1,0 +1,14 @@
+# It's not real "perl"! It's just looks like it.
+test_post( "Empty sub", <<'CODE', <<'RESULT');
+.sub "main"
+.end
+CODE
+"postshortcut" => PMC 'POST;Node'  {
+    <main_sub> => "main"
+    [0] => PMC 'POST;Sub'  {
+        <name> => \postshortcut
+    }
+}
+RESULT
+
+# vim: ft=perl6

@@ -38,6 +38,7 @@ No Configure step, no Makefile generated.
 
     # Functions for testing.
     $P1['t/parse.pir'] = 't/parse.nqp'
+    $P1['t/post.pir']  = 't/post.nqp'
 
     $P0['pir_nqp'] = $P1
 
@@ -55,7 +56,15 @@ src/POST/Register.pir
 SOURCES
     $P3['pir.pbc'] = $P4
 
-    $P3['t/common.pbc'] = 't/parse.pir'
+    $P5 = split "\n", <<'SOURCES'
+t/common.pir
+
+t/parse.pir
+t/test_post.pir
+t/post.pir
+SOURCES
+
+    $P3['t/common.pbc'] = $P5
 
     $P0['pbc_pir'] = $P3
 
