@@ -162,13 +162,12 @@ method validate_registers($/, $node) {
             $name := $arg.name;
         };
         if $name {
-            pir::say("# Validating " ~$name);
             if $arg.declared {
                 # It can be named register. Put it into symtable
                 $!BLOCK.symbol($name, $arg);
             }
             elsif !$!BLOCK.symbol($name) {
-                $/.CURSOR.panic("Registed '" ~ $name ~ "' not predeclared");
+                $/.CURSOR.panic("Register '" ~ $name ~ "' not predeclared");
             }
         }
     }
