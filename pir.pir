@@ -23,6 +23,7 @@
 
 .HLL 'parrot'
 .include 'src/POST/Compiler.pir'
+.include 'src/POST/Value.pir'
 .include 'src/POST/Constant.pir'
 .include 'src/POST/Register.pir'
 

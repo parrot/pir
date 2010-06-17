@@ -33,6 +33,7 @@ No Configure step, no Makefile generated.
     $P1['src/PIR/Compiler.pir'] = 'src/PIR/Compiler.pm'
 
     $P1['src/POST/Compiler.pir'] = 'src/POST/Compiler.pm'
+    $P1['src/POST/Value.pir']    = 'src/POST/Value.pm'
     $P1['src/POST/Constant.pir'] = 'src/POST/Constant.pm'
     $P1['src/POST/Register.pir'] = 'src/POST/Register.pm'
 
@@ -51,6 +52,8 @@ src/PIR/Grammar.pir
 src/PIR/Compiler.pir
 
 src/POST/Compiler.pir
+
+src/POST/Value.pir
 src/POST/Constant.pir
 src/POST/Register.pir
 SOURCES
