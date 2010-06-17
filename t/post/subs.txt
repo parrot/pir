@@ -77,5 +77,33 @@ CODE
 dummy
 RESULT
 
+test_post( "Symtable (params usage)", <<'CODE', <<'RESULT');
+.sub "main"
+    .param pmc    a
+    say a
+.end
+CODE
+"postshortcut" => PMC 'POST;Node'  {
+    <main_sub> => "main"
+    [0] => PMC 'POST;Sub'  {
+        <name> => "main"
+        <symtable> => Hash {
+            "a" => PMC 'POST;Register'  {
+                <declared> => 1
+                <name> => "a"
+                <type> => "p"
+            }
+        }
+        [0] => PMC 'POST;Op'  {
+            <pirop> => "say"
+            [0] => PMC 'POST;Register'  {
+                <declared> => 0
+                <name> => "a"
+            }
+        }
+    }
+}
+RESULT
+
 
 # vim: ft=perl6
