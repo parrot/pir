@@ -36,22 +36,19 @@ method compilation_unit:sym<.namespace> ($/) {
     our $*NAMESPACE := $<namespace_key>[0] ?? $<namespace_key>[0].ast !! undef;
 }
 
+method newpad($/) {
+    $!BLOCK := POST::Sub.new(
+    );
+}
+
 method compilation_unit:sym<sub> ($/) {
     my $name := $<subname>.ast;
-
-    $!BLOCK := POST::Sub.new(
-        :name( $name ),
-    );
+    $!BLOCK.name( $name );
 
     # TODO Handle pragmas.
 
     # TODO Handle :main pragma
     $!MAIN := $name unless $!MAIN;
-
-
-    #for $<param_decl> {
-    #    $BLOCK[0].push( $_.ast );
-    #}
 
     if $<statement> {
         for $<statement> {
@@ -65,17 +62,12 @@ method compilation_unit:sym<sub> ($/) {
 
 method param_decl($/) {
     my $name := ~$<name>;
-    my $past := PAST::Var.new(
+    my $past := POST::Register.new(
         :name($name),
-        :scope('register'),
-        :isdecl(1),
-        :node($/),
-        :multitype(~$<pir_type>),
+        :type(pir::substr__SSII(~$<pir_type>, 0, 1)),
     );
 
-    # TODO Handle param flags. Extend PAST::Var to support all of them.
-
-    $!BLOCK.symbol($name, :scope('lexical') );
+    $!BLOCK.symbol($name, $past);
 
     make $past;
 }

@@ -24,6 +24,7 @@ proto token compilation_unit { <...> }
 
 rule compilation_unit:sym<sub> {
     #<?DEBUG>
+    <.newpad>
     '.sub' <subname> 
     [
     || [ <.ws> <sub_pragma> ]*
@@ -431,5 +432,6 @@ token pod_comment {
 # Don't be very strict on pod comments (for now?)
 token pod_directive { <ident> }
 
+token newpad { <?> }
 
 # vim: ft=perl6

@@ -31,4 +31,37 @@ CODE
 }
 RESULT
 
+test_post( "Symtable (params)", <<'CODE', <<'RESULT');
+.sub "main"
+    .param pmc    a
+    .param string b
+    .param int    c
+    .param num    d
+.end
+CODE
+"postshortcut" => PMC 'POST;Node'  {
+    <main_sub> => "main"
+    [0] => PMC 'POST;Sub'  {
+        <name> => "main"
+        <symtable> => Hash {
+            "a" => PMC 'POST;Register'  {
+                <name> => "a"
+                <type> => "p"
+            },
+            "b" => PMC 'POST;Register'  {
+                <name> => "b"
+                <type> => "s"
+            },
+            "c" => PMC 'POST;Register'  {
+                <name> => "c"
+                <type> => "i"
+            },
+            "d" => PMC 'POST;Register'  {
+                <name> => "d"
+                <type> => "n"
+            }
+        }
+    }
+}
+RESULT
 # vim: ft=perl6
