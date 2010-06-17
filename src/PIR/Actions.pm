@@ -65,6 +65,7 @@ method param_decl($/) {
     my $past := POST::Register.new(
         :name($name),
         :type(pir::substr__SSII(~$<pir_type>, 0, 1)),
+        :declared(1),
     );
 
     $!BLOCK.symbol($name, $past);
@@ -90,6 +91,8 @@ method op($/) {
     for $<op_params> {
         $past.push( $_.ast );
     }
+
+    self.validate_registers($/, $past);
 
     # TODO Validate via OpLib
 
@@ -121,6 +124,29 @@ method string_constant($/) {
     );
 }
 
+method variable($/) {
+    my $past;
+    if $<ident> {
+        # Named register
+        $past := POST::Register.new(
+            :name(~$<ident>),
+            :declared(0)
+        );
+    }
+    else {
+        # Numbered register
+        my $type := ~$<pir_register><INSP>;
+        my $name := '$' ~ $type ~ ~$<pir_register><digit>;
+        $past := POST::Register.new(
+            :name($name),
+            :type(pir::downcase__SS($type)),
+            :declared(1)
+        );
+    }
+
+    make $past;
+}
+
 method subname($/) {
     make $<ident> ?? ~$<ident> !! ~($<quote>.ast<value>);
 }
@@ -128,5 +154,24 @@ method subname($/) {
 method quote:sym<apos>($/) { make $<quote_EXPR>.ast; }
 method quote:sym<dblq>($/) { make $<quote_EXPR>.ast; }
 
+method validate_registers($/, $node) {
+    for @($node) -> $arg {
+        my $name;
+        try {
+            # XXX Constants doesn't have names. But pir::isa__IPP doesn't wor either
+            $name := $arg.name;
+        };
+        if $name {
+            pir::say("# Validating " ~$name);
+            if $arg.declared {
+                # It can be named register. Put it into symtable
+                $!BLOCK.symbol($name, $arg);
+            }
+            elsif !$!BLOCK.symbol($name) {
+                $/.CURSOR.panic("Registed '" ~ $name ~ "' not predeclared");
+            }
+        }
+    }
+}
 
 # vim: ft=perl6

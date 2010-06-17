@@ -45,18 +45,22 @@ CODE
         <name> => "main"
         <symtable> => Hash {
             "a" => PMC 'POST;Register'  {
+                <declared> => 1
                 <name> => "a"
                 <type> => "p"
             },
             "b" => PMC 'POST;Register'  {
+                <declared> => 1
                 <name> => "b"
                 <type> => "s"
             },
             "c" => PMC 'POST;Register'  {
+                <declared> => 1
                 <name> => "c"
                 <type> => "i"
             },
             "d" => PMC 'POST;Register'  {
+                <declared> => 1
                 <name> => "d"
                 <type> => "n"
             }
