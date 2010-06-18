@@ -101,6 +101,20 @@ method op($/) {
 
 method op_params($/) { make $<value>[0] ?? $<value>[0].ast !! $<pir_key>[0].ast }
 
+method pir_directive:sym<.local>($/) {
+    my $type := pir::substr__SSII(~$<pir_type>, 0, 1);
+    for $<ident> {
+        my $name := ~$_;
+        my $past := POST::Register.new(
+            :name($name),
+            :type($type),
+            :declared(1),
+        );
+        $!BLOCK.symbol($name, $past);
+    }
+
+}
+
 method value($/) { make $<constant> ?? $<constant>.ast !! $<variable>.ast }
 
 method constant($/) {
