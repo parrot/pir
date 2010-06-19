@@ -1,0 +1,19 @@
+test_post( "Empty sub", <<'CODE', <<'RESULT');
+.sub "main"
+    "foo"()
+.end
+CODE
+"postshortcut" => PMC 'POST;Node'  {
+    <main_sub> => "main"
+    [0] => PMC 'POST;Sub'  {
+        <name> => \postshortcut
+        [0] => PMC 'POST;Call'  {
+            <name> => PMC 'PAST;Val'  {
+                <value> => "foo"
+            }
+        }
+    }
+}
+RESULT
+
+# vim: ft=perl6
