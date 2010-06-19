@@ -157,13 +157,13 @@ rule pir_directive:sym<.globalconst> { <sym> <const_declaration> }
 
 proto regex const_declaration { <...> }
 rule const_declaration:sym<int> {
-    <sym> <variable> '=' <int_constant>
+    <sym> <ident> '=' <int_constant>
 }
 rule const_declaration:sym<num> {
-    <sym> <variable> '=' <float_constant>
+    <sym> <ident> '=' <float_constant>
 }
 rule const_declaration:sym<string> {
-    <sym> <variable> '=' <string_constant>
+    <sym> <ident> '=' <string_constant>
 }
 # .const "Sub" foo = "sub_id"
 rule const_declaration:sym<pmc> {

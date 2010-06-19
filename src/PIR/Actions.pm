@@ -122,6 +122,60 @@ method pir_directive:sym<.local>($/) {
     }
 
 }
+#rule pir_directive:sym<.lex>        { <sym> <string_constant> ',' <pir_register> }
+#rule pir_directive:sym<.file>       { <sym> <string_constant> }
+#rule pir_directive:sym<.line>       { <sym> <int_constant> }
+#rule pir_directive:sym<.annotate>   { <sym> <string_constant> ',' <constant> }
+#rule pir_directive:sym<.include>    { <sym> <quote> }
+
+# PCC
+#rule pir_directive:sym<.begin_call>     { <sym> }
+#rule pir_directive:sym<.end_call>       { <sym> }
+#rule pir_directive:sym<.begin_return>   { <sym> }
+#rule pir_directive:sym<.end_return>     { <sym> }
+#rule pir_directive:sym<.begin_yield>    { <sym> }
+#rule pir_directive:sym<.end_yield>      { <sym> }
+
+#rule pir_directive:sym<.call>       { <sym> <value> [',' <continuation=pir_register> ]? }
+#rule pir_directive:sym<.meth_call>  { <sym> <value> [',' <continuation=pir_register> ]? }
+#rule pir_directive:sym<.nci_call>   { <sym> <value> [',' <continuation=pir_register> ]? }
+
+#rule pir_directive:sym<.invocant>   { <sym> <value> }
+#rule pir_directive:sym<.set_arg>    { <sym> <value> <arg_flag>* }
+#rule pir_directive:sym<.set_return> { <sym> <value> <arg_flag>* }
+#rule pir_directive:sym<.set_yield>  { <sym> <value> <arg_flag>* }
+#rule pir_directive:sym<.get_result> { <sym> <value> <result_flag>* }
+
+#rule pir_directive:sym<.return>     { <sym> '(' <args>? ')' }
+#rule pir_directive:sym<.yield>      { <sym> '(' <args>? ')' }
+
+#rule pir_directive:sym<.tailcall>   { <sym> <call> }
+
+method pir_directive:sym<.const>($/) {
+    my $past := $<const_declaration>.ast;
+    my $name := $past.name();
+    if $!BLOCK.symbol($name) {
+        $/.CURSOR.panic("Redeclaration of varaible '$name'");
+    }
+    $!BLOCK.symbol($name, $past);
+}
+
+#rule pir_directive:sym<.globalconst> { <sym> <const_declaration> }
+
+#rule const_declaration:sym<int> {
+#    <sym> <variable> '=' <int_constant>
+#}
+#rule const_declaration:sym<num> {
+#    <sym> <variable> '=' <float_constant>
+#}
+
+method const_declaration:sym<string>($/) {
+    my $past := $<string_constant>.ast;
+    $past.name(~$<ident>);
+    make $past;
+}
+
+
 
 method value($/) { make $<constant> ?? $<constant>.ast !! $<variable>.ast }
 
@@ -150,19 +204,17 @@ method variable($/) {
     my $past;
     if $<ident> {
         # Named register
-        $past := POST::Register.new(
+        $past := POST::Value.new(
             :name(~$<ident>),
-            :declared(0)
         );
     }
     else {
         # Numbered register
         my $type := ~$<pir_register><INSP>;
         my $name := '$' ~ $type ~ ~$<pir_register><digit>;
-        $past := POST::Register.new(
+        $past := POST::Value.new(
             :name($name),
             :type(pir::downcase__SS($type)),
-            :declared(1)
         );
     }
 
@@ -184,9 +236,11 @@ method validate_registers($/, $node) {
             $name := $arg.name;
         };
         if $name {
-            if $arg.declared {
-                # It can be named register. Put it into symtable
-                $!BLOCK.symbol($name, $arg);
+            if pir::substr__SSII($name, 0, 1) eq '$' {
+                $!BLOCK.symbol($name, POST::Register.new(
+                        :name($name),
+                        :type($arg.type()),
+                    ));
             }
             elsif !$!BLOCK.symbol($name) {
                 $/.CURSOR.panic("Register '" ~ $name ~ "' not predeclared");

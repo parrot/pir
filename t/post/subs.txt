@@ -96,8 +96,7 @@ CODE
         }
         [0] => PMC 'POST;Op'  {
             <pirop> => "say"
-            [0] => PMC 'POST;Register'  {
-                <declared> => 0
+            [0] => PMC 'POST;Value'  {
                 <name> => "a"
             }
         }
@@ -124,8 +123,7 @@ CODE
         }
         [0] => PMC 'POST;Op'  {
             <pirop> => "say"
-            [0] => PMC 'POST;Register'  {
-                <declared> => 0
+            [0] => PMC 'POST;Value'  {
                 <name> => "a"
             }
         }
