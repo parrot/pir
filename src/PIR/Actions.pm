@@ -219,8 +219,7 @@ method pir_instruction:sym<call_assign_many>($/) {
 
 # Short PCC call.
 #proto regex call { <...> }
-#rule call:sym<pmc>     { <variable> '(' <args>? ')' }
-method call:sym<pmc>($/) {
+method call_sym_pmc($/) {
     my $past := POST::Call.new(
         :name($<variable>.ast),
     );
@@ -228,7 +227,11 @@ method call:sym<pmc>($/) {
     make $past;
 }
 
-method call:sym<sub>($/) {
+method call:sym<pmc>($/) {
+    make self.call_sym_pmc($/);
+}
+
+method call_sym_sub($/) {
     my $past := POST::Call.new(
         :name($<quote>.ast),
     );
@@ -236,8 +239,21 @@ method call:sym<sub>($/) {
     make $past;
 }
 
-#rule call:sym<dynamic> { <value> '.' <variable> '(' <args>? ')' }
-#rule call:sym<method>  { <value> '.' <quote> '(' <args>? ')' }
+method call:sym<sub>($/) {
+    make self.call_sym_sub($/);
+}
+
+method call:sym<dynamic>($/) {
+    my $past := self.call_sym_pmc($/);
+    $past.invocant($<invocant>.ast);
+    make $past;
+}
+
+method call:sym<method>($/) {
+    my $past := self.call_sym_sub($/);
+    $past.invocant($<invocant>.ast);
+    make $past;
+}
 
 method handle_pcc_args($/, $past) {
     if $<args>[0] {

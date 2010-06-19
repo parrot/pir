@@ -265,8 +265,8 @@ token keyed_var {
 proto regex call { <...> }
 rule call:sym<pmc>     { <variable> '(' <args>? ')' }
 rule call:sym<sub>     { <quote> '(' <args>? ')' }
-rule call:sym<dynamic> { <value> '.' <variable> '(' <args>? ')' }
-rule call:sym<method>  { <value> '.' <quote> '(' <args>? ')' }
+rule call:sym<dynamic> { <invocant=value> '.' <variable> '(' <args>? ')' }
+rule call:sym<method>  { <invocant=value> '.' <quote> '(' <args>? ')' }
 
 rule args {
     <arg> ** ','
