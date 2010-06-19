@@ -345,11 +345,15 @@ token pir_type {
 
 # Up to 100 registers
 token pir_register {
-    '$' <type=INSP> <digit>+
+    '$' <type=INSP> <reg_number>
 }
 
 token INSP {
      I | N | S | P
+}
+
+token reg_number {
+    <digit>+
 }
 
 token variable {

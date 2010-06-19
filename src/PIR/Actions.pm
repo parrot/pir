@@ -162,12 +162,17 @@ method pir_directive:sym<.const>($/) {
 
 #rule pir_directive:sym<.globalconst> { <sym> <const_declaration> }
 
-#rule const_declaration:sym<int> {
-#    <sym> <variable> '=' <int_constant>
-#}
-#rule const_declaration:sym<num> {
-#    <sym> <variable> '=' <float_constant>
-#}
+method const_declaration:sym<int>($/) {
+    my $past := $<int_constant>.ast;
+    $past.name(~$<ident>);
+    make $past;
+}
+
+method const_declaration:sym<num>($/) {
+    my $past := $<float_constant>.ast;
+    $past.name(~$<ident>);
+    make $past;
+}
 
 method const_declaration:sym<string>($/) {
     my $past := $<string_constant>.ast;
@@ -193,6 +198,20 @@ method constant($/) {
     make $past;
 }
 
+method int_constant($/) {
+    make POST::Constant.new(
+        :type<ic>,
+        :value(~$/),
+    );
+}
+
+method float_constant($/) {
+    make POST::Constant.new(
+        :type<nc>,
+        :value(~$/),
+    );
+}
+
 method string_constant($/) {
     make POST::Constant.new(
         :type<sc>,
@@ -211,7 +230,7 @@ method variable($/) {
     else {
         # Numbered register
         my $type := ~$<pir_register><INSP>;
-        my $name := '$' ~ $type ~ ~$<pir_register><digit>;
+        my $name := '$' ~ $type ~ ~$<pir_register><reg_number>;
         $past := POST::Value.new(
             :name($name),
             :type(pir::downcase__SS($type)),
