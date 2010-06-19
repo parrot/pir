@@ -182,6 +182,43 @@ method const_declaration:sym<string>($/) {
 
 
 
+#rule pir_instruction:sym<call>
+method pir_instruction:sym<call>($/) {
+    make $<call>.ast;
+}
+
+#rule pir_instruction:sym<call_assign>
+#rule pir_instruction:sym<call_assign_many>
+
+
+# Short PCC call.
+#proto regex call { <...> }
+#rule call:sym<pmc>     { <variable> '(' <args>? ')' }
+#rule call:sym<sub>     { <quote> '(' <args>? ')' }
+method call:sym<sub>($/) {
+    my $past := POST::Call.new(
+        :name($<quote>.ast),
+    );
+
+    make $past;
+}
+
+#rule call:sym<dynamic> { <value> '.' <variable> '(' <args>? ')' }
+#rule call:sym<method>  { <value> '.' <quote> '(' <args>? ')' }
+
+
+#rule args { <arg> ** ',' }
+
+#rule arg {
+#    | <quote> '=>' <value>
+#    | <value> <arg_flag>*
+#}
+
+method arg($/) {
+    # TODO Handle flags
+    make $<value>.ast;
+}
+
 method value($/) { make $<constant> ?? $<constant>.ast !! $<variable>.ast }
 
 method constant($/) {
