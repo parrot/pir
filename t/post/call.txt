@@ -52,4 +52,54 @@ CODE
 dummy
 RESULT
 
-# vim: ft=perl6
+test_post( "Simple returns", <<'CODE', <<'RESULT');
+.sub "main"
+    $P0 = "foo"("answer", 42)
+.end
+CODE
+"postshortcut" => PMC 'POST;Node'  {
+    <main_sub> => "main"
+    [0] => PMC 'POST;Sub'  {
+        <name> => "main"
+        <symtable> => Hash {
+            "$P0" => PMC 'POST;Register'  {
+                <name> => "$P0"
+                <type> => "p"
+            }
+        }
+        [0] => PMC 'POST;Call'  {
+            <name> => PMC 'PAST;Val'  {
+                <value> => "foo"
+            }
+            <params> => PMC 'PAST;Node'  {
+                [0] => PMC 'POST;Constant'  {
+                    <type> => "sc"
+                    <value> => "answer"
+                }
+                [1] => PMC 'POST;Constant'  {
+                    <type> => "ic"
+                    <value> => "42"
+                }
+            }
+            <results> => PMC 'PAST;Node'  {
+                [0] => PMC 'POST;Value'  {
+                    <name> => \postshortcut["$P0"]
+                    <type> => \postshortcut["$P0"]
+                }
+            }
+        }
+    }
+}
+RESULT
+
+test_post( "Undeclared simple returns", <<'CODE', <<'RESULT', "fail_like" => "Register 'foo' not predeclared");
+.sub "main"
+    foo = "say"()
+.end
+CODE
+dummy
+RESULT
+
+
+
+# vim: ft=perl

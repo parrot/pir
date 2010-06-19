@@ -180,15 +180,41 @@ method const_declaration:sym<string>($/) {
     make $past;
 }
 
-
-
-#rule pir_instruction:sym<call>
-method pir_instruction:sym<call>($/) {
+method pir_instruction_call($/) {
     make $<call>.ast;
 }
 
-#rule pir_instruction:sym<call_assign>
-#rule pir_instruction:sym<call_assign_many>
+method pir_instruction:sym<call>($/) {
+    self.pir_instruction_call($/);
+}
+
+method pir_instruction:sym<call_assign>($/) {
+    my $past := self.pir_instruction_call($/);
+
+    # Store params (if any)
+    my $results := PAST::Node.new;
+    $results.push( $<variable>.ast );
+    self.validate_registers($/, $results);
+    $past.results($results);
+
+    make $past;
+}
+
+method pir_instruction:sym<call_assign_many>($/) {
+    my $past := self.pir_instruction_call($/);
+
+    # Store params (if any)
+    if $<results>[0] {
+        my $results := PAST::Node.new;
+        for $<results>[0]<result> {
+            $results.push( $_.ast );
+        }
+        self.validate_registers($/, $results);
+        $past.results($results);
+    }
+
+    make $past;
+}
 
 
 # Short PCC call.
