@@ -149,7 +149,11 @@ method pir_directive:sym<.local>($/) {
 #rule pir_directive:sym<.return>     { <sym> '(' <args>? ')' }
 #rule pir_directive:sym<.yield>      { <sym> '(' <args>? ')' }
 
-#rule pir_directive:sym<.tailcall>   { <sym> <call> }
+method pir_directive:sym<.tailcall>($/) {
+    my $past := $<call>.ast;
+    $past.calltype('tailcall');
+    make $past;
+}
 
 method pir_directive:sym<.const>($/) {
     my $past := $<const_declaration>.ast;

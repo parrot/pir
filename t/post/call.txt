@@ -238,5 +238,25 @@ CODE
 }
 RESULT
 
+test_post( "Tailcall", <<'CODE', <<'RESULT');
+.sub "main"
+    .tailcall main()
+.end
+CODE
+"postshortcut" => PMC 'POST;Node'  {
+    <main_sub> => "main"
+    [0] => PMC 'POST;Sub'  {
+        <name> => "main"
+        [0] => PMC 'POST;Call'  {
+            <calltype> => "tailcall"
+            <name> => PMC 'POST;Value'  {
+                <name> => "main"
+            }
+        }
+    }
+}
+RESULT
+
+
 
 # vim: ft=perl
