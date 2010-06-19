@@ -146,8 +146,22 @@ method pir_directive:sym<.local>($/) {
 #rule pir_directive:sym<.set_yield>  { <sym> <value> <arg_flag>* }
 #rule pir_directive:sym<.get_result> { <sym> <value> <result_flag>* }
 
-#rule pir_directive:sym<.return>     { <sym> '(' <args>? ')' }
-#rule pir_directive:sym<.yield>      { <sym> '(' <args>? ')' }
+method pir_directive:sym<.return>($/) {
+    my $past := POST::Call.new(
+        :calltype('return'),
+    );
+    self.handle_pcc_args($/, $past);
+    make $past;
+}
+
+method pir_directive:sym<.yield>($/) {
+    my $past := POST::Call.new(
+        :calltype('yield'),
+    );
+    self.handle_pcc_args($/, $past);
+    make $past;
+}
+
 
 method pir_directive:sym<.tailcall>($/) {
     my $past := $<call>.ast;

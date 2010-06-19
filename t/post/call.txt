@@ -258,5 +258,58 @@ CODE
 RESULT
 
 
+test_post( "Simple .return()", <<'CODE', <<'RESULT');
+.sub "main"
+    .return ("answer", 42)
+.end
+CODE
+"postshortcut" => PMC 'POST;Node'  {
+    <main_sub> => "main"
+    [0] => PMC 'POST;Sub'  {
+        <name> => "main"
+        [0] => PMC 'POST;Call'  {
+            <calltype> => "return"
+            <params> => PMC 'POST;Node'  {
+                [0] => PMC 'POST;Constant'  {
+                    <type> => "sc"
+                    <value> => "answer"
+                }
+                [1] => PMC 'POST;Constant'  {
+                    <type> => "ic"
+                    <value> => "42"
+                }
+            }
+        }
+    }
+}
+RESULT
+
+
+test_post( "Simple .yield()", <<'CODE', <<'RESULT');
+.sub "main"
+    .yield ("answer", 42)
+.end
+CODE
+"postshortcut" => PMC 'POST;Node'  {
+    <main_sub> => "main"
+    [0] => PMC 'POST;Sub'  {
+        <name> => "main"
+        [0] => PMC 'POST;Call'  {
+            <calltype> => "yield"
+            <params> => PMC 'POST;Node'  {
+                [0] => PMC 'POST;Constant'  {
+                    <type> => "sc"
+                    <value> => "answer"
+                }
+                [1] => PMC 'POST;Constant'  {
+                    <type> => "ic"
+                    <value> => "42"
+                }
+            }
+        }
+    }
+}
+RESULT
+
 
 # vim: ft=perl
