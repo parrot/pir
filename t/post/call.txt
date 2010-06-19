@@ -141,6 +141,35 @@ CODE
 dummy
 RESULT
 
-
+test_post( "Register call", <<'CODE', <<'RESULT');
+.sub "main"
+    $P0 = $P0()
+.end
+CODE
+"postshortcut" => PMC 'POST;Node'  {
+    <main_sub> => "main"
+    [0] => PMC 'POST;Sub'  {
+        <name> => "main"
+        <symtable> => Hash {
+            "$P0" => PMC 'POST;Register'  {
+                <name> => "$P0"
+                <type> => "p"
+            }
+        }
+        [0] => PMC 'POST;Call'  {
+            <name> => PMC 'POST;Value'  {
+                <name> => \postshortcut["$P0"]
+                <type> => \postshortcut["$P0"]
+            }
+            <results> => PMC 'POST;Node'  {
+                [0] => PMC 'POST;Value'  {
+                    <name> => "$P0"
+                    <type> => "p"
+                }
+            }
+        }
+    }
+}
+RESULT
 
 # vim: ft=perl
