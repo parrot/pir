@@ -318,6 +318,7 @@ method variable($/) {
         # Numbered register
         my $type := ~$<pir_register><INSP>;
         my $name := '$' ~ $type ~ ~$<pir_register><reg_number>;
+        $type := pir::downcase__SS($type);
         $past := POST::Value.new(
             :name($name),
             :type($type),
