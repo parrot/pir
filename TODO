@@ -1,5 +1,3 @@
-TODO
-
 =head1 NAME
 
 TODO - This is the TODO file for a PIR implementation in NQP.
@@ -14,5 +12,38 @@ Parsing of charset/encoding
 
 =item * C<heredoc>
 
+Heredocs are parsed. But original node isn't updated.
+
+=item * C<.include>
+
+Catch pmichaud for ideas of best way of implementing it.
+
 =back
 
+=head1 PAST/POST generating
+
+=over 4
+
+=item * Macros
+
+Macros are not expanded ATM.
+
+=item * "Verbose" PCC calls.
+
+C<.set_arg>, C<.get_result>, C<.set_return>, C<.yield>, etc.
+
+=back
+
+=head1 PBC generating
+
+=over 4
+
+=item * Register allocator.
+
+Can be "vanilla" as first cut.
+
+=back
+
+=cut
+
+# vim: ft=pod
