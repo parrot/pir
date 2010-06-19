@@ -68,6 +68,10 @@ method param_decl($/) {
         :declared(1),
     );
 
+    if $!BLOCK.symbol($name) {
+        $/.CURSOR.panic("Redeclaration of varaible '$name'");
+    }
+
     $!BLOCK.symbol($name, $past);
 
     make $past;
@@ -105,6 +109,10 @@ method pir_directive:sym<.local>($/) {
     my $type := pir::substr__SSII(~$<pir_type>, 0, 1);
     for $<ident> {
         my $name := ~$_;
+        if $!BLOCK.symbol($name) {
+            $/.CURSOR.panic("Redeclaration of varaible '$name'");
+        }
+
         my $past := POST::Register.new(
             :name($name),
             :type($type),

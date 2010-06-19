@@ -69,7 +69,7 @@ CODE
 }
 RESULT
 
-test_post( "Empty sub", <<'CODE', <<'RESULT', "fail_like" => "Register 'foo' not predeclared");
+test_post( "Undeclared variable", <<'CODE', <<'RESULT', "fail_like" => "Register 'foo' not predeclared");
 .sub "main"
     say foo
 .end
@@ -133,6 +133,16 @@ CODE
 }
 RESULT
 
+
+test_post( "Redeclaration of variable", <<'CODE', <<'RESULT', "fail_like" => "Redeclaration of");
+.sub "main"
+    .local pmc foo
+    .local pmc foo
+    say foo
+.end
+CODE
+dummy
+RESULT
 
 
 # vim: ft=perl6
