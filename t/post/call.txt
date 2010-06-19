@@ -172,4 +172,64 @@ CODE
 }
 RESULT
 
+
+test_post( "Method call direct", <<'CODE', <<'RESULT');
+.sub "main"
+    $P0."foo"()
+.end
+CODE
+"postshortcut" => PMC 'POST;Node'  {
+    <main_sub> => "main"
+    [0] => PMC 'POST;Sub'  {
+        <name> => "main"
+        <symtable> => Hash {
+            "$P0" => PMC 'POST;Register'  {
+                <name> => "$P0"
+                <type> => "p"
+            }
+        }
+        [0] => PMC 'POST;Call'  {
+            <invocant> => PMC 'POST;Value'  {
+                <name> => \postshortcut["$P0"]
+                <type> => \postshortcut["$P0"]
+            }
+            <name> => PMC 'POST;Constant'  {
+                <type> => "sc"
+                <value> => "foo"
+            }
+        }
+    }
+}
+RESULT
+
+test_post( "Method call in-direct", <<'CODE', <<'RESULT');
+.sub "main"
+    $P0.$P0()
+.end
+CODE
+"postshortcut" => PMC 'POST;Node'  {
+    <main_sub> => "main"
+    [0] => PMC 'POST;Sub'  {
+        <name> => "main"
+        <symtable> => Hash {
+            "$P0" => PMC 'POST;Register'  {
+                <name> => "$P0"
+                <type> => "p"
+            }
+        }
+        [0] => PMC 'POST;Call'  {
+            <invocant> => PMC 'POST;Value'  {
+                <name> => "$P0"
+                <type> => "p"
+            }
+            <name> => PMC 'POST;Value'  {
+                <name> => \postshortcut["$P0"]
+                <type> => \postshortcut["$P0"]
+            }
+        }
+    }
+}
+RESULT
+
+
 # vim: ft=perl
