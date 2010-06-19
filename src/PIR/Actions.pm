@@ -192,7 +192,7 @@ method pir_instruction:sym<call_assign>($/) {
     my $past := self.pir_instruction_call($/);
 
     # Store params (if any)
-    my $results := PAST::Node.new;
+    my $results := POST::Node.new;
     $results.push( $<variable>.ast );
     self.validate_registers($/, $results);
     $past.results($results);
@@ -205,7 +205,7 @@ method pir_instruction:sym<call_assign_many>($/) {
 
     # Store params (if any)
     if $<results>[0] {
-        my $results := PAST::Node.new;
+        my $results := POST::Node.new;
         for $<results>[0]<result> {
             $results.push( $_.ast );
         }
@@ -220,15 +220,29 @@ method pir_instruction:sym<call_assign_many>($/) {
 # Short PCC call.
 #proto regex call { <...> }
 #rule call:sym<pmc>     { <variable> '(' <args>? ')' }
-#rule call:sym<sub>     { <quote> '(' <args>? ')' }
+method call:sym<pmc>($/) {
+    my $past := POST::Call.new(
+        :name($<variable>.ast),
+    );
+    self.handle_pcc_args($/, $past);
+    make $past;
+}
+
 method call:sym<sub>($/) {
     my $past := POST::Call.new(
         :name($<quote>.ast),
     );
+    self.handle_pcc_args($/, $past);
+    make $past;
+}
 
+#rule call:sym<dynamic> { <value> '.' <variable> '(' <args>? ')' }
+#rule call:sym<method>  { <value> '.' <quote> '(' <args>? ')' }
+
+method handle_pcc_args($/, $past) {
     if $<args>[0] {
         # Store params (if any)
-        my $params := PAST::Node.new;
+        my $params := POST::Node.new;
         for $<args>[0]<arg> {
             $params.push( $_.ast );
         }
@@ -236,13 +250,7 @@ method call:sym<sub>($/) {
 
         $past.params($params);
     }
-
-    make $past;
 }
-
-#rule call:sym<dynamic> { <value> '.' <variable> '(' <args>? ')' }
-#rule call:sym<method>  { <value> '.' <quote> '(' <args>? ')' }
-
 
 #rule args { <arg> ** ',' }
 
@@ -312,8 +320,14 @@ method variable($/) {
         my $name := '$' ~ $type ~ ~$<pir_register><reg_number>;
         $past := POST::Value.new(
             :name($name),
-            :type(pir::downcase__SS($type)),
+            :type($type),
         );
+
+        # Register it in symtable right now to simplify check in validate_registers
+        $!BLOCK.symbol($name, POST::Register.new(
+            :name($name),
+            :type($type),
+        ));
     }
 
     make $past;
@@ -323,8 +337,19 @@ method subname($/) {
     make $<ident> ?? ~$<ident> !! ~($<quote>.ast<value>);
 }
 
-method quote:sym<apos>($/) { make $<quote_EXPR>.ast; }
-method quote:sym<dblq>($/) { make $<quote_EXPR>.ast; }
+method quote:sym<apos>($/) {
+    make POST::Constant.new(
+        :type("sc"),
+        :value(dequote(~$/))
+    );
+}
+
+method quote:sym<dblq>($/) {
+    make POST::Constant.new(
+        :type("sc"),
+        :value(dequote(~$/))
+    );
+}
 
 method validate_registers($/, $node) {
     for @($node) -> $arg {
@@ -334,17 +359,16 @@ method validate_registers($/, $node) {
             $name := $arg.name;
         };
         if $name {
-            if pir::substr__SSII($name, 0, 1) eq '$' {
-                $!BLOCK.symbol($name, POST::Register.new(
-                        :name($name),
-                        :type($arg.type),
-                    ));
-            }
-            elsif !$!BLOCK.symbol($name) {
+            if !$!BLOCK.symbol($name) {
                 $/.CURSOR.panic("Register '" ~ $name ~ "' not predeclared");
             }
         }
     }
+}
+
+sub dequote($a) {
+    my $l := pir::length__IS($a);
+    pir::substr__SSII($a, 1, $l-2);
 }
 
 # vim: ft=perl6

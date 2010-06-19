@@ -8,7 +8,8 @@ CODE
     [0] => PMC 'POST;Sub'  {
         <name> => \postshortcut
         [0] => PMC 'POST;Call'  {
-            <name> => PMC 'PAST;Val'  {
+            <name> => PMC 'POST;Constant'  {
+                <type> => "sc"
                 <value> => "foo"
             }
         }
@@ -26,10 +27,11 @@ CODE
     [0] => PMC 'POST;Sub'  {
         <name> => "main"
         [0] => PMC 'POST;Call'  {
-            <name> => PMC 'PAST;Val'  {
+            <name> => PMC 'POST;Constant'  {
+                <type> => "sc"
                 <value> => "foo"
             }
-            <params> => PMC 'PAST;Node'  {
+            <params> => PMC 'POST;Node'  {
                 [0] => PMC 'POST;Constant'  {
                     <type> => "sc"
                     <value> => "answer"
@@ -54,7 +56,7 @@ RESULT
 
 test_post( "Simple returns", <<'CODE', <<'RESULT');
 .sub "main"
-    $P0 = "foo"("answer", 42)
+    $P0 = "foo"()
 .end
 CODE
 "postshortcut" => PMC 'POST;Node'  {
@@ -68,20 +70,11 @@ CODE
             }
         }
         [0] => PMC 'POST;Call'  {
-            <name> => PMC 'PAST;Val'  {
+            <name> => PMC 'POST;Constant'  {
+                <type> => "sc"
                 <value> => "foo"
             }
-            <params> => PMC 'PAST;Node'  {
-                [0] => PMC 'POST;Constant'  {
-                    <type> => "sc"
-                    <value> => "answer"
-                }
-                [1] => PMC 'POST;Constant'  {
-                    <type> => "ic"
-                    <value> => "42"
-                }
-            }
-            <results> => PMC 'PAST;Node'  {
+            <results> => PMC 'POST;Node'  {
                 [0] => PMC 'POST;Value'  {
                     <name> => \postshortcut["$P0"]
                     <type> => \postshortcut["$P0"]
@@ -121,10 +114,11 @@ CODE
             }
         }
         [0] => PMC 'POST;Call'  {
-            <name> => PMC 'PAST;Val'  {
+            <name> => PMC 'POST;Constant'  {
+                <type> => "sc"
                 <value> => "foo"
             }
-            <results> => PMC 'PAST;Node'  {
+            <results> => PMC 'POST;Node'  {
                 [0] => PMC 'POST;Value'  {
                     <name> => \postshortcut["$P0"]
                     <type> => \postshortcut["$P0"]
