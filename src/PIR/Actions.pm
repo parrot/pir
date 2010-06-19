@@ -221,6 +221,7 @@ method pir_instruction:sym<call_assign_many>($/) {
 #proto regex call { <...> }
 method call_sym_pmc($/) {
     my $past := POST::Call.new(
+        :calltype('call'),
         :name($<variable>.ast),
     );
     self.handle_pcc_args($/, $past);
@@ -233,6 +234,7 @@ method call:sym<pmc>($/) {
 
 method call_sym_sub($/) {
     my $past := POST::Call.new(
+        :calltype('call'),
         :name($<quote>.ast),
     );
     self.handle_pcc_args($/, $past);
