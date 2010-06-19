@@ -18,7 +18,7 @@ method pbc($post, %adverbs) {
 
     # Scaffolding
     # Packfile will be created with fresh directory
-    my $pfdir := $pf.'get_directory'();
+    my $pfdir := $pf.get_directory;
 
     # We need some constants
     %context<constants> := pir::new__PS('PackfileConstantTable');

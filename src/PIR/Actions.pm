@@ -153,7 +153,7 @@ method pir_directive:sym<.local>($/) {
 
 method pir_directive:sym<.const>($/) {
     my $past := $<const_declaration>.ast;
-    my $name := $past.name();
+    my $name := $past.name;
     if $!BLOCK.symbol($name) {
         $/.CURSOR.panic("Redeclaration of varaible '$name'");
     }
@@ -258,7 +258,7 @@ method validate_registers($/, $node) {
             if pir::substr__SSII($name, 0, 1) eq '$' {
                 $!BLOCK.symbol($name, POST::Register.new(
                         :name($name),
-                        :type($arg.type()),
+                        :type($arg.type),
                     ));
             }
             elsif !$!BLOCK.symbol($name) {
