@@ -11,6 +11,9 @@ method pbc($post, %adverbs) {
     #pir::trace(1);
     $OPLIB := pir::new__PS('OpLib');
 
+    # Emitting context. Contains fixups, consts, etc.
+    my %context;
+
     my $pf := pir::new__PS("Packfile");
 
     # Scaffolding
@@ -18,63 +21,65 @@ method pbc($post, %adverbs) {
     my $pfdir := $pf.'get_directory'();
 
     # We need some constants
-    my $pfconst := pir::new__PS('PackfileConstantTable');
+    %context<constants> := pir::new__PS('PackfileConstantTable');
+
 
     # Add PackfileConstantTable into directory.
-    $pfdir<CONSTANTS_hello.pir> := $pfconst;
+    $pfdir<CONSTANTS_hello.pir> := %context<constants>;
 
     # Generate bytecode
-    my $pfbc := pir::new__PS('PackfileRawSegment');
+    %context<bytecode> := pir::new__PS('PackfileRawSegment');
 
     # Store bytecode
-    $pfdir<BYTECODE_hello.pir> := $pfbc;
+    $pfdir<BYTECODE_hello.pir> := %context<bytecode>;
 
     # Dark magik. Create Fixup for Sub.
-    my $pffixup := pir::new__PS('PackfileFixupTable');
+    %context<fixup> := pir::new__PS('PackfileFixupTable');
 
     # Add it to Directory now because adding FixupEntries require Directory
-    $pfdir<FIXUP_hello.pir> := $pffixup;
+    $pfdir<FIXUP_hello.pir> := %context<fixup>;
 
     # Interpreter.
-    $pfconst[0] := pir::getinterp__P();
+    %context<constants>[0] := pir::getinterp__P();
 
     # Empty FIA for handling returns from "hello"
-    $pfconst[1] := pir::new__PS('FixedIntegerArray');
+    %context<constants>[1] := pir::new__PS('FixedIntegerArray');
 
     for @($post) -> $s {
-        self.to_pbc($s, $pfbc, $pfconst, $pffixup);
+        self.to_pbc($s, %context);
     }
 
     $pf;
 };
 
-our multi method to_pbc(POST::Sub $sub, $pfbc, $pfconst, $pffixup) {
+our multi method to_pbc(POST::Sub $sub, %context) {
+    # Store current Sub in context to resolve symbols and constants.
+    %context<sub> := $sub;
+
+    my $bc := %context<bytecode>;
 
     # Packfile poop his pants...
     my $sb := pir::new__PS('StringBuilder');
     $sb.push(~$sub.name);
     my $subname := ~$sb;
 
-
     pir::say("Emitting $subname");
+    %context<constants>.get_or_create_string($subname);
 
-    $pfconst.get_or_create_string($subname);
-
-    my $start_offset := +$pfbc;
+    my $start_offset := +$bc;
     pir::say("From $start_offset");
-
 
     # Emit ops.
     for @($sub) {
-        self.to_pbc($_, $pfbc, $pfconst);
+        self.to_pbc($_, %context);
     }
 
-    # Default .return()
-    $pfbc.push($OPLIB<set_returns_pc>);
-    $pfbc.push(0x001);                      # id of FIA
-    $pfbc.push($OPLIB<returncc>);
+    # Default .return(). XXX We don't need it (probably)
+    $bc.push($OPLIB<set_returns_pc>);
+    $bc.push(0x001);                      # id of FIA
+    $bc.push($OPLIB<returncc>);
 
-    my $end_offset := +$pfbc;
+    my $end_offset := +$bc;
     pir::say("To $end_offset");
 
     # Now create Sub PMC using hash of values.
@@ -89,7 +94,7 @@ our multi method to_pbc(POST::Sub $sub, $pfbc, $pfconst, $pffixup) {
     );
 
     # and store it in PackfileConstantTable
-    my $idx := $pfconst.push(pir::new__PSP('Sub', %sub));
+    my $idx := %context<constants>.push(pir::new__PSP('Sub', %sub));
 
     pir::say("Fixup $subname");
     my $P1 := pir::new__PSP('PackfileFixupEntry', hash(
@@ -98,31 +103,38 @@ our multi method to_pbc(POST::Sub $sub, $pfbc, $pfconst, $pffixup) {
             :offset( $idx ), # Constant 
         ));
 
-    $pffixup.push($P1);
+    %context<fixup>.push($P1);
 }
 
-our multi method to_pbc(POST::Op $op, $pfbc, $pfconst) {
+our multi method to_pbc(POST::Op $op, %context) {
     # Generate full name
     my $fullname := $op.pirop;
     pir::say("Short name $fullname");
 
     for @($op) {
-        $fullname := ~$fullname ~ '_' ~ ~$_.type;
+        my $type := $_.type || %context<sub>.symbol($_.name).type;
+        $fullname := ~$fullname ~ '_' ~ ~$type;
     }
 
     pir::say("Fullname $fullname");
-    $pfbc.push($OPLIB{$fullname});
+    %context<bytecode>.push($OPLIB{$fullname});
 
     for @($op) {
-        self.to_pbc($_, $pfbc, $pfconst);
+        self.to_pbc($_, %context);
     }
 }
 
-our multi method to_pbc(POST::Constant $op, $pfbc, $pfconst) {
+our multi method to_pbc(POST::Constant $op, %context) {
     # Strings for now.
-    my $idx := $pfconst.get_or_create_string($op.value);
+    my $idx := %context<constants>.get_or_create_string($op.value);
     pir::say("Index $idx");
-    $pfbc.push($idx);
+    %context<bytecode>.push($idx);
+}
+
+our multi method to_pbc(POST::Value $val, %context) {
+    # Redirect to real value. POST::Value is just reference.
+    my $orig := %context<sub>.symbol($val.name);
+    self.to_pbc($orig, %context);
 }
 
 # vim: ft=perl6
