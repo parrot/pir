@@ -1,4 +1,4 @@
-test_post( "Empty sub", <<'CODE', <<'RESULT');
+test_post( "Empty call", <<'CODE', <<'RESULT');
 .sub "main"
     "foo"()
 .end
@@ -11,6 +11,34 @@ CODE
             <name> => PMC 'PAST;Val'  {
                 <value> => "foo"
             }
+        }
+    }
+}
+RESULT
+
+test_post( "Simple params", <<'CODE', <<'RESULT');
+.sub "main"
+    "foo"("answer", 42)
+.end
+CODE
+"postshortcut" => PMC 'POST;Node'  {
+    <main_sub> => "main"
+    [0] => PMC 'POST;Sub'  {
+        <name> => "main"
+        [0] => PMC 'POST;Call'  {
+            <name> => PMC 'PAST;Val'  {
+                <value> => "foo"
+            }
+            <params> => ResizablePMCArray (size:2) [
+                PMC 'POST;Constant'  {
+                    <type> => "sc"
+                    <value> => "answer"
+                },
+                PMC 'POST;Constant'  {
+                    <type> => "ic"
+                    <value> => "42"
+                }
+            ]
         }
     }
 }

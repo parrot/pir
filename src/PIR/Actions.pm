@@ -200,6 +200,14 @@ method call:sym<sub>($/) {
         :name($<quote>.ast),
     );
 
+    if $<args>[0] {
+        # Vivify to list.
+        $past.params(pir::new__PS('ResizablePMCArray'));
+        for $<args>[0]<arg> {
+            $past.params.push( $_.ast );
+        }
+    }
+
     make $past;
 }
 
@@ -215,7 +223,7 @@ method call:sym<sub>($/) {
 #}
 
 method arg($/) {
-    # TODO Handle flags
+    # TODO Handle flags, fatarrow
     make $<value>.ast;
 }
 
