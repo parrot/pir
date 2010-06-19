@@ -29,19 +29,27 @@ CODE
             <name> => PMC 'PAST;Val'  {
                 <value> => "foo"
             }
-            <params> => ResizablePMCArray (size:2) [
-                PMC 'POST;Constant'  {
+            <params> => PMC 'PAST;Node'  {
+                [0] => PMC 'POST;Constant'  {
                     <type> => "sc"
                     <value> => "answer"
-                },
-                PMC 'POST;Constant'  {
+                }
+                [1] => PMC 'POST;Constant'  {
                     <type> => "ic"
                     <value> => "42"
                 }
-            ]
+            }
         }
     }
 }
+RESULT
+
+test_post( "Undeclared parameter", <<'CODE', <<'RESULT', "fail_like" => "Register 'foo' not predeclared");
+.sub "main"
+    "say"(foo)
+.end
+CODE
+dummy
 RESULT
 
 # vim: ft=perl6

@@ -201,11 +201,14 @@ method call:sym<sub>($/) {
     );
 
     if $<args>[0] {
-        # Vivify to list.
-        $past.params(pir::new__PS('ResizablePMCArray'));
+        # Store params (if any)
+        my $params := PAST::Node.new;
         for $<args>[0]<arg> {
-            $past.params.push( $_.ast );
+            $params.push( $_.ast );
         }
+        self.validate_registers($/, $params);
+
+        $past.params($params);
     }
 
     make $past;
