@@ -256,6 +256,11 @@ method arg($/) {
     make $<value>.ast;
 }
 
+method result($/) {
+    # TODO Handle flags
+    make $<variable>.ast;
+}
+
 method value($/) { make $<constant> ?? $<constant>.ast !! $<variable>.ast }
 
 method constant($/) {

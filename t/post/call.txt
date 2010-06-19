@@ -101,5 +101,52 @@ dummy
 RESULT
 
 
+test_post( "Many returns", <<'CODE', <<'RESULT');
+.sub "main"
+    ($P0, $S0) = "foo"()
+.end
+CODE
+"postshortcut" => PMC 'POST;Node'  {
+    <main_sub> => "main"
+    [0] => PMC 'POST;Sub'  {
+        <name> => "main"
+        <symtable> => Hash {
+            "$P0" => PMC 'POST;Register'  {
+                <name> => "$P0"
+                <type> => "p"
+            },
+            "$S0" => PMC 'POST;Register'  {
+                <name> => "$S0"
+                <type> => "s"
+            }
+        }
+        [0] => PMC 'POST;Call'  {
+            <name> => PMC 'PAST;Val'  {
+                <value> => "foo"
+            }
+            <results> => PMC 'PAST;Node'  {
+                [0] => PMC 'POST;Value'  {
+                    <name> => \postshortcut["$P0"]
+                    <type> => \postshortcut["$P0"]
+                }
+                [1] => PMC 'POST;Value'  {
+                    <name> => \postshortcut["$S0"]
+                    <type> => \postshortcut["$S0"]
+                }
+            }
+        }
+    }
+}
+RESULT
+
+test_post( "Undeclared many returns", <<'CODE', <<'RESULT', "fail_like" => "Register 'foo' not predeclared");
+.sub "main"
+    (foo) = "say"()
+.end
+CODE
+dummy
+RESULT
+
+
 
 # vim: ft=perl
