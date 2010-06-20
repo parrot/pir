@@ -28,3 +28,4 @@ CODE
 }
 RESULT
 
+# vim: ft=perl
