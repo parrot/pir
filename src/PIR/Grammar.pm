@@ -184,7 +184,11 @@ rule op {
 }
 
 rule op_params {
-    [ <value> | <pir_key> ] ** ','
+    <op_param> ** ','
+}
+
+token op_param {
+    <value> | <pir_key>
 }
 
 # Some syntax sugar

@@ -93,8 +93,10 @@ method op($/) {
         :pirop(~$<name>),
     );
 
-    for $<op_params> {
-        $past.push( $_.ast );
+    if $<op_params>[0] {
+        for $<op_params>[0]<op_param> {
+            $past.push( $_.ast );
+        }
     }
 
     self.validate_registers($/, $past);
@@ -104,7 +106,9 @@ method op($/) {
     make $past;
 }
 
-method op_params($/) { make $<value>[0] ?? $<value>[0].ast !! $<pir_key>[0].ast }
+method op_param($/) {
+    make $<value> ?? $<value>.ast !! $<pir_key>.ast
+}
 
 method pir_directive:sym<.local>($/) {
     my $type := pir::substr__SSII(~$<pir_type>, 0, 1);
