@@ -1,0 +1,30 @@
+test_post( "sym<assign>", <<'CODE', <<'RESULT');
+.sub "main"
+    $S0 = "hello"
+.end
+CODE
+"postshortcut" => PMC 'POST;Node'  {
+    <main_sub> => "main"
+    [0] => PMC 'POST;Sub'  {
+        <name> => \postshortcut
+        <symtable> => Hash {
+            "$S0" => PMC 'POST;Register'  {
+                <name> => "$S0"
+                <type> => "s"
+            }
+        }
+        [0] => PMC 'POST;Op'  {
+            <name> => "set"
+            [0] => PMC 'POST;Value'  {
+                <name> => \postshortcut["$S0"]
+                <type> => \postshortcut["$S0"]
+            }
+            [1] => PMC 'POST;Constant'  {
+                <type> => "sc"
+                <value> => "hello"
+            }
+        }
+    }
+}
+RESULT
+
