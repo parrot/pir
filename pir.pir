@@ -22,13 +22,13 @@
 .include 'src/PIR/Compiler.pir'
 
 .HLL 'parrot'
+.include 'src/POST/VanillaAllocator.pir'
 .include 'src/POST/Compiler.pir'
 .include 'src/POST/Sub.pir'
 .include 'src/POST/Call.pir'
 .include 'src/POST/Value.pir'
 .include 'src/POST/Constant.pir'
 .include 'src/POST/Register.pir'
-.include 'src/POST/VanillaAllocator.pir'
 
 .HLL 'PIRATE'
 
