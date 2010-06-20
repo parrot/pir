@@ -24,6 +24,31 @@ our method symbol($name, $value?) {
     %symtable{$name};
 }
 
+=item C<labels>
+Get all labels.
+
+our method labels() {
+    self<labels>;
+}
+
+=item C<symbol($name, $value?)
+Get or set variable used in POST::Sub.
+
+our method label($name, $value?) {
+    my %labels := self<labels>;
+    unless %labels {
+        self<labels> := hash();
+        %labels := self<labels>;
+    }
+
+    if $value {
+        %labels{$name} := $value;
+    }
+
+    %labels{$name};
+}
+
+
 =item C<param($name, POST::Register $param)
 Add Sub parameter.
 
