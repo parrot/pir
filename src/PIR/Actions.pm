@@ -9,11 +9,16 @@ class PIR::Actions is HLL::Actions;
 has $!BLOCK;
 has $!MAIN;
 
+has $!OPLIB;
+
 INIT {
     pir::load_bytecode("nqp-setting.pbc");
 }
 
-method TOP($/) { make $<top>.ast; }
+method TOP($/) {
+    $!OPLIB := pir::new__PS("OpLib");
+    make $<top>.ast;
+}
 
 method top($/) {
     my $past := POST::Node.new;
@@ -36,10 +41,7 @@ method compilation_unit:sym<.namespace> ($/) {
     our $*NAMESPACE := $<namespace_key>[0] ?? $<namespace_key>[0].ast !! undef;
 }
 
-method newpad($/) {
-    $!BLOCK := POST::Sub.new(
-    );
-}
+method newpad($/) { $!BLOCK := POST::Sub.new; }
 
 method compilation_unit:sym<sub> ($/) {
     my $name := $<subname>.ast;
@@ -93,15 +95,26 @@ method op($/) {
         :pirop(~$<name>),
     );
 
+    # TODO Validate via OpLib
+    $!OPLIB := pir::new__PS("OpLib") unless pir::defined__IP($!OPLIB);
+
+    my $op_family := $!OPLIB.op_family(~$<name>);
+    my $pirop     := $op_family.shift;
+
     if $<op_params>[0] {
+        my $labels := pir::iter__PP($pirop.labels);
         for $<op_params>[0]<op_param> {
-            $past.push( $_.ast );
+            my $label := pir::shift__IP($labels);
+            if $label {
+                $past.push(POST::Label.new(:name(~$_)));
+            }
+            else {
+                $past.push( $_.ast );
+            }
         }
     }
 
     self.validate_registers($/, $past);
-
-    # TODO Validate via OpLib
 
     make $past;
 }
@@ -405,20 +418,22 @@ method quote:sym<dblq>($/) {
     );
 }
 
+
 method validate_registers($/, $node) {
-    for @($node) -> $arg {
-        my $name;
-        try {
-            # XXX Constants doesn't have names. But pir::isa__IPP doesn't wor either
-            $name := $arg.name;
-        };
-        if $name {
-            if !$!BLOCK.symbol($name) {
-                $/.CURSOR.panic("Register '" ~ $name ~ "' not predeclared");
-            }
-        }
+    for @($node) {
+        self.validate_register($/, $_);
     }
 }
+
+our multi method validate_register($/, POST::Value $reg) {
+    my $name := $reg.name;
+    if $name && !$!BLOCK.symbol($name) {
+        $/.CURSOR.panic("Register '" ~ $name ~ "' not predeclared");
+    }
+}
+
+# POST::Label, POST::Constant
+our multi method validate_register($/, $arg) { }
 
 sub dequote($a) {
     my $l := pir::length__IS($a);
