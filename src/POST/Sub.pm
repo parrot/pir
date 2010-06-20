@@ -1,8 +1,8 @@
 module POST::Sub;
 
-=begin
-Same as PAST::Sub C<symbol>
-=end
+=item C<symbol($name, $value?)
+Get or set variable used in POST::Sub.
+
 our method symbol($name, $value?) {
     my %symtable := self<symtable>;
     unless %symtable {
@@ -16,6 +16,22 @@ our method symbol($name, $value?) {
 
     %symtable{$name};
 }
+
+=item C<param($name, POST::Register $param)
+Add Sub parameter.
+
+our method param($name, POST::Register $param) {
+    my @params := self<params>;
+    unless @params {
+        self<params> := list();
+        @params := self<params>;
+    }
+
+    # Don't check redeclaration of register. It should be done early.
+
+    @params.push($param);
+}
+
 
 INIT {
     pir::load_bytecode('nqp-setting.pbc');

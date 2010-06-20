@@ -72,6 +72,7 @@ method param_decl($/) {
         $/.CURSOR.panic("Redeclaration of varaible '$name'");
     }
 
+    $!BLOCK.param($name, $past);
     $!BLOCK.symbol($name, $past);
 
     make $past;

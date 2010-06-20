@@ -43,27 +43,33 @@ CODE
     <main_sub> => "main"
     [0] => PMC 'POST;Sub'  {
         <name> => "main"
-        <symtable> => Hash {
-            "a" => PMC 'POST;Register'  {
+        <params> => ResizablePMCArray (size:4) [
+            PMC 'POST;Register'  {
                 <declared> => 1
                 <name> => "a"
                 <type> => "p"
             },
-            "b" => PMC 'POST;Register'  {
+            PMC 'POST;Register'  {
                 <declared> => 1
                 <name> => "b"
                 <type> => "s"
             },
-            "c" => PMC 'POST;Register'  {
+            PMC 'POST;Register'  {
                 <declared> => 1
                 <name> => "c"
                 <type> => "i"
             },
-            "d" => PMC 'POST;Register'  {
+            PMC 'POST;Register'  {
                 <declared> => 1
                 <name> => "d"
                 <type> => "n"
             }
+        ]
+        <symtable> => Hash {
+            "a" => \postshortcut[0],
+            "b" => \postshortcut[1],
+            "c" => \postshortcut[2],
+            "d" => \postshortcut[3]
         }
     }
 }
@@ -87,12 +93,15 @@ CODE
     <main_sub> => "main"
     [0] => PMC 'POST;Sub'  {
         <name> => "main"
-        <symtable> => Hash {
-            "a" => PMC 'POST;Register'  {
+        <params> => ResizablePMCArray (size:1) [
+            PMC 'POST;Register'  {
                 <declared> => 1
                 <name> => "a"
                 <type> => "p"
             }
+        ]
+        <symtable> => Hash {
+            "a" => \postshortcut[0]
         }
         [0] => PMC 'POST;Op'  {
             <pirop> => "say"
