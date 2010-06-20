@@ -203,6 +203,29 @@ method const_declaration:sym<string>($/) {
     make $past;
 }
 
+# TODO Desugarize all of them.
+#rule pir_instruction:sym<goto>
+#rule pir_instruction:sym<if>
+#rule pir_instruction:sym<unless>
+#rule pir_instruction:sym<if_null> {
+#rule pir_instruction:sym<unless_null> {
+#rule pir_instruction:sym<if_op> {
+#rule pir_instruction:sym<unless_op> {
+
+method pir_instruction:sym<assign>($/) {
+    my $past := POST::Op.new(
+        :name('set'),
+        $<variable>.ast,
+        $<value>.ast,
+    );
+}
+
+#rule pir_instruction:sym<op_assign_long_long_long_name> {
+#rule pir_instruction:sym<unary> {
+#rule pir_instruction:sym<binary_math> {
+#rule pir_instruction:sym<binary_logic> {
+
+
 method pir_instruction:sym<call>($/) { make $<call>.ast; }
 
 method pir_instruction:sym<call_assign>($/) {
