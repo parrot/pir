@@ -1,0 +1,39 @@
+test_post( "if cond, label", <<'CODE', <<'RESULT');
+.sub "main"
+    if $I0, done
+  done:
+.end
+CODE
+"postshortcut" => PMC 'POST;Node'  {
+    <main_sub> => "main"
+    [0] => PMC 'POST;Sub'  {
+        <labels> => Hash {
+            "done" => PMC 'POST;Label'  {
+                <declared> => 1
+                <name> => "done"
+            }
+        }
+        <name> => \postshortcut
+        <symtable> => Hash {
+            "$I0" => PMC 'POST;Register'  {
+                <name> => "$I0"
+                <type> => "i"
+            }
+        }
+        [0] => PMC 'POST;Op'  {
+            <pirop> => "if"
+            [0] => PMC 'POST;Value'  {
+                <name> => \postshortcut["$I0"]
+                <type> => \postshortcut["$I0"]
+            }
+            [1] => PMC 'POST;Label'  {
+                <name> => "done"
+            }
+        }
+        [1] => \postshortcut["done"]
+    }
+}
+RESULT
+
+
+# vim: ft=perl

@@ -85,9 +85,31 @@ method statement($/) {
 }
 
 method labeled_instruction($/) {
-    # TODO Handle C<label> and _just_ label.
     my $child := $<pir_instruction>[0] // $<op>[0]; # // $/.CURSOR.panic("NYI");
-    make $child.ast if $child;
+    my $past;
+    $past := $child.ast if $child;
+
+    # Create wrapping Label.
+    my $label;
+    if $<label>[0] {
+        my $name := ~$<label>[0]<ident>;
+        $label   := $!BLOCK.label($name);
+        if pir::defined__IP($label) && $label.declared {
+             $/.CURSOR.panic("Redeclartion of label '$label'");
+        }
+
+        $label := POST::Label.new(
+            :name($name),
+            :declared(1),
+        );
+
+        $!BLOCK.label($name, $label);
+
+        $label.push($past) if $past;
+        $past := $label;
+    }
+
+    make $past if $past;
 }
 
 method op($/) {
@@ -106,7 +128,10 @@ method op($/) {
         for $<op_params>[0]<op_param> {
             my $label := pir::shift__IP($labels);
             if $label {
-                $past.push(POST::Label.new(:name(~$_)));
+                my $name  := ~$_;
+                my $label := POST::Label.new(:name($name));
+                $!BLOCK.label($name, $label) unless $!BLOCK.label($name);
+                $past.push($label);
             }
             else {
                 $past.push( $_.ast );
