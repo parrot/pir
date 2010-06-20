@@ -44,5 +44,13 @@ CODE
 dummy
 RESULT
 
+test_post( "Undeclared label", <<'CODE', <<'RESULT', "fail_like" => "Label 'foo' not declared");
+.sub "main"
+    if $I0, foo
+.end
+CODE
+dummy
+RESULT
+
 
 # vim: ft=perl

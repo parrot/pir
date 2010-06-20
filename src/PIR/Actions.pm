@@ -59,6 +59,8 @@ method compilation_unit:sym<sub> ($/) {
         }
     }
 
+    self.validate_labels($/, $!BLOCK);
+
     make $!BLOCK;
 }
 
@@ -459,6 +461,14 @@ our multi method validate_register($/, POST::Value $reg) {
 
 # POST::Label, POST::Constant
 our multi method validate_register($/, $arg) { }
+
+method validate_labels($/, $node) {
+    for $node.labels {
+        unless $_.value.declared {
+            $/.CURSOR.panic("Label '" ~ $_.value.name ~ "' not declared");
+        }
+    }
+}
 
 sub dequote($a) {
     my $l := pir::length__IS($a);
