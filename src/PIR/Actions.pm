@@ -198,16 +198,10 @@ method const_declaration:sym<string>($/) {
     make $past;
 }
 
-method pir_instruction_call($/) {
-    make $<call>.ast;
-}
-
-method pir_instruction:sym<call>($/) {
-    self.pir_instruction_call($/);
-}
+method pir_instruction:sym<call>($/) { make $<call>.ast; }
 
 method pir_instruction:sym<call_assign>($/) {
-    my $past := self.pir_instruction_call($/);
+    my $past := self.pir_instruction:sym<call>($/);
 
     # Store params (if any)
     my $results := POST::Node.new;
@@ -219,7 +213,7 @@ method pir_instruction:sym<call_assign>($/) {
 }
 
 method pir_instruction:sym<call_assign_many>($/) {
-    my $past := self.pir_instruction_call($/);
+    my $past := self.pir_instruction:sym<call>($/);
 
     # Store params (if any)
     if $<results>[0] {
@@ -237,7 +231,7 @@ method pir_instruction:sym<call_assign_many>($/) {
 
 # Short PCC call.
 #proto regex call { <...> }
-method call_sym_pmc($/) {
+method call:sym<pmc>($/) {
     my $past := POST::Call.new(
         :calltype('call'),
         :name($<variable>.ast),
@@ -246,11 +240,7 @@ method call_sym_pmc($/) {
     make $past;
 }
 
-method call:sym<pmc>($/) {
-    make self.call_sym_pmc($/);
-}
-
-method call_sym_sub($/) {
+method call:sym<sub>($/) {
     my $past := POST::Call.new(
         :calltype('call'),
         :name($<quote>.ast),
@@ -259,18 +249,14 @@ method call_sym_sub($/) {
     make $past;
 }
 
-method call:sym<sub>($/) {
-    make self.call_sym_sub($/);
-}
-
 method call:sym<dynamic>($/) {
-    my $past := self.call_sym_pmc($/);
+    my $past := self.call:sym<pmc>($/);
     $past.invocant($<invocant>.ast);
     make $past;
 }
 
 method call:sym<method>($/) {
-    my $past := self.call_sym_sub($/);
+    my $past := self.call:sym<sub>($/);
     $past.invocant($<invocant>.ast);
     make $past;
 }
