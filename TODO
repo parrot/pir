@@ -36,10 +36,6 @@ C<.set_arg>, C<.get_result>, C<.set_return>, C<.yield>, etc.
 
 E.g. :flat, etc.
 
-=item * Labels.
-
-Store in similar way as symbols. Validate at the end of Sub.
-
 =back
 
 =head1 PBC generating
@@ -53,6 +49,10 @@ Can be "vanilla" as first cut.
 =item * Labels.
 
 Calculate offsets, etc
+
+First cut - keep labels "todo" list when we process op with label. E.g.
+hash of (offset => label). In .to_pbc(Label) update offset in Sub.labels.
+At the end of .to_pbc(Sub) update ops from "todo list.
 
 =back
 
