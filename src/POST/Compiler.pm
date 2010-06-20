@@ -7,6 +7,11 @@ Generate PBC file.
 
 our $OPLIB;
 
+our $REGALLOC;
+INIT {
+    $REGALLOC := POST::VanillaAllocator.new;
+}
+
 method pbc($post, %adverbs) {
     #pir::trace(1);
     $OPLIB := pir::new__PS('OpLib');
@@ -56,6 +61,9 @@ our multi method to_pbc(POST::Sub $sub, %context) {
     # Store current Sub in context to resolve symbols and constants.
     %context<sub> := $sub;
 
+    # Allocate registers.
+    my @n_regs_used := $REGALLOC.process($sub);
+
     my $bc := %context<bytecode>;
 
     # Packfile poop his pants...
@@ -91,6 +99,8 @@ our multi method to_pbc(POST::Sub $sub, %context) {
         :ns_entry_name( $subname ),
         :HLL_id<0>,
         :method<0>,
+
+        :n_regs_used(@n_regs_used),
     );
 
     # and store it in PackfileConstantTable
@@ -135,6 +145,10 @@ our multi method to_pbc(POST::Value $val, %context) {
     # Redirect to real value. POST::Value is just reference.
     my $orig := %context<sub>.symbol($val.name);
     self.to_pbc($orig, %context);
+}
+
+our multi method to_pbc(POST::Register $reg, %context) {
+    %context<bytecode>.push($reg.regno);
 }
 
 # vim: ft=perl6
