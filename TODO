@@ -36,6 +36,10 @@ C<.set_arg>, C<.get_result>, C<.set_return>, C<.yield>, etc.
 
 E.g. :flat, etc.
 
+=item * Labels.
+
+Store in similar way as symbols. Validate at the end of Sub.
+
 =back
 
 =head1 PBC generating
@@ -45,6 +49,10 @@ E.g. :flat, etc.
 =item * Register allocator.
 
 Can be "vanilla" as first cut.
+
+=item * Labels.
+
+Calculate offsets, etc
 
 =back
 
