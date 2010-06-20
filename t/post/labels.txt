@@ -35,5 +35,14 @@ CODE
 }
 RESULT
 
+test_post( "Duplicate label", <<'CODE', <<'RESULT', "fail_like" => "Redeclaration of label 'foo'");
+.sub "main"
+    foo:
+    foo:
+.end
+CODE
+dummy
+RESULT
+
 
 # vim: ft=perl

@@ -95,7 +95,7 @@ method labeled_instruction($/) {
         my $name := ~$<label>[0]<ident>;
         $label   := $!BLOCK.label($name);
         if pir::defined__IP($label) && $label.declared {
-             $/.CURSOR.panic("Redeclartion of label '$label'");
+             $/.CURSOR.panic("Redeclaration of label '$name'");
         }
 
         $label := POST::Label.new(
