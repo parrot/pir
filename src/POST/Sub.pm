@@ -1,5 +1,12 @@
 module POST::Sub;
 
+=item C<symtable>
+Get whole symtable. Used in register allocator.
+
+our method symtable() {
+    self<symtable>;
+}
+
 =item C<symbol($name, $value?)
 Get or set variable used in POST::Sub.
 

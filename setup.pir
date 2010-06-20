@@ -39,6 +39,8 @@ No Configure step, no Makefile generated.
     $P1['src/POST/Constant.pir'] = 'src/POST/Constant.pm'
     $P1['src/POST/Register.pir'] = 'src/POST/Register.pm'
 
+    $P1['src/POST/VanillaAllocator.pir'] = 'src/POST/VanillaAllocator.pm'
+
     # Functions for testing.
     $P1['t/parse.pir'] = 't/parse.nqp'
     $P1['t/post.pir']  = 't/post.nqp'
@@ -60,6 +62,8 @@ src/POST/Sub.pir
 src/POST/Value.pir
 src/POST/Constant.pir
 src/POST/Register.pir
+
+src/POST/VanillaAllocator.pir
 
 SOURCES
     $P3['pir.pbc'] = $P4

@@ -28,6 +28,7 @@
 .include 'src/POST/Value.pir'
 .include 'src/POST/Constant.pir'
 .include 'src/POST/Register.pir'
+.include 'src/POST/VanillaAllocator.pir'
 
 .HLL 'PIRATE'
 
