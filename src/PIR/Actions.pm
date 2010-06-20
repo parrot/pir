@@ -214,7 +214,7 @@ method const_declaration:sym<string>($/) {
 
 method pir_instruction:sym<assign>($/) {
     make POST::Op.new(
-        :name('set'),
+        :pirop('set'),
         $<variable>.ast,
         $<value>.ast,
     );

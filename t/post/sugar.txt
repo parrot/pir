@@ -14,7 +14,7 @@ CODE
             }
         }
         [0] => PMC 'POST;Op'  {
-            <name> => "set"
+            <pirop> => "set"
             [0] => PMC 'POST;Value'  {
                 <name> => \postshortcut["$S0"]
                 <type> => \postshortcut["$S0"]
