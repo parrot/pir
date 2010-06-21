@@ -261,7 +261,16 @@ method pir_instruction:sym<if>($/) {
     );
 }
 
-#rule pir_instruction:sym<unless>
+method pir_instruction:sym<unless>($/) {
+    make POST::Op.new(
+        :pirop('unless'),
+        $<variable>.ast,
+        POST::Label.new(
+            :name(~$<ident>),
+        ),
+    );
+}
+
 #rule pir_instruction:sym<if_null> {
 #rule pir_instruction:sym<unless_null> {
 #rule pir_instruction:sym<if_op> {

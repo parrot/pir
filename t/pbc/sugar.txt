@@ -23,5 +23,17 @@ CODE
 ok
 RESULT
 
+test_post( "sym<unless>", <<'CODE', <<'RESULT');
+.sub "main"
+    $I0 = 0
+    unless $I0 goto label
+    say "not "
+  label:
+    say "ok"
+.end
+CODE
+ok
+RESULT
+
 
 # vim: ft=perl
