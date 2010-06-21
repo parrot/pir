@@ -271,8 +271,28 @@ method pir_instruction:sym<unless>($/) {
     );
 }
 
-#rule pir_instruction:sym<if_null> {
-#rule pir_instruction:sym<unless_null> {
+method pir_instruction:sym<if_null>($/) {
+    # TODO Check variable type for "p" or "s".
+    make POST::Op.new(
+        :pirop('if_null'),
+        $<variable>.ast,
+        POST::Label.new(
+            :name(~$<ident>),
+        ),
+    );
+}
+
+method pir_instruction:sym<unless_null>($/) {
+    # TODO Check variable type for "p" or "s".
+    make POST::Op.new(
+        :pirop('unless_null'),
+        $<variable>.ast,
+        POST::Label.new(
+            :name(~$<ident>),
+        ),
+    );
+}
+
 #rule pir_instruction:sym<if_op> {
 #rule pir_instruction:sym<unless_op> {
 

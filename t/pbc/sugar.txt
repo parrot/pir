@@ -35,5 +35,30 @@ CODE
 ok
 RESULT
 
+test_post( "sym<if_null>", <<'CODE', <<'RESULT');
+.sub "main"
+    if null $P0 goto label
+    say "not "
+  label:
+    say "ok"
+.end
+CODE
+ok
+RESULT
+
+test_post( "sym<unless_null>", <<'CODE', <<'RESULT');
+.sub "main"
+    new $P0, 'Integer'
+    $P0 = 1
+    unless null $P0 goto label
+    say "not "
+  label:
+    say "ok"
+.end
+CODE
+ok
+RESULT
+
+
 
 # vim: ft=perl
