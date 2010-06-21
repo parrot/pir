@@ -2,49 +2,6 @@
 
 # This file compiled to pir and used in tests.
 
-# Helper grammar to parse test data
-grammar PBCTestDataGrammar is HLL::Grammar {
-    rule TOP {
-        #<?DEBUG>
-        <testcase>+
-        $ || <.panic: "Can't parse test data">
-    };
-
-    rule testcase {
-        'test_pbc' '(' <name> ',' "<<'CODE'" [ ',' <adverbs> ]? ');'
-        <code>
-        <result>
-    }
-
-    token name   { <quote> }
-    token code   { $<content>=[.*? \n] 'CODE' \n  }
-    token result { $<content>=[.*? \n] 'RESULT' \n  }
-
-    rule adverbs { <adverb> ** ',' }
-    rule adverb  { <name=quote> '=>' <value=quote> }
-
-    proto token quote { <...> }
-    token quote:sym<apos> { <?[']> <quote_EXPR: ':q'>  }
-    token quote:sym<dblq> { <?["]> <quote_EXPR: ':q'> }
-
-    token ws {
-        <!ww>
-            [
-            | '#' \N*
-            | \h+
-            | \v
-            ]*
-    }
-};
-
-our sub parse_pbc_tests($file)
-{
-    pir::load_bytecode('nqp-setting.pbc');
-    my $data  := slurp($file);
-    my $match := PBCTestDataGrammar.parse($data);
-    $match<testcase>;
-}
-
 our sub run_pbc_tests_from_datafile($file, :$keep_going?)
 {
     my @tests := parse_post_tests($file);
