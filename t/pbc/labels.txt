@@ -1,5 +1,5 @@
 # It's not real "perl"! It's just looks like it.
-test_post( "Hello, World", <<'CODE', <<'RESULT');
+test_post( "Single label", <<'CODE', <<'RESULT');
 .sub "main"
     $I0 = 1
     if $I0, label
@@ -9,6 +9,33 @@ test_post( "Hello, World", <<'CODE', <<'RESULT');
 .end
 CODE
 ok
+RESULT
+
+test_post( "Multiple labels", <<'CODE', <<'RESULT');
+.sub "main"
+    $I0 = 0
+    $I1 = 1
+    say "1 ok"
+    if $I1, label2
+    
+  label3:
+    say "4 ok"
+    if $I1, label4
+
+  label2:
+    say "2 ok"
+    if $I0, label4
+    say "3 ok"
+    if $I1, label3
+
+  label4:
+    say "5 ok"
+.end
+CODE
+1 ok
+2 ok
+3 ok
+4 ok
 RESULT
 
 
