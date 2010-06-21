@@ -56,3 +56,4 @@
 #    };
 .end
 
+# vim: ft=pir
