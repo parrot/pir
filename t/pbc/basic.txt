@@ -16,4 +16,16 @@ CODE
 Hello, World
 RESULT
 
+test_post( "Allocator use different registers", <<'CODE', <<'RESULT');
+.sub "main"
+    $S0 = "Hello"
+    $S1 = "World"
+    print $S0
+    print ", "
+    say $S1
+.end
+CODE
+Hello, World
+RESULT
+
 # vim: ft=perl
