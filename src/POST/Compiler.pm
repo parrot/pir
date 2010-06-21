@@ -6,6 +6,7 @@ Generate PBC file.
 =end
 
 our $OPLIB;
+our $DEBUG;
 
 our $REGALLOC;
 INIT {
@@ -14,7 +15,8 @@ INIT {
 
 method pbc($post, %adverbs) {
     #pir::trace(1);
-    $OPLIB := pir::new__PS('OpLib');
+    $OPLIB  := pir::new__PS('OpLib');
+    $DEBUG := %adverbs<debug>;
 
     # Emitting context. Contains fixups, consts, etc.
     my %context;
@@ -71,11 +73,11 @@ our multi method to_pbc(POST::Sub $sub, %context) {
     $sb.push(~$sub.name);
     my $subname := ~$sb;
 
-    pir::say("Emitting $subname");
+    self.debug("Emitting $subname") if $DEBUG;
     %context<constants>.get_or_create_string($subname);
 
     my $start_offset := +$bc;
-    pir::say("From $start_offset");
+    self.debug("From $start_offset") if $DEBUG;
 
     # Emit ops.
     for @($sub) {
@@ -88,7 +90,7 @@ our multi method to_pbc(POST::Sub $sub, %context) {
     $bc.push($OPLIB<returncc>);
 
     my $end_offset := +$bc;
-    pir::say("To $end_offset");
+    self.debug("To $end_offset") if $DEBUG;
 
     # Now create Sub PMC using hash of values.
     my %sub := hash(
@@ -106,7 +108,7 @@ our multi method to_pbc(POST::Sub $sub, %context) {
     # and store it in PackfileConstantTable
     my $idx := %context<constants>.push(pir::new__PSP('Sub', %sub));
 
-    pir::say("Fixup $subname");
+    self.debug("Fixup $subname") if $DEBUG;
     my $P1 := pir::new__PSP('PackfileFixupEntry', hash(
             :name( ~$subname ),
             :type<1>,
@@ -119,14 +121,14 @@ our multi method to_pbc(POST::Sub $sub, %context) {
 our multi method to_pbc(POST::Op $op, %context) {
     # Generate full name
     my $fullname := $op.pirop;
-    pir::say("Short name $fullname");
+    self.debug("Short name $fullname") if $DEBUG;
 
     for @($op) {
         my $type := $_.type || %context<sub>.symbol($_.name).type;
         $fullname := ~$fullname ~ '_' ~ ~$type;
     }
 
-    pir::say("Fullname $fullname");
+    self.debug("Fullname $fullname") if $DEBUG;
     %context<bytecode>.push($OPLIB{$fullname});
 
     for @($op) {
@@ -137,7 +139,7 @@ our multi method to_pbc(POST::Op $op, %context) {
 our multi method to_pbc(POST::Constant $op, %context) {
     # Strings for now.
     my $idx := %context<constants>.get_or_create_string($op.value);
-    pir::say("Index $idx");
+    self.debug("Index $idx") if $DEBUG;
     %context<bytecode>.push($idx);
 }
 
@@ -149,6 +151,12 @@ our multi method to_pbc(POST::Value $val, %context) {
 
 our multi method to_pbc(POST::Register $reg, %context) {
     %context<bytecode>.push($reg.regno);
+}
+
+method debug(*@args) {
+    if $DEBUG {
+        say(|@args);
+    }
 }
 
 # vim: ft=perl6
