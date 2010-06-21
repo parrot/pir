@@ -15,27 +15,28 @@ test_post( "Multiple labels", <<'CODE', <<'RESULT');
 .sub "main"
     $I0 = 0
     $I1 = 1
-    say "1 ok"
+    say "ok 1"
     if $I1, label2
     
   label3:
-    say "4 ok"
+    say "ok 4"
     if $I1, label4
 
   label2:
-    say "2 ok"
+    say "ok 2"
     if $I0, label4
-    say "3 ok"
+    say "ok 3"
     if $I1, label3
 
   label4:
-    say "5 ok"
+    say "ok 5"
 .end
 CODE
-1 ok
-2 ok
-3 ok
-4 ok
+ok 1
+ok 2
+ok 3
+ok 4
+ok 5
 RESULT
 
 
