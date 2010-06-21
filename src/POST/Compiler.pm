@@ -160,8 +160,17 @@ our multi method to_pbc(POST::Op $op, %context) {
 
 our multi method to_pbc(POST::Constant $op, %context) {
     self.debug("Constant") if $DEBUG;
-    # Strings for now.
-    my $idx := %context<constants>.get_or_create_string($op.value);
+    my $idx;
+    if $op.type eq 'sc' {
+        $idx := %context<constants>.get_or_create_string($op.value);
+    }
+    elsif $op.type eq 'ic' {
+        $idx := $op.value;
+    }
+    else {
+        die("NYI");
+    }
+
     self.debug("Index $idx") if $DEBUG;
     %context<bytecode>.push($idx);
 }
