@@ -84,6 +84,12 @@
     .return ($I0)
 .end
 
+.sub 'get_or_create_number' :method
+    .param num n
+    $I0 = self.'get_or_create_constant'(n)
+    .return ($I0)
+.end
+
 
 =head1 LICENSE
 
