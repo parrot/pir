@@ -329,7 +329,18 @@ method pir_instruction:sym<assign>($/) {
 }
 
 method pir_instruction:sym<op_assign_long_long_long_name>($/) {
-    $/.CURSOR.panic("NYI");
+    # TODO Check in OpLib for first argument. It should be "out" or "inout"
+    my $past := POST::Op.new(
+        :pirop(~$<op>),
+        $<variable>.ast,
+    );
+
+    for $<op_params><op_param> {
+        # Don't check "labels". We can't have them here.
+        $past.push( $_.ast );
+    }
+
+    make $past;
 }
 
 #rule pir_instruction:sym<unary> {

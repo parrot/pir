@@ -59,6 +59,16 @@ CODE
 ok
 RESULT
 
+test_post( "sym<op_assign>", <<'CODE', <<'RESULT');
+.sub "main"
+    $P0 = new 'Integer'
+    $P0 = 42
+    say $P0
+.end
+CODE
+42
+RESULT
+
 
 
 # vim: ft=perl
