@@ -1,7 +1,16 @@
 # It's not real "perl"! It's just looks like it.
-test_post( "Empty sub", <<'CODE', <<'RESULT');
+test_post( "Hello, World", <<'CODE', <<'RESULT');
 .sub "main"
     say "Hello, World"
+.end
+CODE
+Hello, World
+RESULT
+
+test_post( "Hello, World (assign)", <<'CODE', <<'RESULT');
+.sub "main"
+    $S0 = "Hello, World"
+    say $S0
 .end
 CODE
 Hello, World
