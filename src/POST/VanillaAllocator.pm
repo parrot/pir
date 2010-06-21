@@ -21,7 +21,7 @@ our method process(POST::Sub $sub) {
     for $sub.symtable {
         # TODO Skip constants.
         my $idx := %type2idx{$_.key};
-        $_.value.regno(@n_regs_used[$idx]);
+        $_.value.regno(+@n_regs_used[$idx]);
         @n_regs_used[$idx]++;
     }
 
