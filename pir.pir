@@ -21,7 +21,7 @@
 .include 'src/PIR/Grammar.pir'
 .include 'src/PIR/Compiler.pir'
 
-.HLL 'parrot'
+#.HLL 'parrot'
 .include 'src/POST/VanillaAllocator.pir'
 .include 'src/POST/Compiler.pir'
 .include 'src/POST/Sub.pir'
@@ -31,7 +31,7 @@
 .include 'src/POST/Register.pir'
 .include 'src/POST/Label.pir'
 
-.HLL 'PIRATE'
+#.HLL 'PIRATE'
 
 .namespace []
 .sub 'main' :main
@@ -47,7 +47,7 @@
 .end
 
 
-.HLL 'parrot'
+#.HLL 'parrot'
 
 .namespace ['PackfileRawSegment']
 .sub 'push' :method
