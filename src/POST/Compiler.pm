@@ -159,7 +159,6 @@ our multi method to_pbc(POST::Op $op, %context) {
 }
 
 our multi method to_pbc(POST::Constant $op, %context) {
-    self.debug("Constant") if $DEBUG;
     my $idx;
     if $op.type eq 'sc' {
         $idx := %context<constants>.get_or_create_string($op.value);
@@ -176,19 +175,23 @@ our multi method to_pbc(POST::Constant $op, %context) {
 }
 
 our multi method to_pbc(POST::Value $val, %context) {
-    self.debug("Value") if $DEBUG;
     # Redirect to real value. POST::Value is just reference.
     my $orig := %context<sub>.symbol($val.name);
     self.to_pbc($orig, %context);
 }
 
 our multi method to_pbc(POST::Register $reg, %context) {
-    self.debug("Register") if $DEBUG;
     %context<bytecode>.push($reg.regno);
 }
 
+# Some PIR sugar produces nested Nodes.
+our multi method to_pbc(POST::Node $node, %context) {
+    for @($node) {
+        self.to_pbc($_, %context);
+    }
+}
+
 our multi method to_pbc(POST::Label $l, %context) {
-    self.debug("Label") if $DEBUG;
     my $bc := %context<bytecode>;
     if $l.declared {
         my $pos := +$bc;
