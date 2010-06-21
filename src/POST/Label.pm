@@ -10,5 +10,7 @@ our multi method declared()       { self.attr('declared', undef,  0); }
 our multi method position($param) { self.attr('position', $param, 1); }
 our multi method position()       { self.attr('position', undef,  0); }
 
+# Labels are always int constants.
+our multi method type()           { 'ic' }
 
 # vim: ft=perl6
