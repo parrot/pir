@@ -76,7 +76,7 @@ our multi method to_pbc(POST::Sub $sub, %context) {
 
     # Allocate registers.
     my @n_regs_used := $REGALLOC.process($sub);
-    self.debug('n_regs_used ' ~ pir::join__ssp('-', @n_regs_used)) if $DEBUG;
+    self.debug('n_regs_used ' ~ @n_regs_used.join('-')) if $DEBUG;
     self.dumper($sub.symtable, "regs") if $DEBUG;
 
     my $bc := %context<bytecode>;
