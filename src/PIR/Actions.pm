@@ -242,7 +242,15 @@ method const_declaration:sym<string>($/) {
 }
 
 # TODO Desugarize all of them.
-#rule pir_instruction:sym<goto>
+method pir_instruction:sym<goto>($/) {
+    make POST::Op.new(
+        :pirop('branch'),
+        POST::Label.new(
+            :name(~$<ident>),
+        ),
+    );
+}
+
 method pir_instruction:sym<if>($/) {
     make POST::Op.new(
         :pirop('if'),
