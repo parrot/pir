@@ -5,6 +5,17 @@ module POST::Compiler;
 Generate PBC file.
 =end
 
+=begin Labels
+
+Labels are handled in two passes:
+=item Generate todolist.
+Todolist is hash of (position=>(name, op_start)), where C<position> is offset
+in bytecode where label with C<name> used.
+=item Populate labels.
+Iterate over todolist and replace labels with offset of Sub start.
+
+=end Labels
+
 our $OPLIB;
 our $DEBUG;
 
@@ -15,7 +26,7 @@ INIT {
 
 method pbc($post, %adverbs) {
     #pir::trace(1);
-    $OPLIB  := pir::new__PS('OpLib');
+    $OPLIB := pir::new__PS('OpLib');
     $DEBUG := %adverbs<debug>;
 
     # Emitting context. Contains fixups, consts, etc.
@@ -68,6 +79,9 @@ our multi method to_pbc(POST::Sub $sub, %context) {
 
     my $bc := %context<bytecode>;
 
+    # Todo-list of Labels.
+    %context<labels_todo> := hash();
+
     # Packfile poop his pants...
     my $sb := pir::new__PS('StringBuilder');
     $sb.push(~$sub.name);
@@ -91,6 +105,9 @@ our multi method to_pbc(POST::Sub $sub, %context) {
 
     my $end_offset := +$bc;
     self.debug("To $end_offset") if $DEBUG;
+
+    # Fixup labels to set real offsets
+    self.fixup_labels($sub, %context<labels_todo>, %context<bytecode>);
 
     # Now create Sub PMC using hash of values.
     my %sub := hash(
@@ -129,14 +146,18 @@ our multi method to_pbc(POST::Op $op, %context) {
     }
 
     self.debug("Fullname $fullname") if $DEBUG;
-    %context<bytecode>.push($OPLIB{$fullname});
 
+    # Store op offset. It will be needed for calculating labels.
+    %context<opcode_offset> := +%context<bytecode>;
+
+    %context<bytecode>.push($OPLIB{$fullname});
     for @($op) {
         self.to_pbc($_, %context);
     }
 }
 
 our multi method to_pbc(POST::Constant $op, %context) {
+    self.debug("Constant") if $DEBUG;
     # Strings for now.
     my $idx := %context<constants>.get_or_create_string($op.value);
     self.debug("Index $idx") if $DEBUG;
@@ -144,19 +165,60 @@ our multi method to_pbc(POST::Constant $op, %context) {
 }
 
 our multi method to_pbc(POST::Value $val, %context) {
+    self.debug("Value") if $DEBUG;
     # Redirect to real value. POST::Value is just reference.
     my $orig := %context<sub>.symbol($val.name);
     self.to_pbc($orig, %context);
 }
 
 our multi method to_pbc(POST::Register $reg, %context) {
+    self.debug("Register") if $DEBUG;
     %context<bytecode>.push($reg.regno);
+}
+
+our multi method to_pbc(POST::Label $l, %context) {
+    self.debug("Label") if $DEBUG;
+    my $bc := %context<bytecode>;
+    if $l.declared {
+        my $pos := +$bc;
+        self.debug("Declare label '{ $l.name }' at $pos") if $DEBUG;
+        # Declaration of Label. Update offset in Sub.labels.
+        $l.position($pos);
+        # We can have "enclosed" ops. Process them now.
+        for @($l) {
+            self.to_pbc($_, %context);
+        }
+    }
+    else {
+        # Usage of Label. Put into todolist and reserve space.
+        my $pos := +$bc;
+        $bc.push(0);
+        %context<labels_todo>{$pos} := list($l.name, %context<opcode_offset>);
+        self.debug("Todo label '{ $l.name }' at $pos, { %context<opcode_offset> }") if $DEBUG;
+    }
 }
 
 method debug(*@args) {
     if $DEBUG {
-        say(|@args);
+        for @args {
+            pir::say($_);
+        }
     }
+}
+
+our method fixup_labels($sub, $labels_todo, $bc) {
+    self.debug("Fixup labels") if $DEBUG;
+    for $labels_todo -> $kv {
+        my $offset := $kv.key;
+        my @pair   := $kv.value;
+        self.debug("Fixing '{ @pair[0] }' from op { @pair[1] } at { $offset }") if $DEBUG;
+        my $delta  := $sub.label(@pair[0]).position - @pair[1];
+        $bc[$offset] := $delta;
+    }
+}
+
+INIT {
+    pir::load_bytecode('nqp-setting.pbc');
 }
 
 # vim: ft=perl6
