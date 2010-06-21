@@ -1,3 +1,5 @@
 .include "t/parse.pir"
 .include "t/test_post.pir"
 .include "t/post.pir"
+.include "t/test_pbc.pir"
+.include "t/pbc.pir"

@@ -45,6 +45,7 @@ No Configure step, no Makefile generated.
     # Functions for testing.
     $P1['t/parse.pir'] = 't/parse.nqp'
     $P1['t/post.pir']  = 't/post.nqp'
+    $P1['t/pbc.pir']   = 't/pbc.nqp'
 
     $P0['pir_nqp'] = $P1
 
@@ -77,6 +78,8 @@ t/common.pir
 t/parse.pir
 t/test_post.pir
 t/post.pir
+t/test_pbc.pir
+t/pbc.pir
 SOURCES
 
     $P3['t/common.pbc'] = $P5
