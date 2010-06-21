@@ -243,7 +243,16 @@ method const_declaration:sym<string>($/) {
 
 # TODO Desugarize all of them.
 #rule pir_instruction:sym<goto>
-#rule pir_instruction:sym<if>
+method pir_instruction:sym<if>($/) {
+    make POST::Op.new(
+        :pirop('if'),
+        $<variable>.ast,
+        POST::Label.new(
+            :name(~$<ident>),
+        ),
+    );
+}
+
 #rule pir_instruction:sym<unless>
 #rule pir_instruction:sym<if_null> {
 #rule pir_instruction:sym<unless_null> {
