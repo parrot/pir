@@ -28,4 +28,74 @@ CODE
 }
 RESULT
 
+test_post( "sym<assign> as op", <<'CODE', <<'RESULT');
+.sub "main"
+    $I0 = err
+.end
+CODE
+"postshortcut" => PMC 'POST;Node'  {
+    <main_sub> => "main"
+    [0] => PMC 'POST;Sub'  {
+        <name> => "main"
+        <symtable> => Hash {
+            "$I0" => PMC 'POST;Register'  {
+                <name> => "$I0"
+                <type> => "i"
+            }
+        }
+        [0] => PMC 'POST;Op'  {
+            <pirop> => "err"
+            [0] => PMC 'POST;Value'  {
+                <name> => \postshortcut["$I0"]
+                <type> => \postshortcut["$I0"]
+            }
+        }
+    }
+}
+RESULT
+
+
+test_post( "sym<assign> hiding op", <<'CODE', <<'RESULT');
+.sub "main"
+    .local int err
+    $I0 = err
+.end
+CODE
+"postshortcut" => PMC 'POST;Node'  {
+    <main_sub> => "main"
+    [0] => PMC 'POST;Sub'  {
+        <name> => "main"
+        <symtable> => Hash {
+            "$I0" => PMC 'POST;Register'  {
+                <name> => "$I0"
+                <type> => "i"
+            },
+            "err" => PMC 'POST;Register'  {
+                <declared> => 1
+                <name> => "err"
+                <type> => "i"
+            }
+        }
+        [0] => PMC 'POST;Op'  {
+            <pirop> => "set"
+            [0] => PMC 'POST;Value'  {
+                <name> => \postshortcut["$I0"]
+                <type> => \postshortcut["$I0"]
+            }
+            [1] => PMC 'POST;Value'  {
+                <name> => "err"
+            }
+        }
+    }
+}
+RESULT
+
+test_post( "sym<assign> undeclared register", <<'CODE', <<'RESULT', "fail_like" => "Register 'foo' not predeclared");
+.sub "main"
+    $I0 = foo
+.end
+CODE
+dummy
+RESULT
+
 # vim: ft=perl

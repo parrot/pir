@@ -26,4 +26,6 @@ our multi method type()       { self.attr('type', undef,  0); }
 our multi method flags(%flags) { self.attr('flags', %flags, 1); }
 our multi method flags()       { self.attr('flags', undef,  0); }
 
+our multi method declared()    { 0 };
+
 # vim: ft=perl6

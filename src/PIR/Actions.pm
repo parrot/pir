@@ -16,7 +16,6 @@ INIT {
 }
 
 method TOP($/) {
-    $!OPLIB := pir::new__PS("OpLib");
     make $<top>.ast;
 }
 
@@ -120,9 +119,8 @@ method op($/) {
     );
 
     # TODO Validate via OpLib
-    $!OPLIB := pir::new__PS("OpLib") unless pir::defined__IP($!OPLIB);
-
-    my $op_family := $!OPLIB.op_family(~$<name>);
+    my $oplib := self.oplib;
+    my $op_family := $oplib.op_family(~$<name>);
     my $pirop     := $op_family.shift;
 
     if $<op_params>[0] {
@@ -253,11 +251,35 @@ method const_declaration:sym<string>($/) {
 #rule pir_instruction:sym<unless_op> {
 
 method pir_instruction:sym<assign>($/) {
-    make POST::Op.new(
-        :pirop('set'),
-        $<variable>.ast,
-        $<value>.ast,
-    );
+    my $past;
+    # It can be either assign to value or syntax sugar for something like "$I0 = err" op.
+    my $variable := $<variable>.ast;
+    my $value    := $<value>.ast;
+    my $name     := ~$<value>;
+    if $value.declared || $!BLOCK.symbol($name) {
+        $past := POST::Op.new(
+            :pirop('set'),
+            $variable,
+            $value,
+        );
+    }
+    else {
+        # Or it can be op.
+        my $oplib := self.oplib;
+        try {
+            my $op    := $oplib{$name ~ '_' ~ $variable.type};
+            $past := POST::Op.new(
+                :pirop($name),
+                $variable
+            );
+        }
+    }
+
+    unless $past {
+        $/.CURSOR.panic("Register '" ~ $name ~ "' not predeclared");
+    }
+
+    make $past;
 }
 
 method pir_instruction:sym<op_assign_long_long_long_name>($/) {
@@ -473,6 +495,11 @@ method validate_labels($/, $node) {
 sub dequote($a) {
     my $l := pir::length__IS($a);
     pir::substr__SSII($a, 1, $l-2);
+}
+
+method oplib() {
+    $!OPLIB := pir::new__ps('OpLib') unless pir::defined__ip($!OPLIB);
+    $!OPLIB;
 }
 
 # vim: ft=perl6
