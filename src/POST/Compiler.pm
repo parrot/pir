@@ -27,7 +27,7 @@ INIT {
 method pbc($post, %adverbs) {
     #pir::trace(1);
     $OPLIB := pir::new__PS('OpLib');
-    $DEBUG := %adverbs<debug>;
+    $DEBUG := 1 || %adverbs<debug>;
 
     # Emitting context. Contains fixups, consts, etc.
     my %context;
@@ -212,12 +212,54 @@ our multi method to_pbc(POST::Label $l, %context) {
     }
 }
 
-method debug(*@args) {
-    if $DEBUG {
-        for @args {
-            pir::say($_);
+our multi method to_pbc(POST::Call $call, %context) {
+
+    if $call.calltype eq 'call' {
+        my $bc        := %context<bytecode>;
+        my $signature := self.build_args_signature($call<params>, %context);
+        my $sig_idx   := %context<constants>.get_or_create_pmc($signature);
+
+        self.debug("Sig: $sig_idx") if $DEBUG;
+
+        self.debug("set_args_pc") if $DEBUG;
+        # Push signature and all args.
+        $bc.push($OPLIB<set_args_pc>);
+        $bc.push($sig_idx);
+        if $call<params> {
+            for @($call<params>) {
+                # XXX Handle :named params properly.
+                self.to_pbc($_, %context);
+            }
+        }
+
+        self.debug("find_sub_not_null") if $DEBUG;
+        # XXX We can avoid find_sub_not_null when Sub is constant.
+        $bc.push($OPLIB<find_sub_not_null_p_sc>);
+        my $SUB := %context<sub>.symbol("!SUB");
+        self.to_pbc($SUB, %context);
+        self.to_pbc($call<name>, %context);
+
+        self.debug("invokecc_p") if $DEBUG;
+        $bc.push($OPLIB<invokecc_p>);
+        self.to_pbc($SUB, %context);
+    }
+}
+
+our method build_args_signature($args, %context) {
+    my @sig;
+    if $args {
+        for @($args) {
+            @sig.push(self.build_single_arg($_, %context));
         }
     }
+
+    # XXX Copy @sig into $signature
+    my $signature := pir::new__ps('FixedIntegerArray');
+    $signature;
+}
+
+our method build_single_arg($arg, %context) {
+    # XXX Build call signature arg according to PDD03
 }
 
 our method fixup_labels($sub, $labels_todo, $bc) {
@@ -228,6 +270,14 @@ our method fixup_labels($sub, $labels_todo, $bc) {
         self.debug("Fixing '{ @pair[0] }' from op { @pair[1] } at { $offset }") if $DEBUG;
         my $delta  := $sub.label(@pair[0]).position - @pair[1];
         $bc[$offset] := $delta;
+    }
+}
+
+method debug(*@args) {
+    if $DEBUG {
+        for @args {
+            pir::say($_);
+        }
     }
 }
 
