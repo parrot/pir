@@ -27,7 +27,7 @@ INIT {
 method pbc($post, %adverbs) {
     #pir::trace(1);
     $OPLIB := pir::new__PS('OpLib');
-    $DEBUG := 1 || %adverbs<debug>;
+    $DEBUG := %adverbs<debug>;
 
     # Emitting context. Contains fixups, consts, etc.
     my %context;
