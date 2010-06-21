@@ -409,7 +409,11 @@ method call:sym<dynamic>($/) {
 }
 
 method call:sym<method>($/) {
-    my $past := self.call:sym<sub>($/);
+    my $past := POST::Call.new(
+        :calltype('call'),
+        :name($<quote>.ast),
+    );
+    self.handle_pcc_args($/, $past);
     $past.invocant($<invocant>.ast);
     make $past;
 }
