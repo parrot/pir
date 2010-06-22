@@ -69,6 +69,30 @@ CODE
 42
 RESULT
 
+test_post( "sym<if_op>", <<'CODE', <<'RESULT');
+.sub "main"
+    $I0 = 42
+    if 42 == $I0 goto label
+    say 'broken'
+  label:
+    say 'ok'
+.end
+CODE
+ok
+RESULT
+
+test_post( "sym<unless_op>", <<'CODE', <<'RESULT');
+.sub "main"
+    $I0 = 42
+    unless 4 == $I0 goto label
+    say 'broken'
+  label:
+    say 'ok'
+.end
+CODE
+ok
+RESULT
+
 
 
 # vim: ft=perl

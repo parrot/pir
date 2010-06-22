@@ -293,7 +293,70 @@ method pir_instruction:sym<unless_null>($/) {
     );
 }
 
-#rule pir_instruction:sym<if_op> {
+method pir_instruction:sym<if_op>($/) {
+    my $relop;
+    my $cmp_op;
+    if $<relop> eq '<= ' {
+        $cmp_op := 'le';
+    }
+    elsif $<relop> eq '<' {
+        $cmp_op := 'lt';
+    }
+    elsif $<relop> eq '==' {
+        $cmp_op := 'eq';
+    }
+    elsif $<relop> eq '!=' {
+        $cmp_op := 'ne';
+    }
+    elsif $<relop> eq '>' {
+        $cmp_op := 'gt';
+    }
+    elsif $<relop> eq '>=' {
+        $cmp_op := 'ge';
+    }
+    make POST::Op.new(
+        :pirop($cmp_op),
+        $<lhs>.ast,
+        $<rhs>.ast,
+        POST::Label.new(
+            :name(~$<ident>),
+        ),
+    );
+}
+
+method pir_instruction:sym<unless_op>($/) {
+    my $relop;
+    my $cmp_op;
+
+    #do the opposite
+    if $<relop> eq '<= ' {
+        $cmp_op := 'gt';
+    }
+    elsif $<relop> eq '<' {
+        $cmp_op := 'ge';
+    }
+    elsif $<relop> eq '==' {
+        $cmp_op := 'ne';
+    }
+    elsif $<relop> eq '!=' {
+        $cmp_op := 'eq';
+    }
+    elsif $<relop> eq '>' {
+        $cmp_op := 'le';
+    }
+    elsif $<relop> eq '>=' {
+        $cmp_op := 'lt';
+    }
+    make POST::Op.new(
+        :pirop($cmp_op),
+        $<lhs>.ast,
+        $<rhs>.ast,
+        POST::Label.new(
+            :name(~$<ident>),
+        ),
+    );
+}
+
 #rule pir_instruction:sym<unless_op> {
 
 method pir_instruction:sym<assign>($/) {
