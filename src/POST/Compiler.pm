@@ -264,12 +264,19 @@ our method build_args_signature($args, %context) {
     }
 
     # XXX Copy @sig into $signature
-    my $signature := pir::new__ps('FixedIntegerArray');
+    my $elements  := +@sig;
+    my $signature := Q:PIR{
+        %r = find_lex '$elements'
+        $I99 = %r
+        %r = find_lex '$signature'
+        %r = new ['FixedIntegerArray'], $I99
+    };
     $signature;
 }
 
 our method build_single_arg($arg, %context) {
     # XXX Build call signature arg according to PDD03
+    0;
 }
 
 our method fixup_labels($sub, $labels_todo, $bc) {
