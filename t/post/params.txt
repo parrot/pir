@@ -1,0 +1,103 @@
+# It's not real "perl"! It's just looks like it.
+test_post( ":slurpy", <<'CODE', <<'RESULT');
+.sub "foo"
+    .param pmc argv :slurpy         # slurpy array
+.end
+CODE
+"postshortcut" => PMC 'POST;Node'  {
+    <main_sub> => "main"
+    [0] => PMC 'POST;Sub'  {
+        <name> => "foo"
+        <params> => ResizablePMCArray (size:1) [
+            PMC 'POST;Register'  {
+                <declared> => 1
+                <modifier> => "slurpy"
+                <name> => "argv"
+                <type> => "p"
+            }
+        ]
+        <symtable> => Hash {
+            "argv" => \postshortcut[0]
+        }
+    }
+}
+RESULT
+
+test_post( ":optional", <<'CODE', <<'RESULT');
+.sub "foo"
+    .param pmc argv :optional
+.end
+CODE
+"postshortcut" => PMC 'POST;Node'  {
+    <main_sub> => "main"
+    [0] => PMC 'POST;Sub'  {
+        <name> => "foo"
+        <params> => ResizablePMCArray (size:1) [
+            PMC 'POST;Register'  {
+                <declared> => 1
+                <modifier> => "optional"
+                <name> => "argv"
+                <type> => "p"
+            }
+        ]
+        <symtable> => Hash {
+            "argv" => \postshortcut[0]
+        }
+    }
+}
+RESULT
+
+test_post( ":named", <<'CODE', <<'RESULT');
+.sub "foo"
+    .param pmc argv :named
+.end
+CODE
+"postshortcut" => PMC 'POST;Node'  {
+    <main_sub> => "main"
+    [0] => PMC 'POST;Sub'  {
+        <name> => "foo"
+        <params> => ResizablePMCArray (size:1) [
+            PMC 'POST;Register'  {
+                <declared> => 1
+                <modifier> => Hash {
+                    "named" => null
+                }
+                <name> => "argv"
+                <type> => "p"
+            }
+        ]
+        <symtable> => Hash {
+            "argv" => \postshortcut[0]
+        }
+    }
+}
+RESULT
+
+test_post( ":named(bar)", <<'CODE', <<'RESULT');
+.sub "foo"
+    .param pmc argv :named("bar")
+.end
+CODE
+"postshortcut" => PMC 'POST;Node'  {
+    <main_sub> => "main"
+    [0] => PMC 'POST;Sub'  {
+        <name> => "foo"
+        <params> => ResizablePMCArray (size:1) [
+            PMC 'POST;Register'  {
+                <declared> => 1
+                <modifier> => Hash {
+                    "named" => "bar"
+                }
+                <name> => "argv"
+                <type> => "p"
+            }
+        ]
+        <symtable> => Hash {
+            "argv" => \postshortcut[0]
+        }
+    }
+}
+RESULT
+
+
+# vim: ft=perl
