@@ -395,7 +395,34 @@ method pir_instruction:sym<unary>($/) {
     );
 }
 
-#rule pir_instruction:sym<binary_math> {
+method pir_instruction:sym<binary_math>($/) {
+    my $op;
+    if    $<mathop> eq '+'   { $op := 'add'; }
+    elsif $<mathop> eq '-'   { $op := 'sub'; }
+    elsif $<mathop> eq '**'  { $op := 'pow'; } #parrot may not generate pow_x_x_x
+    elsif $<mathop> eq '/'   { $op := 'div'; }
+    elsif $<mathop> eq '%'   { $op := 'mod'; }
+    elsif $<mathop> eq '*'   { $op := 'mul'; }
+    elsif $<mathop> eq '.'   { $op := 'concat'; } #TODO: strings only
+    elsif $<mathop> eq '>>>' { $op := 'lsr'; }
+    elsif $<mathop> eq '<<'  { $op := 'shl'; }
+    elsif $<mathop> eq '>>'  { $op := 'shr'; }
+    elsif $<mathop> eq '&&'  { $op := 'and'; }
+    elsif $<mathop> eq '||'  { $op := 'or'; }
+    elsif $<mathop> eq '~~'  { $op := 'xor'; }
+    elsif $<mathop> eq '&'   { $op := 'band'; }
+    elsif $<mathop> eq '|'   { $op := 'bor'; }
+    elsif $<mathop> eq '~'   { $op := 'bxor'; }
+    else { $/.CURSOR.panic("Unhandled binary math op $<mathop>"); }
+
+    make POST::Op.new(
+        :pirop($op),
+        $<variable>.ast,
+        $<lhs>.ast,
+        $<rhs>.ast,
+    );
+}
+
 #rule pir_instruction:sym<binary_logic> {
 
 

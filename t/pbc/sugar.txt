@@ -120,6 +120,54 @@ ok
 RESULT
 
 
+test_post( "sym<binary_math>", <<'CODE', <<'RESULT');
+.sub "main"
+    $I0 = 128
+    $I1 = $I0 + 128
+    print 'add '
+    if $I1 == 256 goto label1
+    say 'broken'
+  label1:
+    say 'ok'
 
+    $I0 = 1
+    $I1 = $I0 << 3
+    print 'shl '
+    if $I1 == 8 goto label2
+    say 'broken'
+  label2:
+    say 'ok'
+
+    $I0 = 128
+    $I1 = $I0 && 0
+    print 'logical and '
+    if $I1 == 0 goto label3
+    say 'broken'
+  label3:
+    say 'ok'
+
+    $I0 = 128
+    $I1 = $I0 % 32
+    print 'mod '
+    if $I1 == 0 goto label4
+    say 'broken'
+  label4:
+    say 'ok'
+
+    $I0 = 127
+    $I1 = $I0 & 5
+    print 'binary and '
+    if $I1 == 5 goto label5
+    say 'broken'
+  label5:
+    say 'ok'
+.end
+CODE
+add ok
+shl ok
+logical and ok
+mod ok
+binary and ok
+RESULT
 
 # vim: ft=perl
