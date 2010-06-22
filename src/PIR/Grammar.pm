@@ -116,7 +116,7 @@ rule process_heredoc {
 
 # TODO Some of combination of flags/type doesn't make any sense
 rule param_decl {
-    '.param' <pir_type> <name=ident> <param_flag>* <.nl>
+    '.param' <pir_type> <name=ident> <param_flag>? <.nl>
 }
 
 # Various .local, .lex, etc
@@ -294,12 +294,16 @@ token arg_flag {
     | <named_flag>
 }
 
-token param_flag {
-    | ':slurpy'
-    | ':optional'
-    | ':opt_flag'
-    | <named_flag>
+proto token param_flag { <...> }
+token param_flag:sym<:call_sig>     { <sym> } # TODO call_sig can be only one.
+token param_flag:sym<:slurpy>       { <sym> <?before <ws> \h* \v> } # LTM...
+rule  param_flag:sym<slurpy named>  { 
+    | ':slurpy' ':named'
+    | ':named' ':slurpy'
 }
+token param_flag:sym<:optional>     { <sym> }
+token param_flag:sym<:opt_flag>     { <sym> }
+token param_flag:sym<named_flag>    { <named_flag> }
 
 rule named_flag {
     ':named' [ '(' <quote> ')' ]?
