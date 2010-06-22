@@ -301,6 +301,7 @@ method pir_instruction:sym<if_op>($/) {
     elsif $<relop> eq '!=' { $cmp_op := 'ne'; }
     elsif $<relop> eq '>'  { $cmp_op := 'gt'; }
     elsif $<relop> eq '>=' { $cmp_op := 'ge'; }
+    else { $/.CURSOR.panic("Unhandled op $<relop>"); }
 
     make POST::Op.new(
         :pirop($cmp_op),
@@ -321,6 +322,7 @@ method pir_instruction:sym<unless_op>($/) {
     elsif $<relop> eq '!=' { $cmp_op := 'eq'; }
     elsif $<relop> eq '>'  { $cmp_op := 'le'; }
     elsif $<relop> eq '>=' { $cmp_op := 'lt'; }
+    else { $/.CURSOR.panic("Unhandled op $<relop>"); }
 
     make POST::Op.new(
         :pirop($cmp_op),
