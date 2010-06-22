@@ -75,6 +75,10 @@ method param_decl($/) {
         $/.CURSOR.panic("Redeclaration of varaible '$name'");
     }
 
+    if $<param_flag>[0] {
+        $past.modifier( $<param_flag>[0].ast );
+    }
+
     $!BLOCK.param($name, $past);
     $!BLOCK.symbol($name, $past);
 
@@ -541,6 +545,15 @@ method arg($/) {
 method result($/) {
     # TODO Handle flags
     make $<variable>.ast;
+}
+
+method param_flag:sym<:call_sig>($/)        { make 'call_sig' }
+method param_flag:sym<:slurpy>($/)          { make 'slurpy'   }
+method param_flag:sym<slurpy named>($/)     { make 'slurpy named' }
+method param_flag:sym<:optional>($/)        { make 'optional' }
+method param_flag:sym<:opt_flag>($/)        { make 'opt_flag' }
+method param_flag:sym<named_flag>($/)       {
+    make hash( named => $<quote> ?? dequote(~$<quote>.ast) !! undef )
 }
 
 method value($/) { make $<constant> ?? $<constant>.ast !! $<variable>.ast }
