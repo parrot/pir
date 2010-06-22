@@ -379,7 +379,20 @@ method pir_instruction:sym<op_assign_long_long_long_name>($/) {
     make $past;
 }
 
-#rule pir_instruction:sym<unary> {
+method pir_instruction:sym<unary>($/) {
+    my $op;
+    if    $<unary> eq '!' { $op := 'not'; }
+    elsif $<unary> eq '-' { $op := 'neg'; }
+    #don't care about '~' for bnot
+    else { $/.CURSOR.panic("Unhandled op $<unary>"); }
+
+    make POST::Op.new(
+        :pirop($op),
+        $<variable>.ast,
+        $<value>.ast,
+    );
+}
+
 #rule pir_instruction:sym<binary_math> {
 #rule pir_instruction:sym<binary_logic> {
 

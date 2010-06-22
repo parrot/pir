@@ -93,6 +93,33 @@ CODE
 ok
 RESULT
 
+test_post( "sym<unary> - not", <<'CODE', <<'RESULT');
+.sub "main"
+    $I0 = 0
+    $I1 = ! $I0
+    if $I1 goto label
+    say 'broken'
+  label:
+    say 'ok'
+.end
+CODE
+ok
+RESULT
+
+test_post( "sym<unary> - negate", <<'CODE', <<'RESULT');
+.sub "main"
+    $I0 = 128
+    $I1 = -$I0
+    if $I1 == -128 goto label
+    say 'broken'
+  label:
+    say 'ok'
+.end
+CODE
+ok
+RESULT
+
+
 
 
 # vim: ft=perl
