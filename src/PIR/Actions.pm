@@ -552,8 +552,10 @@ method param_flag:sym<:slurpy>($/)          { make 'slurpy'   }
 method param_flag:sym<slurpy named>($/)     { make 'slurpy named' }
 method param_flag:sym<:optional>($/)        { make 'optional' }
 method param_flag:sym<:opt_flag>($/)        { make 'opt_flag' }
-method param_flag:sym<named_flag>($/)       {
-    make hash( named => $<quote> ?? dequote(~$<quote>.ast) !! undef )
+method param_flag:sym<named_flag>($/)       { make $<named_flag>.ast }
+
+method named_flag($/) {
+    make hash( named => ($<quote>[0] ?? dequote(~$<quote>[0]) !! undef) )
 }
 
 method value($/) { make $<constant> ?? $<constant>.ast !! $<variable>.ast }
