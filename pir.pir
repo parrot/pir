@@ -97,6 +97,12 @@
 .end
 
 
+.namespace ['FixedIntegerArray']
+.sub 'elements' :vtable('get_number') :method
+    $I0 = self
+    .return ($I0)
+.end
+
 =head1 LICENSE
 
 Copyright (C) 2007-2010, Parrot Foundation.
