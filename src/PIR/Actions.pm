@@ -301,7 +301,7 @@ method pir_instruction:sym<if_op>($/) {
     elsif $<relop> eq '!=' { $cmp_op := 'ne'; }
     elsif $<relop> eq '>'  { $cmp_op := 'gt'; }
     elsif $<relop> eq '>=' { $cmp_op := 'ge'; }
-    else { $/.CURSOR.panic("Unhandled op $<relop>"); }
+    else { $/.CURSOR.panic("Unhandled relative op $<relop>"); }
 
     make POST::Op.new(
         :pirop($cmp_op),
@@ -322,7 +322,7 @@ method pir_instruction:sym<unless_op>($/) {
     elsif $<relop> eq '!=' { $cmp_op := 'eq'; }
     elsif $<relop> eq '>'  { $cmp_op := 'le'; }
     elsif $<relop> eq '>=' { $cmp_op := 'lt'; }
-    else { $/.CURSOR.panic("Unhandled op $<relop>"); }
+    else { $/.CURSOR.panic("Unhandled relative op $<relop>"); }
 
     make POST::Op.new(
         :pirop($cmp_op),
@@ -386,7 +386,7 @@ method pir_instruction:sym<unary>($/) {
     if    $<unary> eq '!' { $op := 'not'; }
     elsif $<unary> eq '-' { $op := 'neg'; }
     #don't care about '~' for bnot
-    else { $/.CURSOR.panic("Unhandled op $<unary>"); }
+    else { $/.CURSOR.panic("Unhandled unary op $<unary>"); }
 
     make POST::Op.new(
         :pirop($op),
