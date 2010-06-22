@@ -112,6 +112,13 @@ $res := parse($c, q{
 });
 ok($res, "Complex .param");
 
+$res := parse($c, q{
+.sub "foo"
+    .param pmc value :call_sig
+.end
+});
+ok($res, "Complex .param");
+
 ########## .return
 $res := parse($c, q{
 .sub "foo"
