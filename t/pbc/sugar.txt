@@ -119,7 +119,6 @@ CODE
 ok
 RESULT
 
-
 test_post( "sym<binary_math>", <<'CODE', <<'RESULT');
 .sub "main"
     $I0 = 128
@@ -170,4 +169,16 @@ mod ok
 binary and ok
 RESULT
 
+test_post( "sym<binary_logic>", <<'CODE', <<'RESULT');
+.sub "main"
+    $I0 = 2134
+    $I1 = $I0 <= 2134
+    if $I1 == 1 goto label
+    say 'broken'
+  label:
+    say 'ok'
+.end
+CODE
+ok
+RESULT
 # vim: ft=perl

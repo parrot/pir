@@ -423,7 +423,24 @@ method pir_instruction:sym<binary_math>($/) {
     );
 }
 
-#rule pir_instruction:sym<binary_logic> {
+method pir_instruction:sym<binary_logic>($/) {
+    my $cmp_op;
+    if    $<relop> eq '<=' { $cmp_op := 'isle'; }
+    elsif $<relop> eq '<'  { $cmp_op := 'islt'; }
+    elsif $<relop> eq '==' { $cmp_op := 'iseq'; }
+    elsif $<relop> eq '!=' { $cmp_op := 'isne'; }
+    elsif $<relop> eq '>'  { $cmp_op := 'isgt'; }
+    elsif $<relop> eq '>=' { $cmp_op := 'isge'; }
+    else { $/.CURSOR.panic("Unhandled relative op $<relop>"); }
+
+    make POST::Op.new(
+        :pirop($cmp_op),
+        $<variable>.ast,
+        $<lhs>.ast,
+        $<rhs>.ast,
+    );
+}
+
 
 
 method pir_instruction:sym<call>($/) { make $<call>.ast; }
