@@ -1,0 +1,27 @@
+# It's not real "perl"! It's just looks like it.
+test_post( "Hello, World", <<'CODE', <<'RESULT');
+.sub "main"
+    "hello"()
+.end
+
+.sub "hello"
+    say "Hello, World"
+.end
+CODE
+Hello, World
+RESULT
+
+test_post( "Hello, World (dynamic)", <<'CODE', <<'RESULT');
+.sub "main"
+    $S0 = "hello"
+    $S0()
+.end
+
+.sub "hello"
+    say "Hello, World"
+.end
+CODE
+Hello, World
+RESULT
+
+# vim: ft=perl

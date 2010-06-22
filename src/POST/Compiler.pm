@@ -234,10 +234,9 @@ our multi method to_pbc(POST::Call $call, %context) {
         }
 
         my $SUB;
-        if $call<name>.declared {
+        if $call<name>.isa(POST::Constant) {
             # Constant string. E.g. "foo"()
             $SUB := %context<sub>.symbol("!SUB");
-            self.debug("find_sub_not_null") if $DEBUG;
             # XXX We can avoid find_sub_not_null when Sub is constant.
             $bc.push($OPLIB<find_sub_not_null_p_sc>);
             self.to_pbc($SUB, %context);
@@ -245,6 +244,9 @@ our multi method to_pbc(POST::Call $call, %context) {
         }
         else {
             $SUB := %context<sub>.symbol($call<name><name>);
+            $bc.push($OPLIB<find_sub_not_null_p_s>);
+            self.to_pbc($SUB, %context);
+            self.to_pbc($call<name>, %context);
         }
 
         self.debug("invokecc_p") if $DEBUG;
