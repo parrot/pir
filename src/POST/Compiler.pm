@@ -271,12 +271,20 @@ our method build_args_signature($args, %context) {
         %r = find_lex '$signature'
         %r = new ['FixedIntegerArray'], $I99
     };
+
+    # TODO Update nqp-setting to support .kv
+    my $idx := 0;
+    for @sig -> $val {
+        $signature[$idx] := $val;
+        $idx++;
+    }
+
     $signature;
 }
 
 our method build_single_arg($arg, %context) {
     # XXX Build call signature arg according to PDD03
-    0;
+    1;
 }
 
 our method fixup_labels($sub, $labels_todo, $bc) {
