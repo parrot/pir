@@ -186,7 +186,8 @@ our multi method to_pbc(POST::Key $key, %context) {
         }
     }
 
-    my $idx := %context<constants>.get_or_create_pmc($key_pmc);
+    # XXX PackfileConstantTable can't Keys equivalense it. So just push it.
+    my $idx := %context<constants>.push($key_pmc);
     %context<bytecode>.push($idx);
 }
 
