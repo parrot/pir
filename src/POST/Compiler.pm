@@ -159,6 +159,37 @@ our multi method to_pbc(POST::Op $op, %context) {
     }
 }
 
+our multi method to_pbc(POST::Key $key, %context) {
+
+    my $key_pmc;
+
+    for $key.keys {
+        my $k := pir::new__ps('Key');
+
+        if $_.type eq 'sc' {
+            $k.set_str(~$_.value);
+            %context<constants>.get_or_create_string($_.value);
+            self.debug("added {$_.value} to const table at idx $idx");
+        }
+        elsif $_.type eq 'ic' {
+            $k.set_int(~$_.value);
+        }
+        else {
+            die("unknown key type: {$_.type}");
+        }
+
+        if !pir::defined__ip($key_pmc) {
+            $key_pmc := $k;
+        }
+        else {
+            $key_pmc.push($k);
+        }
+    }
+
+    my $idx := %context<constants>.get_or_create_pmc($key_pmc);
+    %context<bytecode>.push($idx);
+}
+
 our multi method to_pbc(POST::Constant $op, %context) {
     my $idx;
     if $op.type eq 'sc' {

@@ -152,6 +152,14 @@ method op_param($/) {
     make $<value> ?? $<value>.ast !! $<pir_key>.ast
 }
 
+method pir_key($/) {
+    my @keys := ();
+    for $<value> {
+        @keys.push($_.ast);
+    }
+    make POST::Key.new( :keys(@keys) );
+}
+
 method pir_directive:sym<.local>($/) {
     my $type := pir::substr__SSII(~$<pir_type>, 0, 1);
     for $<ident> {

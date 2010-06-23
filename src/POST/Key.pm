@@ -8,6 +8,6 @@ our multi method keys($param) { self.attr('keys', $param, 1); }
 our multi method keys()       { self.attr('keys', undef,  0); }
 
 #keys represented in PIR are constant
-our multi method type()       { 'kc'; }
+our multi method type()       { 'pc'; }
 
 # vim: ft=perl6

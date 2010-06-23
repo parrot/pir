@@ -28,4 +28,14 @@ CODE
 Hello, World
 RESULT
 
+test_post( "Keys work", <<'CODE', <<'RESULT');
+.sub "main"
+    $P0 = new ['ResizableStringArray']
+    $S0 = $P0['asdf';1;2;'sewe']
+    say "Hello, keys."
+.end
+CODE
+Hello, keys.
+RESULT
+
 # vim: ft=perl

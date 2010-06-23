@@ -30,6 +30,7 @@
 .include 'src/POST/Constant.pir'
 .include 'src/POST/Register.pir'
 .include 'src/POST/Label.pir'
+.include 'src/POST/Key.pir'
 
 #.HLL 'PIRATE'
 
@@ -101,6 +102,25 @@
 .sub 'elements' :vtable('get_number') :method
     $I0 = self
     .return ($I0)
+.end
+
+.namespace ['Key']
+.sub 'set_str' :method
+    .param string s
+    self = s
+    .return ()
+.end
+
+.sub 'set_int' :method
+    .param int i
+    self = i
+    .return ()
+.end
+
+.sub 'push' :method
+    .param pmc p
+    push self, p
+    .return()
 .end
 
 =head1 LICENSE
