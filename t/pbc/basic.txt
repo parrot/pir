@@ -28,11 +28,21 @@ CODE
 Hello, World
 RESULT
 
-test_post( "Keys work", <<'CODE', <<'RESULT');
+test_post( "basic keys work", <<'CODE', <<'RESULT');
 .sub "main"
     $P0 = new ['ResizableStringArray']
-    $S0 = $P0['asdf';1;2;'sewe']
     say "Hello, keys."
+.end
+CODE
+Hello, keys.
+RESULT
+
+test_post( "keyed getting and setting works", <<'CODE', <<'RESULT');
+.sub "main"
+    $P0 = new ['Hash']
+    $P0['one';2;"three";4] = "Hello, keys"
+    $S0 = $P0['one';2;'three';4]
+    say $S0
 .end
 CODE
 Hello, keys.

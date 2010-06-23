@@ -255,14 +255,10 @@ rule pir_instruction:sym<call_assign_many> {
 }
 
 rule pir_instruction:sym<get_keyed> {
-    <variable> '=' <keyed_var>
+    <lhs=variable> '=' <rhs=variable> <pir_key>
 }
 rule pir_instruction:sym<set_keyed> {
-    <keyed_var> '=' <value>
-}
-
-token keyed_var {
-    <variable> <pir_key>
+    <variable> <pir_key> '=' <value>
 }
 
 # Short PCC call.

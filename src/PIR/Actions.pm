@@ -393,6 +393,24 @@ method pir_instruction:sym<op_assign_long_long_long_name>($/) {
     make $past;
 }
 
+method pir_instruction:sym<get_keyed> ($/) {
+    make POST::Op.new(
+        :pirop('set'),
+        $<lhs>.ast,
+        $<rhs>.ast,
+        $<pir_key>.ast,
+    );
+}
+
+method pir_instruction:sym<set_keyed> ($/) {
+    make POST::Op.new(
+        :pirop('set'),
+        $<variable>.ast,
+        $<pir_key>.ast,
+        $<value>.ast,
+    );
+}
+
 method pir_instruction:sym<unary>($/) {
     my $op;
     if    $<unary> eq '!' { $op := 'not'; }
