@@ -1,4 +1,4 @@
-# It's not real "perl"! It's just looks like it.
+# It's not real "perl"! It just looks like it.
 test_post( "Single label", <<'CODE', <<'RESULT');
 .sub "main"
     $I0 = 1

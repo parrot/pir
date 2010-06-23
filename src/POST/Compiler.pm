@@ -172,7 +172,7 @@ our multi method to_pbc(POST::Key $key, %context) {
             self.debug("added {$_.value} to const table at idx $idx");
         }
         elsif $_.type eq 'ic' {
-            $k.set_int(~$_.value);
+            $k.set_int(+$_.value);
         }
         else {
             die("unknown key type: {$_.type}");
