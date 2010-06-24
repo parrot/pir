@@ -276,6 +276,8 @@ our multi method to_pbc(POST::Call $call, %context) {
         self.debug("invokecc_p") if $DEBUG;
         $bc.push($OPLIB<invokecc_p>);
         self.to_pbc($SUB, %context);
+
+        self.build_pcc_call("get_results_pc", $call<results>, %context);
     }
     elsif $call.calltype eq 'return' {
         self.build_pcc_call("set_returns_pc", $call<params>, %context);

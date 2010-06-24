@@ -58,6 +58,19 @@ CODE
 Answer is 42
 RESULT
 
+test_post( "Simple .return()", <<'CODE', <<'RESULT');
+.sub "main"
+    $S0 = answer()
+    say $S0
+.end
+
+.sub "answer"
+    .return( "Answer is 42" )
+.end
+CODE
+Answer is 42
+RESULT
+
 
 
 
