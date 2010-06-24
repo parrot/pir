@@ -143,7 +143,7 @@ method op($/) {
         }
     }
 
-    self.validate_registers($/, $past);
+    self.validate_registers($/, @($past));
 
     make $past;
 }
@@ -543,7 +543,7 @@ method pir_instruction:sym<call_assign>($/) {
     my $past := self.pir_instruction:sym<call>($/);
 
     # Store params (if any)
-    my $results := POST::Node.new;
+    my $results := list();
     $results.push( $<variable>.ast );
     self.validate_registers($/, $results);
     $past.results($results);
@@ -556,7 +556,7 @@ method pir_instruction:sym<call_assign_many>($/) {
 
     # Store params (if any)
     if $<results>[0] {
-        my $results := POST::Node.new;
+        my $results := list();
         for $<results>[0]<result> {
             $results.push( $_.ast );
         }
@@ -610,7 +610,7 @@ method call:sym<method>($/) {
 method handle_pcc_args($/, $past) {
     if $<args>[0] {
         # Store params (if any)
-        my $params := POST::Node.new;
+        my $params := list();
         for $<args>[0]<arg> {
             $params.push( $_.ast );
         }
@@ -732,8 +732,8 @@ method quote:sym<dblq>($/) {
 }
 
 
-method validate_registers($/, $node) {
-    for @($node) {
+method validate_registers($/, @regs) {
+    for @regs {
         self.validate_register($/, $_);
     }
 }

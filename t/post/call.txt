@@ -45,16 +45,16 @@ CODE
                 <type> => "sc"
                 <value> => "foo"
             }
-            <params> => PMC 'POST;Node'  {
-                [0] => PMC 'POST;Constant'  {
+            <params> => ResizablePMCArray (size:2) [
+                PMC 'POST;Constant'  {
                     <type> => "sc"
                     <value> => "answer"
-                }
-                [1] => PMC 'POST;Constant'  {
+                },
+                PMC 'POST;Constant'  {
                     <type> => "ic"
                     <value> => "42"
                 }
-            }
+            ]
         }
     }
 }
@@ -93,12 +93,12 @@ CODE
                 <type> => "sc"
                 <value> => "foo"
             }
-            <results> => PMC 'POST;Node'  {
-                [0] => PMC 'POST;Value'  {
+            <results> => ResizablePMCArray (size:1) [
+                PMC 'POST;Value'  {
                     <name> => \post["$P0"]
                     <type> => \post["$P0"]
                 }
-            }
+            ]
         }
     }
 }
@@ -142,16 +142,16 @@ CODE
                 <type> => "sc"
                 <value> => "foo"
             }
-            <results> => PMC 'POST;Node'  {
-                [0] => PMC 'POST;Value'  {
+            <results> => ResizablePMCArray (size:2) [
+                PMC 'POST;Value'  {
                     <name> => \post["$P0"]
                     <type> => \post["$P0"]
-                }
-                [1] => PMC 'POST;Value'  {
+                },
+                PMC 'POST;Value'  {
                     <name> => \post["$S0"]
                     <type> => \post["$S0"]
                 }
-            }
+            ]
         }
     }
 }
@@ -186,12 +186,12 @@ CODE
                 <name> => \post["$P0"]
                 <type> => \post["$P0"]
             }
-            <results> => PMC 'POST;Node'  {
-                [0] => PMC 'POST;Value'  {
+            <results> => ResizablePMCArray (size:1) [
+                PMC 'POST;Value'  {
                     <name> => "$P0"
                     <type> => "p"
                 }
-            }
+            ]
         }
     }
 }
@@ -289,16 +289,16 @@ CODE
         <name> => "main"
         [0] => PMC 'POST;Call'  {
             <calltype> => "return"
-            <params> => PMC 'POST;Node'  {
-                [0] => PMC 'POST;Constant'  {
+            <params> => ResizablePMCArray (size:2) [
+                PMC 'POST;Constant'  {
                     <type> => "sc"
                     <value> => "answer"
-                }
-                [1] => PMC 'POST;Constant'  {
+                },
+                PMC 'POST;Constant'  {
                     <type> => "ic"
                     <value> => "42"
                 }
-            }
+            ]
         }
     }
 }
@@ -316,16 +316,16 @@ CODE
         <name> => "main"
         [0] => PMC 'POST;Call'  {
             <calltype> => "yield"
-            <params> => PMC 'POST;Node'  {
-                [0] => PMC 'POST;Constant'  {
+            <params> => ResizablePMCArray (size:2) [
+                PMC 'POST;Constant'  {
                     <type> => "sc"
                     <value> => "answer"
-                }
-                [1] => PMC 'POST;Constant'  {
+                },
+                PMC 'POST;Constant'  {
                     <type> => "ic"
                     <value> => "42"
                 }
-            }
+            ]
         }
     }
 }

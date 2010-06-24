@@ -259,11 +259,9 @@ our multi method to_pbc(POST::Call $call, %context) {
         # Push signature and all args.
         $bc.push($OPLIB<set_args_pc>);
         $bc.push($sig_idx);
-        if $call<params> {
-            for @($call<params>) {
-                # XXX Handle :named params properly.
-                self.to_pbc($_, %context);
-            }
+        for $call<params> {
+            # XXX Handle :named params properly.
+            self.to_pbc($_, %context);
         }
 
         my $SUB;
