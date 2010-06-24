@@ -298,6 +298,23 @@ our multi method to_pbc(POST::Call $call, %context) {
         $bc.push($OPLIB<invokecc_p>);
         self.to_pbc($SUB, %context);
     }
+    elsif $call.calltype eq 'return' {
+        my $bc        := %context<bytecode>;
+        my $signature := self.build_args_signature($call<params>, %context);
+        my $sig_idx   := %context<constants>.get_or_create_pmc($signature);
+
+        self.debug("Sig: $sig_idx") if $DEBUG;
+
+        self.debug("set_args_pc") if $DEBUG;
+        # Push signature and all args.
+        $bc.push($OPLIB<set_returns_pc>);
+        $bc.push($sig_idx);
+        for $call<params> {
+            # XXX Handle :named params properly.
+            self.to_pbc($_, %context);
+        }
+        $bc.push($OPLIB<returncc>);
+    }
     else {
         pir::die("NYI { $call.calltype }");
     }
