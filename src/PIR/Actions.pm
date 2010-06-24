@@ -153,11 +153,12 @@ method op_param($/) {
 }
 
 method pir_key($/) {
-    my @keys := ();
+    # TODO Optimize .type for single INT key.
+    my $past := POST::Key.new( :type('kc') );
     for $<value> {
-        @keys.push($_.ast);
+        $past.push($_.ast);
     }
-    make POST::Key.new( :keys(@keys) );
+    make $past;
 }
 
 method pir_directive:sym<.local>($/) {

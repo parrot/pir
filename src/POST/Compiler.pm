@@ -163,7 +163,7 @@ our multi method to_pbc(POST::Key $key, %context) {
 
     my $key_pmc;
 
-    for $key.keys {
+    for @($key) {
         my $k := pir::new__ps('Key');
 
         if $_.type eq 'sc' {
