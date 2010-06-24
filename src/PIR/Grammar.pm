@@ -188,7 +188,7 @@ rule op_params {
 }
 
 token op_param {
-    <value> | <pir_key>
+    <value> | <namespace_key>
 }
 
 # Some syntax sugar
