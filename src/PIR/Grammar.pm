@@ -254,11 +254,20 @@ rule pir_instruction:sym<call_assign_many> {
     '(' <results>? ')' '=' <call>
 }
 
-rule pir_instruction:sym<get_keyed> {
+rule pir_instruction:sym<get_keyed_sugared> {
     <lhs=variable> '=' <rhs=variable> <pir_key>
 }
-rule pir_instruction:sym<set_keyed> {
+
+rule pir_instruction:sym<get_keyed> {
+    'set' <lhs=variable> ',' <rhs=variable> <pir_key>
+}
+
+rule pir_instruction:sym<set_keyed_sugared> {
     <variable> <pir_key> '=' <value>
+}
+
+rule pir_instruction:sym<set_keyed> {
+    'set' <variable> <pir_key> ',' <value>
 }
 
 # Short PCC call.

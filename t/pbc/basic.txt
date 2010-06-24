@@ -39,4 +39,15 @@ CODE
 Hello, keys.
 RESULT
 
+test_post( "desugared keyed getting and setting works", <<'CODE', <<'RESULT');
+.sub "main"
+    $P0 = new 'Hash'
+    set $P0['one';2;"three";4],"Hello, keys."
+    set $S0, $P0['one';2;'three';4]
+    say $S0
+.end
+CODE
+Hello, keys.
+RESULT
+
 # vim: ft=perl

@@ -393,6 +393,10 @@ method pir_instruction:sym<op_assign_long_long_long_name>($/) {
     make $past;
 }
 
+method pir_instruction:sym<get_keyed_sugared> ($/) {
+    make self.pir_instruction:sym<get_keyed>($/);
+}
+
 method pir_instruction:sym<get_keyed> ($/) {
     make POST::Op.new(
         :pirop('set'),
@@ -400,6 +404,10 @@ method pir_instruction:sym<get_keyed> ($/) {
         $<rhs>.ast,
         $<pir_key>.ast,
     );
+}
+
+method pir_instruction:sym<set_keyed_sugared> ($/) {
+    make self.pir_instruction:sym<set_keyed>($/);
 }
 
 method pir_instruction:sym<set_keyed> ($/) {
