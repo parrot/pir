@@ -77,6 +77,8 @@ method param_decl($/) {
 
     if $<param_flag>[0] {
         $past.modifier( $<param_flag>[0].ast );
+        # TODO Check (.type, .modifier) combination
+        # E.g. :slurpy can only be PMC (constant)
     }
 
     $!BLOCK.param($name, $past);
@@ -90,7 +92,7 @@ method statement($/) {
 }
 
 method labeled_instruction($/) {
-    my $child := $<pir_instruction>[0] // $<op>[0]; # // $/.CURSOR.panic("NYI");
+    my $child := $<pir_instruction>[0] // $<op>[0];
     my $past;
     $past := $child.ast if $child;
 
@@ -274,7 +276,7 @@ method const_declaration:sym<string>($/) {
     make $past;
 }
 
-# TODO Desugarize all of them.
+# Sugarized ops.
 method pir_instruction:sym<goto>($/) {
     make POST::Op.new(
         :pirop('branch'),
@@ -384,6 +386,7 @@ method pir_instruction:sym<assign>($/) {
         # Or it can be op.
         my $oplib := self.oplib;
         try {
+            # OpLib throws exception leaving $past uninitialized
             my $op    := $oplib{$name ~ '_' ~ $variable.type};
             $past := POST::Op.new(
                 :pirop($name),
@@ -744,6 +747,7 @@ method quote:sym<dblq>($/) {
     );
 }
 
+###################################################################
 
 method validate_registers($/, @regs) {
     for @regs {
@@ -760,6 +764,8 @@ our multi method validate_register($/, POST::Value $reg) {
 
 # POST::Label, POST::Constant
 our multi method validate_register($/, $arg) { }
+
+###################################################################
 
 method validate_labels($/, $node) {
     for $node.labels {
