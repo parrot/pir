@@ -298,6 +298,9 @@ our multi method to_pbc(POST::Call $call, %context) {
         $bc.push($OPLIB<invokecc_p>);
         self.to_pbc($SUB, %context);
     }
+    else {
+        pir::die("NYI { $call.calltype }");
+    }
 }
 
 our method build_args_signature(@args, %context) {
