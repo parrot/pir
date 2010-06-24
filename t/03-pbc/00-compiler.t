@@ -14,24 +14,32 @@ ok(pir::defined__ip($c), "Compiler created");
 
 
 # Test build_args_signature
-my $tree;
+my @args;
 my $signature;
 my $elt;
 my %context;
 
-$signature := $c.build_args_signature($tree, %context);
+$signature := $c.build_args_signature(@args, %context);
 ok($signature.elements == 0, "No args produces empty signature");
 
 
-$tree := POST::Node.new(
-    POST::Constant.new(:type<sc>)
-);
+# Simple registers.
+is( 0, $c.build_single_arg(POST::Register.new(:type<i>), %context), "Int register" );
+is( 1, $c.build_single_arg(POST::Register.new(:type<s>), %context), "Str register" );
+is( 2, $c.build_single_arg(POST::Register.new(:type<p>), %context), "PMC register" );
+is( 3, $c.build_single_arg(POST::Register.new(:type<n>), %context), "Num register" );
 
-$signature := $c.build_args_signature($tree, %context);
-ok($signature.elements == 1, "Single string const");
 
-$elt := $signature[0];
-ok($elt == 0x1, "... [0]");
+
+#pir::trace(4);
+#@args.push(POST::Constant.new(:type<sc>));
+#
+#$signature := $c.build_args_signature(@args, %context);
+#ok($signature.elements == 1, "Single string const");
+
+#$elt := $signature[0];
+#ok($elt == 0x1, "... [0]");
+
 
 done_testing();
 # vim: ft=perl6

@@ -286,15 +286,16 @@ our multi method to_pbc(POST::Call $call, %context) {
     }
 }
 
-our method build_args_signature($args, %context) {
+our method build_args_signature(@args, %context) {
     my @sig;
-    if $args {
-        for @($args) {
-            @sig.push(self.build_single_arg($_, %context));
+    for @args -> $arg {
+        # build_single_arg can return 2 values, but @a.push can't handle it
+        for self.build_single_arg($arg, %context) {
+            @sig.push($_);
         }
     }
 
-    # XXX Copy @sig into $signature
+    # Copy @sig into $signature
     my $elements  := +@sig;
     my $signature := Q:PIR{
         %r = find_lex '$elements'
@@ -315,7 +316,15 @@ our method build_args_signature($args, %context) {
 
 our method build_single_arg($arg, %context) {
     # XXX Build call signature arg according to PDD03
-    1;
+    my $type := $arg.type;
+    my $res;
+    if $type eq 'i'     { $res := 0 }
+    elsif $type eq 's'  { $res := 1 }
+    elsif $type eq 'p'  { $res := 2 }
+    elsif $type eq 'n'  { $res := 3 }
+
+
+    $res;
 }
 
 our method fixup_labels($sub, $labels_todo, $bc) {
