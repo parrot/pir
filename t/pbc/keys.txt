@@ -1,0 +1,62 @@
+test_post( "keyed getting and setting works", <<'CODE', <<'RESULT');
+.sub "main"
+    $P0 = new 'Hash'
+    $P0['one';2;"three";4] = "Hello, keys."
+    $S0 = $P0['one';2;'three';4]
+    say $S0
+.end
+CODE
+Hello, keys.
+RESULT
+
+test_post( "desugared keyed getting and setting works", <<'CODE', <<'RESULT');
+.sub "main"
+    $P0 = new 'Hash'
+    set $P0['one';2;"three";4],"Hello, keys."
+    set $S0, $P0['one';2;'three';4]
+    say $S0
+.end
+CODE
+Hello, keys.
+RESULT
+
+test_post( "keyed exists, delete and defined work", <<'CODE', <<'RESULT');
+.sub "main"
+    $P0 = new 'Hash'
+    $P0['LOL'] = 1
+    $I0 = exists $P0['LOL']
+    print "exists: "
+    say $I0
+
+    $I0 = defined $P0['LOL']
+    print "defined: "
+    say $I0
+
+    delete $P0['LOL']
+    say "delete: ok"
+.end
+CODE
+exists: 1
+defined: 1
+delete: ok
+RESULT
+
+test_post( "desugared keyed exists and defined work", <<'CODE', <<'RESULT');
+.sub "main"
+    $P0 = new 'Hash'
+    $P0['LOL'] = 1
+    exists $I0, $P0['LOL']
+    print "exists: "
+    say $I0
+
+    defined $I0, $P0['LOL']
+    print "defined: "
+    say $I0
+.end
+CODE
+exists: 1
+defined: 1
+RESULT
+
+# vim: ft=perl
+
