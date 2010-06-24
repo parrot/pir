@@ -95,6 +95,20 @@ our multi method to_pbc(POST::Sub $sub, %context) {
     my $start_offset := +$bc;
     self.debug("From $start_offset") if $DEBUG;
 
+    # Handle params
+    if $sub<params> {
+        my $signature := self.build_args_signature($sub<params>, %context);
+        my $sig_idx   := %context<constants>.get_or_create_pmc($signature);
+
+        # Push signature and all params.
+        $bc.push($OPLIB<get_params_pc>);
+        $bc.push($sig_idx);
+        for $sub<params> {
+            # XXX Handle :named params properly.
+            self.to_pbc($_, %context);
+        }
+    }
+
     # Emit ops.
     for @($sub) {
         self.to_pbc($_, %context);
