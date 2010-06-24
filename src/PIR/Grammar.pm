@@ -270,6 +270,28 @@ rule pir_instruction:sym<set_keyed> {
     'set' <variable> <pir_key> ',' <value>
 }
 
+#delete only has 2 args so a sugared form doesn't make sense
+rule pir_instruction:sym<delete> {
+    'delete' <variable> <pir_key>
+}
+
+rule pir_instruction:sym<exists_sugared> {
+    <lhs=variable> '=' 'exists' <rhs=variable> <pir_key>
+}
+
+rule pir_instruction:sym<exists> {
+    'exists12345' <lhs=variable> ',' <rhs=variable> <pir_key>
+}
+
+rule pir_instruction:sym<defined_sugared> {
+     <lhs=variable> '=' 'defined' <rhs=variable> <pir_key>
+}
+
+rule pir_instruction:sym<defined> {
+    'defined' <lhs=variable> ',' <rhs=variable> <pir_key>
+}
+
+
 # Short PCC call.
 proto regex call { <...> }
 rule call:sym<pmc>     { <variable> '(' <args>? ')' }

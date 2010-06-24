@@ -419,6 +419,41 @@ method pir_instruction:sym<set_keyed> ($/) {
     );
 }
 
+method pir_instruction:sym<delete>($/) {
+    make POST::Op.new(
+        :pirop('delete'),
+        $<variable>.ast,
+        $<pir_key>.ast,
+    );
+}
+
+method pir_instruction:sym<exists_sugared>($/) {
+    make self.pir_instruction:sym<exists>($/);
+}
+
+method pir_instruction:sym<exists>($/) {
+    make POST::Op.new(
+        :pirop('exists'),
+        $<lhs>.ast,
+        $<rhs>.ast,
+        $<pir_key>.ast,
+    );
+}
+
+method pir_instruction:sym<defined_sugared>($/) {
+    make self.pir_instruction:sym<defined>($/);
+}
+
+method pir_instruction:sym<defined>($/) {
+    make POST::Op.new(
+        :pirop('defined'),
+        $<lhs>.ast,
+        $<rhs>.ast,
+        $<pir_key>.ast,
+    );
+}
+
+
 method pir_instruction:sym<unary>($/) {
     my $op;
     if    $<unary> eq '!' { $op := 'not'; }
