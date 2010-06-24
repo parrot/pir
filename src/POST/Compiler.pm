@@ -97,16 +97,7 @@ our multi method to_pbc(POST::Sub $sub, %context) {
 
     # Handle params
     if $sub<params> {
-        my $signature := self.build_args_signature($sub<params>, %context);
-        my $sig_idx   := %context<constants>.get_or_create_pmc($signature);
-
-        # Push signature and all params.
-        $bc.push($OPLIB<get_params_pc>);
-        $bc.push($sig_idx);
-        for $sub<params> {
-            # XXX Handle :named params properly.
-            self.to_pbc($_, %context);
-        }
+        self.build_pcc_call("get_params_pc", $sub<params>, %context);
     }
 
     # Emit ops.
@@ -261,22 +252,10 @@ our multi method to_pbc(POST::Label $l, %context) {
 }
 
 our multi method to_pbc(POST::Call $call, %context) {
+    my $bc := %context<bytecode>;
 
     if $call.calltype eq 'call' {
-        my $bc        := %context<bytecode>;
-        my $signature := self.build_args_signature($call<params>, %context);
-        my $sig_idx   := %context<constants>.get_or_create_pmc($signature);
-
-        self.debug("Sig: $sig_idx") if $DEBUG;
-
-        self.debug("set_args_pc") if $DEBUG;
-        # Push signature and all args.
-        $bc.push($OPLIB<set_args_pc>);
-        $bc.push($sig_idx);
-        for $call<params> {
-            # XXX Handle :named params properly.
-            self.to_pbc($_, %context);
-        }
+        self.build_pcc_call("set_args_pc", $call<params>, %context);
 
         my $SUB;
         if $call<name>.isa(POST::Constant) {
@@ -299,24 +278,28 @@ our multi method to_pbc(POST::Call $call, %context) {
         self.to_pbc($SUB, %context);
     }
     elsif $call.calltype eq 'return' {
-        my $bc        := %context<bytecode>;
-        my $signature := self.build_args_signature($call<params>, %context);
-        my $sig_idx   := %context<constants>.get_or_create_pmc($signature);
-
-        self.debug("Sig: $sig_idx") if $DEBUG;
-
-        self.debug("set_args_pc") if $DEBUG;
-        # Push signature and all args.
-        $bc.push($OPLIB<set_returns_pc>);
-        $bc.push($sig_idx);
-        for $call<params> {
-            # XXX Handle :named params properly.
-            self.to_pbc($_, %context);
-        }
+        self.build_pcc_call("set_returns_pc", $call<params>, %context);
         $bc.push($OPLIB<returncc>);
     }
     else {
         pir::die("NYI { $call.calltype }");
+    }
+}
+
+our method build_pcc_call($opname, @args, %context) {
+    my $bc        := %context<bytecode>;
+    my $signature := self.build_args_signature(@args, %context);
+    my $sig_idx   := %context<constants>.get_or_create_pmc($signature);
+
+    self.debug("Sig: $sig_idx") if $DEBUG;
+
+    self.debug($opname) if $DEBUG;
+    # Push signature and all args.
+    $bc.push($OPLIB{ $opname });
+    $bc.push($sig_idx);
+    for @args {
+        # XXX Handle :named params properly.
+        self.to_pbc($_, %context);
     }
 }
 
