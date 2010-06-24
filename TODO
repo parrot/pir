@@ -42,18 +42,6 @@ E.g. :flat, etc.
 
 =over 4
 
-=item * Register allocator.
-
-Can be "vanilla" as first cut.
-
-=item * Labels.
-
-Calculate offsets, etc
-
-First cut - keep labels "todo" list when we process op with label. E.g.
-hash of (offset => label). In .to_pbc(Label) update offset in Sub.labels.
-At the end of .to_pbc(Sub) update ops from "todo list.
-
 =back
 
 =cut
