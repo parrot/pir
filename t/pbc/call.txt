@@ -37,6 +37,28 @@ CODE
 Hello, World
 RESULT
 
+test_post( "Multiple args", <<'CODE', <<'RESULT');
+.sub "main"
+    $P0 = new "String"
+    $P0 = "Answer"
+    "hello"($P0, "is", 42)
+.end
+
+.sub "hello"
+    .param pmc answer
+    .param string is
+    .param int fortytwo
+    print answer
+    print " "
+    print is
+    print " "
+    say fortytwo
+.end
+CODE
+Answer is 42
+RESULT
+
+
 
 
 # vim: ft=perl
