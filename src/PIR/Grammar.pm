@@ -106,8 +106,7 @@ rule statement {
 }
 
 rule process_heredoc {
-    #<?DEBUG>
-    $<content>=[.*?] \n $<heredoc><ident> \n
+    $<content>=[.*?] ^^ $<heredoc><ident> $$
     {
         %*HEREDOC<node><doc> := $/;
     }
