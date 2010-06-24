@@ -290,8 +290,12 @@ our method build_args_signature(@args, %context) {
     my @sig;
     for @args -> $arg {
         # build_single_arg can return 2 values, but @a.push can't handle it
-        for self.build_single_arg($arg, %context) {
-            @sig.push($_);
+        my $s := self.build_single_arg($arg, %context);
+        if pir::isa__ips($s, 'Integer') {
+            @sig.push($s);
+        }
+        else {
+            for $s { @sig.push($_); }
         }
     }
 
@@ -314,14 +318,34 @@ our method build_args_signature(@args, %context) {
     $signature;
 }
 
+my %flags;
+INIT {
+    %flags := (
+        flat    => pir::shl__iii(1, 5),
+        slurpy  => pir::shl__iii(1, 5),
+
+        optional  => pir::shl__iii(1, 7),
+        opt_flag  => pir::shl__iii(1, 8),
+
+        named   => pir::shl__iii(1, 9),
+    );
+}
+
 our method build_single_arg($arg, %context) {
     # XXX Build call signature arg according to PDD03
     my $type := $arg.type;
     my $res;
+
+    # Register types.
     if $type eq 'i'     { $res := 0 }
     elsif $type eq 's'  { $res := 1 }
     elsif $type eq 'p'  { $res := 2 }
     elsif $type eq 'n'  { $res := 3 }
+    # Constants
+    elsif $type eq 'ic' { $res := 0 + 4 }
+    elsif $type eq 'sc' { $res := 1 + 4 }
+    elsif $type eq 'pc' { $res := 2 + 4 }
+    elsif $type eq 'nc' { $res := 3 + 4 }
 
 
     $res;
