@@ -296,6 +296,7 @@ rule pir_instruction:sym<defined> {
 proto regex call { <...> }
 rule call:sym<pmc>     { <variable> '(' <args>? ')' }
 rule call:sym<sub>     { <quote> '(' <args>? ')' }
+rule call:sym<ident>   { <ident> '(' <args>? ')' }
 rule call:sym<dynamic> { <invocant=value> '.' <variable> '(' <args>? ')' }
 rule call:sym<method>  { <invocant=value> '.' <quote> '(' <args>? ')' }
 

@@ -591,6 +591,19 @@ method call:sym<sub>($/) {
     make $past;
 }
 
+method call:sym<ident>($/) {
+    # We need register to store Sub PMC. Either constant or from find_sub_not_null
+    $!BLOCK.symbol('!SUB', POST::Register.new(:name('!SUB'), :type('p')));
+
+    my $past := POST::Call.new(
+        :calltype('call'),
+        :name(POST::Constant.new(:type<sc>, :value(~$<ident>))),
+    );
+    self.handle_pcc_args($/, $past);
+    make $past;
+}
+
+
 method call:sym<dynamic>($/) {
     my $past := self.call:sym<pmc>($/);
     $past.invocant($<invocant>.ast);
