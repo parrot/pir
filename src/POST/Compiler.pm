@@ -342,10 +342,10 @@ our method build_single_arg($arg, %context) {
     elsif $type eq 'p'  { $res := 2 }
     elsif $type eq 'n'  { $res := 3 }
     # Constants
-    elsif $type eq 'ic' { $res := 0 + 4 }
-    elsif $type eq 'sc' { $res := 1 + 4 }
-    elsif $type eq 'pc' { $res := 2 + 4 }
-    elsif $type eq 'nc' { $res := 3 + 4 }
+    elsif $type eq 'ic' { $res := 0 + 0x10 }
+    elsif $type eq 'sc' { $res := 1 + 0x10 }
+    elsif $type eq 'pc' { $res := 2 + 0x10 }
+    elsif $type eq 'nc' { $res := 3 + 0x10 }
 
 
     $res;

@@ -30,10 +30,10 @@ is( 2, $c.build_single_arg(POST::Register.new(:type<p>), %context), "PMC registe
 is( 3, $c.build_single_arg(POST::Register.new(:type<n>), %context), "Num register" );
 
 # Add constant flag
-is( 0 + 4, $c.build_single_arg(POST::Register.new(:type<ic>), %context), "Int register" );
-is( 1 + 4, $c.build_single_arg(POST::Register.new(:type<sc>), %context), "Str register" );
-is( 2 + 4, $c.build_single_arg(POST::Register.new(:type<pc>), %context), "PMC register" );
-is( 3 + 4, $c.build_single_arg(POST::Register.new(:type<nc>), %context), "Num register" );
+is( 0 + 0x10, $c.build_single_arg(POST::Register.new(:type<ic>), %context), "Int register" );
+is( 1 + 0x10, $c.build_single_arg(POST::Register.new(:type<sc>), %context), "Str register" );
+is( 2 + 0x10, $c.build_single_arg(POST::Register.new(:type<pc>), %context), "PMC register" );
+is( 3 + 0x10, $c.build_single_arg(POST::Register.new(:type<nc>), %context), "Num register" );
 
 
 
@@ -44,7 +44,7 @@ $signature := $c.build_args_signature(@args, %context);
 ok($signature.elements == 1, "Single string const");
 
 $elt := $signature[0];
-ok($elt == 0x5, "... [0]");
+ok($elt == 0x11, "... [0]");
 
 
 done_testing();
