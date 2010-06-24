@@ -149,14 +149,34 @@ method op($/) {
 }
 
 method op_param($/) {
-    make $<value> ?? $<value>.ast !! $<pir_key>.ast
+    make $<value> ?? $<value>.ast !! $<namespace_key>.ast
 }
 
 method pir_key($/) {
-    # TODO Optimize .type for single INT key.
-    my $past := POST::Key.new( :type('kc') );
-    for $<value> {
-        $past.push($_.ast);
+    my $past;
+    # Optimize for ki and kic type keys.
+    if +$<value> == 1 {
+        my $elt := $<value>[0].ast;
+        if $elt.type eq 'ic' {
+            $past := $elt;
+            $past.type('kic');
+        }
+        elsif $elt.type eq 'i' {
+            $past := $elt;
+            $past.type('ki');
+        }
+        else {
+            $past := POST::Key.new(
+                :type('kc'),
+                $elt,
+            );
+        }
+    }
+    else {
+        $past := POST::Key.new( :type('kc') );
+        for $<value> {
+            $past.push($_.ast);
+        }
     }
     make $past;
 }

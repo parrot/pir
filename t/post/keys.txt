@@ -1,0 +1,85 @@
+test_post( "Key.type == kic", <<'CODE', <<'RESULT');
+.sub "main"
+    $P0[42] = 42
+.end
+CODE
+"post" => PMC 'POST;Node'  {
+    <main_sub> => "main"
+    [0] => PMC 'POST;Sub'  {
+        <name> => \post
+        <symtable> => Hash {
+            "$P0" => PMC 'POST;Register'  {
+                <name> => "$P0"
+                <type> => "p"
+            }
+        }
+        [0] => PMC 'POST;Op'  {
+            <pirop> => "set"
+            [0] => PMC 'POST;Value'  {
+                <name> => \post["$P0"]
+                <type> => \post["$P0"]
+            }
+            [1] => PMC 'POST;Constant'  {
+                <type> => "kic"
+                <value> => "42"
+            }
+            [2] => PMC 'POST;Constant'  {
+                <type> => "ic"
+                <value> => "42"
+            }
+        }
+    }
+}
+RESULT
+
+test_post( "Key.type == ki", <<'CODE', <<'RESULT');
+.sub "main"
+    $I0 = 42
+    $P0[$I0] = 42
+.end
+CODE
+"post" => PMC 'POST;Node'  {
+    <main_sub> => "main"
+    [0] => PMC 'POST;Sub'  {
+        <name> => "main"
+        <symtable> => Hash {
+            "$I0" => PMC 'POST;Register'  {
+                <name> => "$I0"
+                <type> => "i"
+            },
+            "$P0" => PMC 'POST;Register'  {
+                <name> => "$P0"
+                <type> => "p"
+            }
+        }
+        [0] => PMC 'POST;Op'  {
+            <pirop> => "set"
+            [0] => PMC 'POST;Value'  {
+                <name> => "$I0"
+                <type> => "i"
+            }
+            [1] => PMC 'POST;Constant'  {
+                <type> => "ic"
+                <value> => "42"
+            }
+        }
+        [1] => PMC 'POST;Op'  {
+            <pirop> => "set"
+            [0] => PMC 'POST;Value'  {
+                <name> => \post["$P0"]
+                <type> => \post["$P0"]
+            }
+            [1] => PMC 'POST;Value'  {
+                <name> => \post["$I0"]
+                <type> => "ki"
+            }
+            [2] => PMC 'POST;Constant'  {
+                <type> => "ic"
+                <value> => "42"
+            }
+        }
+    }
+}
+RESULT
+
+# vim: ft=perl

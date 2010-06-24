@@ -58,5 +58,36 @@ exists: 1
 defined: 1
 RESULT
 
+
+test_post( "optimization of INT keys works", <<'CODE', <<'RESULT');
+.sub "main"
+    $P0 = new 'ResizableIntegerArray'
+    $P0[0] = 42
+    say "set"
+    $I0 = $P0[0]
+    print "get: "
+    say $I0
+.end
+CODE
+set
+get: 42
+RESULT
+
+test_post( "optimization of non-const INT keys works", <<'CODE', <<'RESULT');
+.sub "main"
+    $P0 = new 'ResizableIntegerArray'
+    $I0 = 42
+    $P0[$I0] = 42
+    say "set"
+    $I0 = $P0[$I0]
+    print "get: "
+    say $I0
+.end
+CODE
+set
+get: 42
+RESULT
+
+
 # vim: ft=perl
 

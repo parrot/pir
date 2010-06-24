@@ -175,7 +175,7 @@ our multi method to_pbc(POST::Key $key, %context) {
             $k.set_int(+$_.value);
         }
         else {
-            die("unknown key type: {$_.type}");
+            pir::die("unknown key type: {$_.type}");
         }
 
         if !pir::defined__ip($key_pmc) {
@@ -193,14 +193,15 @@ our multi method to_pbc(POST::Key $key, %context) {
 
 our multi method to_pbc(POST::Constant $op, %context) {
     my $idx;
-    if $op.type eq 'sc' {
+    my $type := $op.type;
+    if $type eq 'sc' {
         $idx := %context<constants>.get_or_create_string($op.value);
     }
-    elsif $op.type eq 'ic' {
+    elsif $type eq 'ic' || $type eq 'kic' {
         $idx := $op.value;
     }
     else {
-        die("NYI");
+        pir::die("NYI");
     }
 
     self.debug("Index $idx") if $DEBUG;
