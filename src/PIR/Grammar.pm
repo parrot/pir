@@ -105,7 +105,7 @@ rule statement {
         <process_heredoc>?
 }
 
-rule process_heredoc {
+token process_heredoc {
     $<content>=[.*?] ^^ $<heredoc><ident> $$
     {
         %*HEREDOC<node><doc> := $/;
