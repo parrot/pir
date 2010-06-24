@@ -24,4 +24,19 @@ CODE
 Hello, World
 RESULT
 
+test_post( "Hello, World (arg)", <<'CODE', <<'RESULT');
+.sub "main"
+    "hello"("Hello, World")
+.end
+
+.sub "hello"
+    .param string greeting
+    say greeting
+.end
+CODE
+Hello, World
+RESULT
+
+
+
 # vim: ft=perl
