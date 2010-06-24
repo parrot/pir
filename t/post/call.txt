@@ -267,10 +267,17 @@ CODE
     <main_sub> => "main"
     [0] => PMC 'POST;Sub'  {
         <name> => "main"
+        <symtable> => Hash {
+            "!SUB" => PMC 'POST;Register'  {
+                <name> => "!SUB"
+                <type> => "p"
+            }
+        }
         [0] => PMC 'POST;Call'  {
             <calltype> => "tailcall"
-            <name> => PMC 'POST;Value'  {
-                <name> => "main"
+            <name> => PMC 'POST;Constant'  {
+                <type> => "sc"
+                <value> => "main"
             }
         }
     }
