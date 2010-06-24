@@ -3,10 +3,10 @@ test_post( "sym<assign>", <<'CODE', <<'RESULT');
     $S0 = "hello"
 .end
 CODE
-"postshortcut" => PMC 'POST;Node'  {
+"post" => PMC 'POST;Node'  {
     <main_sub> => "main"
     [0] => PMC 'POST;Sub'  {
-        <name> => \postshortcut
+        <name> => \post
         <symtable> => Hash {
             "$S0" => PMC 'POST;Register'  {
                 <name> => "$S0"
@@ -16,8 +16,8 @@ CODE
         [0] => PMC 'POST;Op'  {
             <pirop> => "set"
             [0] => PMC 'POST;Value'  {
-                <name> => \postshortcut["$S0"]
-                <type> => \postshortcut["$S0"]
+                <name> => \post["$S0"]
+                <type> => \post["$S0"]
             }
             [1] => PMC 'POST;Constant'  {
                 <type> => "sc"
@@ -33,7 +33,7 @@ test_post( "sym<assign> as op", <<'CODE', <<'RESULT');
     $I0 = err
 .end
 CODE
-"postshortcut" => PMC 'POST;Node'  {
+"post" => PMC 'POST;Node'  {
     <main_sub> => "main"
     [0] => PMC 'POST;Sub'  {
         <name> => "main"
@@ -46,8 +46,8 @@ CODE
         [0] => PMC 'POST;Op'  {
             <pirop> => "err"
             [0] => PMC 'POST;Value'  {
-                <name> => \postshortcut["$I0"]
-                <type> => \postshortcut["$I0"]
+                <name> => \post["$I0"]
+                <type> => \post["$I0"]
             }
         }
     }
@@ -61,7 +61,7 @@ test_post( "sym<assign> hiding op", <<'CODE', <<'RESULT');
     $I0 = err
 .end
 CODE
-"postshortcut" => PMC 'POST;Node'  {
+"post" => PMC 'POST;Node'  {
     <main_sub> => "main"
     [0] => PMC 'POST;Sub'  {
         <name> => "main"
@@ -79,8 +79,8 @@ CODE
         [0] => PMC 'POST;Op'  {
             <pirop> => "set"
             [0] => PMC 'POST;Value'  {
-                <name> => \postshortcut["$I0"]
-                <type> => \postshortcut["$I0"]
+                <name> => \post["$I0"]
+                <type> => \post["$I0"]
             }
             [1] => PMC 'POST;Value'  {
                 <name> => "err"

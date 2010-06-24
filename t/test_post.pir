@@ -15,12 +15,12 @@
     #pir::trace(4);
     .local pmc c
     c = compreg 'PIRATE'
-    $P0 = split ' ', 'parse postshortcut pbc'
+    $P0 = split ' ', 'parse post pbc'
     c.'stages'($P0)
 
     .local pmc post
     push_eh fail
-    post = c.'compile'(code, "target" => 'postshortcut')
+    post = c.'compile'(code, "target" => 'post')
 
     # XXX dumper always dump to stdout...
     .local pmc o, n
@@ -28,7 +28,7 @@
     n = new ['StringHandle']
     n.'open'('foo', "w")
     setstdout n
-    c.'dumper'(post, "postshortcut")
+    c.'dumper'(post, "post")
     setstdout o
 
     $S0 = n.'readall'()

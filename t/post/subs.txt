@@ -3,10 +3,10 @@ test_post( "Empty sub", <<'CODE', <<'RESULT');
 .sub "main"
 .end
 CODE
-"postshortcut" => PMC 'POST;Node'  {
+"post" => PMC 'POST;Node'  {
     <main_sub> => "main"
     [0] => PMC 'POST;Sub'  {
-        <name> => \postshortcut
+        <name> => \post
     }
 }
 RESULT
@@ -16,7 +16,7 @@ test_post( "Simple sub", <<'CODE', <<'RESULT');
     say "Hello, World"
 .end
 CODE
-"postshortcut" => PMC 'POST;Node'  {
+"post" => PMC 'POST;Node'  {
     <main_sub> => "main"
     [0] => PMC 'POST;Sub'  {
         <name> => "main"
@@ -39,7 +39,7 @@ test_post( "Symtable (params)", <<'CODE', <<'RESULT');
     .param num    d
 .end
 CODE
-"postshortcut" => PMC 'POST;Node'  {
+"post" => PMC 'POST;Node'  {
     <main_sub> => "main"
     [0] => PMC 'POST;Sub'  {
         <name> => "main"
@@ -66,10 +66,10 @@ CODE
             }
         ]
         <symtable> => Hash {
-            "a" => \postshortcut[0],
-            "b" => \postshortcut[1],
-            "c" => \postshortcut[2],
-            "d" => \postshortcut[3]
+            "a" => \post[0],
+            "b" => \post[1],
+            "c" => \post[2],
+            "d" => \post[3]
         }
     }
 }
@@ -89,7 +89,7 @@ test_post( "Symtable (params usage)", <<'CODE', <<'RESULT');
     say a
 .end
 CODE
-"postshortcut" => PMC 'POST;Node'  {
+"post" => PMC 'POST;Node'  {
     <main_sub> => "main"
     [0] => PMC 'POST;Sub'  {
         <name> => "main"
@@ -101,7 +101,7 @@ CODE
             }
         ]
         <symtable> => Hash {
-            "a" => \postshortcut[0]
+            "a" => \post[0]
         }
         [0] => PMC 'POST;Op'  {
             <pirop> => "say"
@@ -119,7 +119,7 @@ test_post( "Symtable (.local usage)", <<'CODE', <<'RESULT');
     say a
 .end
 CODE
-"postshortcut" => PMC 'POST;Node'  {
+"post" => PMC 'POST;Node'  {
     <main_sub> => "main"
     [0] => PMC 'POST;Sub'  {
         <name> => "main"

@@ -3,10 +3,10 @@ test_post( "Empty call", <<'CODE', <<'RESULT');
     "foo"()
 .end
 CODE
-"postshortcut" => PMC 'POST;Node'  {
+"post" => PMC 'POST;Node'  {
     <main_sub> => "main"
     [0] => PMC 'POST;Sub'  {
-        <name> => \postshortcut
+        <name> => \post
         <symtable> => Hash {
             "!SUB" => PMC 'POST;Register'  {
                 <name> => "!SUB"
@@ -29,7 +29,7 @@ test_post( "Simple params", <<'CODE', <<'RESULT');
     "foo"("answer", 42)
 .end
 CODE
-"postshortcut" => PMC 'POST;Node'  {
+"post" => PMC 'POST;Node'  {
     <main_sub> => "main"
     [0] => PMC 'POST;Sub'  {
         <name> => "main"
@@ -73,7 +73,7 @@ test_post( "Simple returns", <<'CODE', <<'RESULT');
     $P0 = "foo"()
 .end
 CODE
-"postshortcut" => PMC 'POST;Node'  {
+"post" => PMC 'POST;Node'  {
     <main_sub> => "main"
     [0] => PMC 'POST;Sub'  {
         <name> => "main"
@@ -95,8 +95,8 @@ CODE
             }
             <results> => PMC 'POST;Node'  {
                 [0] => PMC 'POST;Value'  {
-                    <name> => \postshortcut["$P0"]
-                    <type> => \postshortcut["$P0"]
+                    <name> => \post["$P0"]
+                    <type> => \post["$P0"]
                 }
             }
         }
@@ -118,7 +118,7 @@ test_post( "Many returns", <<'CODE', <<'RESULT');
     ($P0, $S0) = "foo"()
 .end
 CODE
-"postshortcut" => PMC 'POST;Node'  {
+"post" => PMC 'POST;Node'  {
     <main_sub> => "main"
     [0] => PMC 'POST;Sub'  {
         <name> => "main"
@@ -144,12 +144,12 @@ CODE
             }
             <results> => PMC 'POST;Node'  {
                 [0] => PMC 'POST;Value'  {
-                    <name> => \postshortcut["$P0"]
-                    <type> => \postshortcut["$P0"]
+                    <name> => \post["$P0"]
+                    <type> => \post["$P0"]
                 }
                 [1] => PMC 'POST;Value'  {
-                    <name> => \postshortcut["$S0"]
-                    <type> => \postshortcut["$S0"]
+                    <name> => \post["$S0"]
+                    <type> => \post["$S0"]
                 }
             }
         }
@@ -170,7 +170,7 @@ test_post( "Register call", <<'CODE', <<'RESULT');
     $P0 = $P0()
 .end
 CODE
-"postshortcut" => PMC 'POST;Node'  {
+"post" => PMC 'POST;Node'  {
     <main_sub> => "main"
     [0] => PMC 'POST;Sub'  {
         <name> => "main"
@@ -183,8 +183,8 @@ CODE
         [0] => PMC 'POST;Call'  {
             <calltype> => "call"
             <name> => PMC 'POST;Value'  {
-                <name> => \postshortcut["$P0"]
-                <type> => \postshortcut["$P0"]
+                <name> => \post["$P0"]
+                <type> => \post["$P0"]
             }
             <results> => PMC 'POST;Node'  {
                 [0] => PMC 'POST;Value'  {
@@ -203,7 +203,7 @@ test_post( "Method call direct", <<'CODE', <<'RESULT');
     $P0."foo"()
 .end
 CODE
-"postshortcut" => PMC 'POST;Node'  {
+"post" => PMC 'POST;Node'  {
     <main_sub> => "main"
     [0] => PMC 'POST;Sub'  {
         <name> => "main"
@@ -216,8 +216,8 @@ CODE
         [0] => PMC 'POST;Call'  {
             <calltype> => "call"
             <invocant> => PMC 'POST;Value'  {
-                <name> => \postshortcut["$P0"]
-                <type> => \postshortcut["$P0"]
+                <name> => \post["$P0"]
+                <type> => \post["$P0"]
             }
             <name> => PMC 'POST;Constant'  {
                 <type> => "sc"
@@ -233,7 +233,7 @@ test_post( "Method call in-direct", <<'CODE', <<'RESULT');
     $P0.$P0()
 .end
 CODE
-"postshortcut" => PMC 'POST;Node'  {
+"post" => PMC 'POST;Node'  {
     <main_sub> => "main"
     [0] => PMC 'POST;Sub'  {
         <name> => "main"
@@ -250,8 +250,8 @@ CODE
                 <type> => "p"
             }
             <name> => PMC 'POST;Value'  {
-                <name> => \postshortcut["$P0"]
-                <type> => \postshortcut["$P0"]
+                <name> => \post["$P0"]
+                <type> => \post["$P0"]
             }
         }
     }
@@ -263,7 +263,7 @@ test_post( "Tailcall", <<'CODE', <<'RESULT');
     .tailcall main()
 .end
 CODE
-"postshortcut" => PMC 'POST;Node'  {
+"post" => PMC 'POST;Node'  {
     <main_sub> => "main"
     [0] => PMC 'POST;Sub'  {
         <name> => "main"
@@ -283,7 +283,7 @@ test_post( "Simple .return()", <<'CODE', <<'RESULT');
     .return ("answer", 42)
 .end
 CODE
-"postshortcut" => PMC 'POST;Node'  {
+"post" => PMC 'POST;Node'  {
     <main_sub> => "main"
     [0] => PMC 'POST;Sub'  {
         <name> => "main"
@@ -310,7 +310,7 @@ test_post( "Simple .yield()", <<'CODE', <<'RESULT');
     .yield ("answer", 42)
 .end
 CODE
-"postshortcut" => PMC 'POST;Node'  {
+"post" => PMC 'POST;Node'  {
     <main_sub> => "main"
     [0] => PMC 'POST;Sub'  {
         <name> => "main"

@@ -15,7 +15,7 @@
     #pir::trace(4);
     .local pmc c
     c = compreg 'PIRATE'
-    $P0 = split ' ', 'parse postshortcut pbc'
+    $P0 = split ' ', 'parse post pbc'
     c.'stages'($P0)
 
     .local pmc post

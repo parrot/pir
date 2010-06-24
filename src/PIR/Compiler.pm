@@ -63,7 +63,7 @@ our method pbc($post, *%adverbs) {
     };
 }
 
-our method postshortcut($source, *%adverbs) {
+our method post($source, *%adverbs) {
     $source.ast;
 }
 

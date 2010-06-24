@@ -4,7 +4,7 @@ test_post( ":slurpy", <<'CODE', <<'RESULT');
     .param pmc argv :slurpy         # slurpy array
 .end
 CODE
-"postshortcut" => PMC 'POST;Node'  {
+"post" => PMC 'POST;Node'  {
     <main_sub> => "main"
     [0] => PMC 'POST;Sub'  {
         <name> => "foo"
@@ -17,7 +17,7 @@ CODE
             }
         ]
         <symtable> => Hash {
-            "argv" => \postshortcut[0]
+            "argv" => \post[0]
         }
     }
 }
@@ -28,7 +28,7 @@ test_post( ":optional", <<'CODE', <<'RESULT');
     .param pmc argv :optional
 .end
 CODE
-"postshortcut" => PMC 'POST;Node'  {
+"post" => PMC 'POST;Node'  {
     <main_sub> => "main"
     [0] => PMC 'POST;Sub'  {
         <name> => "foo"
@@ -41,7 +41,7 @@ CODE
             }
         ]
         <symtable> => Hash {
-            "argv" => \postshortcut[0]
+            "argv" => \post[0]
         }
     }
 }
@@ -52,7 +52,7 @@ test_post( ":named", <<'CODE', <<'RESULT');
     .param pmc argv :named
 .end
 CODE
-"postshortcut" => PMC 'POST;Node'  {
+"post" => PMC 'POST;Node'  {
     <main_sub> => "main"
     [0] => PMC 'POST;Sub'  {
         <name> => "foo"
@@ -67,7 +67,7 @@ CODE
             }
         ]
         <symtable> => Hash {
-            "argv" => \postshortcut[0]
+            "argv" => \post[0]
         }
     }
 }
@@ -78,7 +78,7 @@ test_post( ":named(bar)", <<'CODE', <<'RESULT');
     .param pmc argv :named("bar")
 .end
 CODE
-"postshortcut" => PMC 'POST;Node'  {
+"post" => PMC 'POST;Node'  {
     <main_sub> => "main"
     [0] => PMC 'POST;Sub'  {
         <name> => "foo"
@@ -93,7 +93,7 @@ CODE
             }
         ]
         <symtable> => Hash {
-            "argv" => \postshortcut[0]
+            "argv" => \post[0]
         }
     }
 }
