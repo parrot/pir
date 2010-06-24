@@ -373,7 +373,7 @@ token subname {
 
 token terminator { $ | <.nl> }
 
-rule namespace_key { '[' [ <quote> ** ';' ]? ']' }
+rule namespace_key { '[' [ <quote> ** ';' ] ? ']' }
 
 rule pir_key { '[' <value> ** ';' ']' }
 
