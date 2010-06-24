@@ -43,7 +43,7 @@ rule compilation_unit:sym<sub> {
 
 
 
-rule compilation_unit:sym<.namespace>   { <sym> '[' <namespace_key>? ']' }
+rule compilation_unit:sym<.namespace>   { <sym> <namespace_key> }
 rule compilation_unit:sym<.loadlib>     { <sym> <quote> }
 rule compilation_unit:sym<.HLL>         { <sym> <quote> }
 rule compilation_unit:sym<.line>        { <sym> \d+ ',' <quote> }
@@ -88,7 +88,7 @@ token sub_pragma:sym<multi>      { ':' <sym> '(' [ [<.ws><multi_type><.ws>] ** '
 token multi_type {
     | '_'               # any
     | <quote>           # "Foo"
-    | '[' <namespace_key> ']' # ["Foo";"Bar"]
+    | <namespace_key>   # ["Foo";"Bar"]
     | <ident>           # Integer
 }
 
@@ -373,7 +373,7 @@ token subname {
 
 token terminator { $ | <.nl> }
 
-rule namespace_key { <quote> ** ';' }
+rule namespace_key { '[' [ <quote> ** ';' ]? ']' }
 
 rule pir_key { '[' <value> ** ';' ']' }
 
