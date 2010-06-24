@@ -30,7 +30,7 @@ rule compilation_unit:sym<sub> {
     || [ <.ws> <sub_pragma> ]*
     || <.panic: "Unknown .sub pragma">
     ]
-    \h* <.nl>
+    <ws> <.nl>
 
     <param_decl>*
 
@@ -217,11 +217,11 @@ rule pir_instruction:sym<unless_op> {
 
 # Manual LTM
 rule pir_instruction:sym<assign> {
-    <variable> '=' <value> <?before \h* \v>
+    <variable> '=' <value> <?before <ws> \v>
 }
 
 rule pir_instruction:sym<op_assign_long_long_long_name> {
-    <variable> '=' <op=ident> <op_params>
+    <variable> '=' <op=ident> <op_params> <?before <ws> \v>
 }
 
 rule pir_instruction:sym<unary> {
@@ -230,10 +230,10 @@ rule pir_instruction:sym<unary> {
 
 # Manual LTM
 rule pir_instruction:sym<binary_math> {
-    <variable> '=' <lhs=value> <mathop> <rhs=value> <?before \h* \n>
+    <variable> '=' <lhs=value> <mathop> <rhs=value> <?before <ws> \n>
 }
 rule pir_instruction:sym<binary_logic> {
-    <variable> '=' <lhs=value> <relop> <rhs=value> <?before \h* \n>
+    <variable> '=' <lhs=value> <relop> <rhs=value> <?before <ws> \n>
 }
 
 
@@ -255,7 +255,7 @@ rule pir_instruction:sym<call_assign_many> {
 }
 
 rule pir_instruction:sym<get_keyed_sugared> {
-    <lhs=variable> '=' <rhs=variable> <pir_key>
+    <lhs=variable> '=' <rhs=variable> <pir_key> <?before <ws> \v>
 }
 
 rule pir_instruction:sym<get_keyed> {
@@ -280,7 +280,7 @@ rule pir_instruction:sym<exists_sugared> {
 }
 
 rule pir_instruction:sym<exists> {
-    'exists12345' <lhs=variable> ',' <rhs=variable> <pir_key>
+    'exists' <lhs=variable> ',' <rhs=variable> <pir_key>
 }
 
 rule pir_instruction:sym<defined_sugared> {
@@ -323,7 +323,7 @@ token arg_flag {
 
 proto token param_flag { <...> }
 token param_flag:sym<:call_sig>     { <sym> } # TODO call_sig can be only one.
-token param_flag:sym<:slurpy>       { <sym> <?before <ws> \h* \v> } # LTM...
+token param_flag:sym<:slurpy>       { <sym> <?before <ws> \v> } # LTM...
 rule  param_flag:sym<slurpy named>  { 
     | ':slurpy' ':named'
     | ':named' ':slurpy'
