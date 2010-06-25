@@ -430,7 +430,6 @@ token float_constant {
 }
 
 # There is no iterpolation of strings in PIR
-# TODO charset/encoding handling.
 token string_constant {
     [
     | <quote>
