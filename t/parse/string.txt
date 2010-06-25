@@ -1,0 +1,28 @@
+# TEST unicode charset, default encoding
+
+.sub main
+    $S0 = unicode:"HELLO"
+.end
+
+
+# TEST unicode charset, utf8 encoding
+
+.sub main
+    $S0 = utf8:unicode:"HELLO"
+.end
+
+
+# TEST unicode charset, funny chars
+
+.sub main
+    $S0 = unicode:"«ΔЙק‎م๗あ叶葉»"
+.end
+
+
+# TEST unicode charset, embedded escapes
+
+.sub main
+    $S0 = unicode:"\"Hello,\" said the cow."
+.end
+
+
