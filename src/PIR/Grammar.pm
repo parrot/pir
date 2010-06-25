@@ -25,7 +25,7 @@ proto token compilation_unit { <...> }
 rule compilation_unit:sym<sub> {
     #<?DEBUG>
     <.newpad>
-    '.sub' <subname> 
+    '.sub' <subname>
     [
     || [ <.ws> <sub_pragma> ]*
     || <.panic: "Unknown .sub pragma">
@@ -51,7 +51,7 @@ rule compilation_unit:sym<.include>     { <sym> <quote> }
 rule compilation_unit:sym<.macro_const> { <sym> <ident> <value> }
 
 # Macros. TODO. Args can be multilines enclosed in { }.
-rule compilation_unit:sym<macro> { 
+rule compilation_unit:sym<macro> {
     '.macro' <name=ident> [ '(' <args>* ')' ]? <.nl>
     [
     || <statement>
@@ -100,7 +100,7 @@ rule statement_list {
 # Don't put newline here.
 rule statement {
     || <pir_directive>
-    || 
+    ||
         <labeled_instruction> <.nl>
         <process_heredoc>?
 }
@@ -150,7 +150,7 @@ rule pir_directive:sym<.yield>      { <sym> '(' <args>? ')' }
 
 rule pir_directive:sym<.tailcall>   { <sym> <call> }
 
-# PIR Constants 
+# PIR Constants
 rule pir_directive:sym<.const>       { <sym> <const_declaration> }
 rule pir_directive:sym<.globalconst> { <sym> <const_declaration> }
 
@@ -324,7 +324,7 @@ token arg_flag {
 proto token param_flag { <...> }
 token param_flag:sym<:call_sig>     { <sym> } # TODO call_sig can be only one.
 token param_flag:sym<:slurpy>       { <sym> <?before <ws> \v> } # LTM...
-rule  param_flag:sym<slurpy named>  { 
+rule  param_flag:sym<slurpy named>  {
     | ':slurpy' ':named'
     | ':named' ':slurpy'
 }
@@ -431,7 +431,7 @@ token float_constant {
 
 # There is no iterpolation of strings in PIR
 # TODO charset/encoding handling.
-token string_constant { 
+token string_constant {
     [
     | <quote>
     | <charset_string_constant>
@@ -449,12 +449,12 @@ token encoding {
     [
     | 'fixed_8' | 'ucs2' | 'utf8' | 'utf16'
     ]
-} 
+}
 
 token charset {
     [
     | 'ascii' | 'binary' | 'iso-8859-1' | 'unicode'
-    ] 
+    ]
 }
 
 token heredoc_start {
@@ -464,8 +464,8 @@ token heredoc_start {
 }
 
 proto token quote { <...> }
-token quote:sym<apos> { <?[']> <quote_EXPR: ':q'>  }
-token quote:sym<dblq> { <?["]> <quote_EXPR: ':q'> }
+token quote:sym<apos> { <?[\']> <quote_EXPR: ':q'>  }
+token quote:sym<dblq> { <?[\"]> <quote_EXPR: ':q'> }
 
 token nl { \v+ }
 
