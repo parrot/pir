@@ -13,8 +13,8 @@ RESULT
 
 test_post( "Hello, World (dynamic)", <<'CODE', <<'RESULT');
 .sub "main"
-    $S0 = "hello"
-    $S0()
+    $P0 = find_sub_not_null "hello"
+    $P0()
 .end
 
 .sub "hello"
