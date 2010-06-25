@@ -28,6 +28,7 @@
 .include 'src/POST/Call.pir'
 .include 'src/POST/Value.pir'
 .include 'src/POST/Constant.pir'
+.include 'src/POST/String.pir'
 .include 'src/POST/Register.pir'
 .include 'src/POST/Label.pir'
 .include 'src/POST/Key.pir'
