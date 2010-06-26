@@ -147,7 +147,7 @@ $res := parse($c, q{
     .return ("42" :named, array :flat, hash :flat :named)
 .end
 });
-ok($res, ".return (42, '42', 41.9999)");
+ok($res, ".return (42 :named, array :flat, hash :flat :named)");
 
 ########## .tailcall
 $res := parse($c, q{

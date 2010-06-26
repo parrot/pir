@@ -1,0 +1,120 @@
+test_post( ":slurpy", <<'CODE', <<'RESULT');
+.sub "main"
+    .param pmc args :slurpy
+.end
+CODE
+"post" => PMC 'POST;Node'  {
+    <main_sub> => "main"
+    [0] => PMC 'POST;Sub'  {
+        <name> => \post
+        <params> => ResizablePMCArray (size:1) [
+            PMC 'POST;Register'  {
+                <declared> => 1
+                <modifier> => "slurpy"
+                <name> => "args"
+                <type> => "p"
+            }
+        ]
+        <symtable> => Hash {
+            "args" => \post[0]
+        }
+    }
+}
+RESULT
+
+test_post( "Bad :slurpy", <<'CODE', <<'RESULT', "fail_like" => "Slurpy param 'args' isn't a PMC");
+.sub "main"
+    .param int args :slurpy
+.end
+CODE
+dummy
+RESULT
+
+test_post( "Bad :slurpy :named", <<'CODE', <<'RESULT', "fail_like" => "Slurpy param 'args' isn't a PMC");
+.sub "main"
+    .param int args :slurpy :named
+.end
+CODE
+dummy
+RESULT
+
+test_post( "Bad :opt_flag", <<'CODE', <<'RESULT', "fail_like" => ":opt_flag param 'has_args' isn't a INT");
+.sub "main"
+    .param pmc args     :optional
+    .param pmc has_args :opt_flag
+.end
+CODE
+dummy
+RESULT
+
+
+
+test_post( ":flat", <<'CODE', <<'RESULT');
+.sub "main"
+    $P0($P0 :flat)
+.end
+CODE
+"post" => PMC 'POST;Node'  {
+    <main_sub> => "main"
+    [0] => PMC 'POST;Sub'  {
+        <name> => "main"
+        <symtable> => Hash {
+            "$P0" => PMC 'POST;Register'  {
+                <name> => "$P0"
+                <type> => "p"
+            }
+        }
+        [0] => PMC 'POST;Call'  {
+            <calltype> => "call"
+            <name> => PMC 'POST;Value'  {
+                <name> => "$P0"
+                <type> => "p"
+            }
+            <params> => ResizablePMCArray (size:1) [
+                PMC 'POST;Value'  {
+                    <modifier> => "flat"
+                    <name> => \post["$P0"]
+                    <type> => \post["$P0"]
+                }
+            ]
+        }
+    }
+}
+RESULT
+
+test_post( "fatarrow", <<'CODE', <<'RESULT');
+.sub "main"
+    $P0("parent" => "Class")
+.end
+CODE
+"post" => PMC 'POST;Node'  {
+    <main_sub> => "main"
+    [0] => PMC 'POST;Sub'  {
+        <name> => "main"
+        <symtable> => Hash {
+            "$P0" => PMC 'POST;Register'  {
+                <name> => "$P0"
+                <type> => "p"
+            }
+        }
+        [0] => PMC 'POST;Call'  {
+            <calltype> => "call"
+            <name> => PMC 'POST;Value'  {
+                <name> => \post["$P0"]
+                <type> => \post["$P0"]
+            }
+            <params> => ResizablePMCArray (size:1) [
+                PMC 'POST;Constant'  {
+                    <modifier> => Hash {
+                        "named" => "parent"
+                    }
+                    <type> => "sc"
+                    <value> => "Class"
+                }
+            ]
+        }
+    }
+}
+RESULT
+
+# vim: ft=perl

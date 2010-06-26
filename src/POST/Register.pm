@@ -18,9 +18,5 @@ our multi method declared()       { self.attr('declared', undef,  0); }
 our multi method regno($param) { self.attr('regno', $param, 1); }
 our multi method regno()       { self.attr('regno', undef,  0); }
 
-# PCC call modifier. E.g. :slurpy, :flat, etc
-our multi method modifier($param) { self.attr('modifier', $param, 1); }
-our multi method modifier()       { self.attr('modifier', undef,  0); }
-
 
 # vim: ft=perl6

@@ -72,6 +72,109 @@ Answer is 42
 RESULT
 
 
+test_post( ":slurpy", <<'CODE', <<'RESULT');
+.sub "main"
+    $P0 = new "String"
+    $P0 = "Answer"
+    "hello"($P0, " is ", 42)
+.end
+
+.sub "hello"
+    .param pmc bits :slurpy
+
+    $P0 = iter bits
+  loop:
+    unless $P0 goto done
+    $S0 = shift $P0
+    print $S0
+    goto loop
+
+  done:  
+    say ""
+.end
+CODE
+Answer is 42
+RESULT
+
+
+test_post( ":optional", <<'CODE', <<'RESULT');
+.sub "main"
+    hello()
+    hello("stranger")
+.end
+
+.sub "hello"
+    .param string who     :optional
+    .param int    has_who :opt_flag
+
+    print "Hello, "
+    if has_who goto has
+    say "World"
+    goto done
+  has:
+    say who
+
+  done:
+
+.end
+CODE
+Hello, World
+Hello, stranger
+RESULT
+
+# Handling of args
+
+test_post( ":flat", <<'CODE', <<'RESULT');
+.sub "main"
+    $P0 = new "ResizablePMCArray"
+    push $P0, "Answer"
+    push $P0, "is"
+    push $P0, "42"
+    hello($P0 :flat)
+.end
+
+.sub "hello"
+    .param pmc answer
+    .param string is
+    .param int fortytwo
+    print answer
+    print " "
+    print is
+    print " "
+    say fortytwo
+.end
+CODE
+Answer is 42
+RESULT
+
+
+# Handling of results
+
+test_post( ":slurpy result", <<'CODE', <<'RESULT');
+.sub "main"
+    ($P1 :slurpy) = "hello"()
+
+    $P0 = iter $P1
+  loop:
+    unless $P0 goto done
+    $S0 = shift $P0
+    print $S0
+    goto loop
+
+  done:  
+    say ""
+.end
+
+.sub "hello"
+    $P0 = new "String"
+    $P0 = "Answer"
+    .return ($P0, " is ", 42)
+.end
+
+CODE
+Answer is 42
+RESULT
+
 
 
 # vim: ft=perl

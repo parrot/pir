@@ -140,10 +140,10 @@ rule pir_directive:sym<.meth_call>  { <sym> <value> [',' <continuation=pir_regis
 rule pir_directive:sym<.nci_call>   { <sym> <value> [',' <continuation=pir_register> ]? }
 
 rule pir_directive:sym<.invocant>   { <sym> <value> }
-rule pir_directive:sym<.set_arg>    { <sym> <value> <arg_flag>* }
-rule pir_directive:sym<.set_return> { <sym> <value> <arg_flag>* }
-rule pir_directive:sym<.set_yield>  { <sym> <value> <arg_flag>* }
-rule pir_directive:sym<.get_result> { <sym> <value> <result_flag>* }
+rule pir_directive:sym<.set_arg>    { <sym> <value> <arg_flag>? }
+rule pir_directive:sym<.set_return> { <sym> <value> <arg_flag>? }
+rule pir_directive:sym<.set_yield>  { <sym> <value> <arg_flag>? }
+rule pir_directive:sym<.get_result> { <sym> <value> <result_flag>? }
 
 rule pir_directive:sym<.return>     { <sym> '(' <args>? ')' }
 rule pir_directive:sym<.yield>      { <sym> '(' <args>? ')' }
@@ -305,7 +305,7 @@ rule args {
 
 rule arg {
     | <quote> '=>' <value>
-    | <value> <arg_flag>*
+    | <value> <arg_flag>?
 }
 
 rule results {
@@ -313,17 +313,20 @@ rule results {
 }
 
 rule result {
-    <variable> <result_flag>*
+    <variable> <result_flag>?
 }
 
-token arg_flag {
-    | ':flat'
-    | <named_flag>
+proto token arg_flag { <...> }
+token arg_flag:sym<:flat>       { <sym> <?before <ws> [ ',' | ')' ]> } # LTM...
+rule  arg_flag:sym<flat named>  {
+    | ':flat' ':named'
+    | ':named' ':flat'
 }
+token arg_flag:sym<named_flag>    { <named_flag> }
 
 proto token param_flag { <...> }
 token param_flag:sym<:call_sig>     { <sym> } # TODO call_sig can be only one.
-token param_flag:sym<:slurpy>       { <sym> <?before <ws> \v> } # LTM...
+token param_flag:sym<:slurpy>       { <sym> <?before <ws> [ ',' | ')' | \v ]> } # LTM...
 rule  param_flag:sym<slurpy named>  {
     | ':slurpy' ':named'
     | ':named' ':slurpy'
@@ -332,16 +335,20 @@ token param_flag:sym<:optional>     { <sym> }
 token param_flag:sym<:opt_flag>     { <sym> }
 token param_flag:sym<named_flag>    { <named_flag> }
 
+proto token result_flag { <...> }
+token result_flag:sym<:slurpy>       { <sym> <?before <ws> [ ',' | ')' | \v ]> } # LTM...
+rule  result_flag:sym<slurpy named>  {
+    | ':slurpy' ':named'
+    | ':named' ':slurpy'
+}
+token result_flag:sym<:optional>     { <sym> }
+token result_flag:sym<:opt_flag>     { <sym> }
+token result_flag:sym<named_flag>    { <named_flag> }
+
 rule named_flag {
     ':named' [ '(' <quote> ')' ]?
 }
 
-token result_flag {
-    | ':slurpy'
-    | ':optional'
-    | ':opt_flag'
-    | <named_flag>
-}
 
 token unary {
     '!' | '-' | '~'

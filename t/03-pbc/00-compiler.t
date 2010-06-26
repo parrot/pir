@@ -35,7 +35,11 @@ is( 1 + 0x10, $c.build_single_arg(POST::Register.new(:type<sc>), %context), "Str
 is( 2 + 0x10, $c.build_single_arg(POST::Register.new(:type<pc>), %context), "PMC register" );
 is( 3 + 0x10, $c.build_single_arg(POST::Register.new(:type<nc>), %context), "Num register" );
 
+# Slurpy
+is( 2 + 0x20, $c.build_single_arg(POST::Register.new(:type<p>, :modifier<slurpy>), %context), "Slurpy PMC register" );
 
+is( 2 + 0x80, $c.build_single_arg(POST::Register.new(:type<p>, :modifier<optional>), %context), "Named PMC register" );
+is( 0 + 0x100, $c.build_single_arg(POST::Register.new(:type<i>, :modifier<opt_flag>), %context), "opt_flag" );
 
 #pir::trace(4);
 @args.push(POST::Constant.new(:type<sc>, :value<Hello, World>));

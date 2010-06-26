@@ -63,30 +63,6 @@ method compilation_unit:sym<sub> ($/) {
     make $!BLOCK;
 }
 
-method param_decl($/) {
-    my $name := ~$<name>;
-    my $past := POST::Register.new(
-        :name($name),
-        :type(pir::substr__SSII(~$<pir_type>, 0, 1)),
-        :declared(1),
-    );
-
-    if $!BLOCK.symbol($name) {
-        $/.CURSOR.panic("Redeclaration of varaible '$name'");
-    }
-
-    if $<param_flag>[0] {
-        $past.modifier( $<param_flag>[0].ast );
-        # TODO Check (.type, .modifier) combination
-        # E.g. :slurpy can only be PMC (constant)
-    }
-
-    $!BLOCK.param($name, $past);
-    $!BLOCK.symbol($name, $past);
-
-    make $past;
-}
-
 method statement($/) {
     make $<pir_directive> ?? $<pir_directive>.ast !! $<labeled_instruction>.ast;
 }
@@ -135,8 +111,7 @@ method op($/) {
             my $label := pir::shift__IP($labels);
             if $label {
                 my $name  := ~$_;
-                my $label := POST::Label.new(:name($name));
-                $!BLOCK.label($name, $label) unless $!BLOCK.label($name);
+                my $label := self.create_label($name);
                 $past.push($label);
             }
             else {
@@ -280,9 +255,7 @@ method const_declaration:sym<string>($/) {
 method pir_instruction:sym<goto>($/) {
     make POST::Op.new(
         :pirop('branch'),
-        POST::Label.new(
-            :name(~$<ident>),
-        ),
+        self.create_label(~$<ident>),
     );
 }
 
@@ -290,9 +263,7 @@ method pir_instruction:sym<if>($/) {
     make POST::Op.new(
         :pirop('if'),
         $<variable>.ast,
-        POST::Label.new(
-            :name(~$<ident>),
-        ),
+        self.create_label(~$<ident>),
     );
 }
 
@@ -300,9 +271,7 @@ method pir_instruction:sym<unless>($/) {
     make POST::Op.new(
         :pirop('unless'),
         $<variable>.ast,
-        POST::Label.new(
-            :name(~$<ident>),
-        ),
+        self.create_label(~$<ident>),
     );
 }
 
@@ -311,9 +280,7 @@ method pir_instruction:sym<if_null>($/) {
     make POST::Op.new(
         :pirop('if_null'),
         $<variable>.ast,
-        POST::Label.new(
-            :name(~$<ident>),
-        ),
+        self.create_label(~$<ident>),
     );
 }
 
@@ -322,9 +289,7 @@ method pir_instruction:sym<unless_null>($/) {
     make POST::Op.new(
         :pirop('unless_null'),
         $<variable>.ast,
-        POST::Label.new(
-            :name(~$<ident>),
-        ),
+        self.create_label(~$<ident>),
     );
 }
 
@@ -342,9 +307,7 @@ method pir_instruction:sym<if_op>($/) {
         :pirop($cmp_op),
         $<lhs>.ast,
         $<rhs>.ast,
-        POST::Label.new(
-            :name(~$<ident>),
-        ),
+        self.create_label(~$<ident>),
     );
 }
 
@@ -363,9 +326,7 @@ method pir_instruction:sym<unless_op>($/) {
         :pirop($cmp_op),
         $<lhs>.ast,
         $<rhs>.ast,
-        POST::Label.new(
-            :name(~$<ident>),
-        ),
+        self.create_label(~$<ident>),
     );
 }
 
@@ -649,14 +610,78 @@ method handle_pcc_args($/, $past) {
 #}
 
 method arg($/) {
-    # TODO Handle flags, fatarrow
-    make $<value>.ast;
+    my $past := $<value>.ast;
+
+    if $<arg_flag>[0] {
+        my $modifier := $<arg_flag>[0].ast;
+        # Check (.type, .modifier) combination
+        if $modifier eq 'flat' || $modifier eq 'flat named' {
+            if $past.type ne 'p' {
+                $/.CURSOR.panic("Flat param '{ $past.name }' isn't a PMC");
+            }
+        }
+
+        $past.modifier( $modifier );
+    }
+    elsif $<quote> {
+        # fatarrow
+        $past.modifier( hash( :named(dequote(~$<quote>)) ) );
+    }
+
+    make $past;
+}
+
+method param_decl($/) {
+    my $name := ~$<name>;
+    my $past := POST::Register.new(
+        :name($name),
+        :type(pir::substr__SSII(~$<pir_type>, 0, 1)),
+        :declared(1),
+    );
+
+    if $!BLOCK.symbol($name) {
+        $/.CURSOR.panic("Redeclaration of varaible '$name'");
+    }
+
+    if $<param_flag>[0] {
+        self.param_result_flags($/, $past, $<param_flag>[0]);
+    }
+
+    $!BLOCK.param($name, $past);
+    $!BLOCK.symbol($name, $past);
+
+    make $past;
 }
 
 method result($/) {
     # TODO Handle flags
-    make $<variable>.ast;
+    my $past := $<variable>.ast;
+    if $<result_flag>[0] {
+        self.param_result_flags($/, $past, $<result_flag>[0]);
+    }
+    make $past;
 }
+
+method param_result_flags($/, $past, $flag) {
+    my $modifier := $flag.ast;
+    # Check (.type, .modifier) combination
+    if $modifier eq 'slurpy' || $modifier eq 'slurpy named' {
+        if $past.type ne 'p' {
+            $/.CURSOR.panic("Slurpy param '{ $past.name }' isn't a PMC");
+        }
+    }
+    elsif $modifier eq 'opt_flag' {
+        if $past.type ne 'i' {
+            $/.CURSOR.panic(":opt_flag param '{ $past.name }' isn't a INT");
+        }
+    }
+
+    $past.modifier( $modifier );
+}
+
+method arg_flag:sym<:flat>($/)              { make 'flat' }
+method arg_flag:sym<flat named>($/)         { make 'flat named' }
+method arg_flag:sym<named_flag>($/)         { make $<named_flag>.ast }
 
 method param_flag:sym<:call_sig>($/)        { make 'call_sig' }
 method param_flag:sym<:slurpy>($/)          { make 'slurpy'   }
@@ -664,6 +689,12 @@ method param_flag:sym<slurpy named>($/)     { make 'slurpy named' }
 method param_flag:sym<:optional>($/)        { make 'optional' }
 method param_flag:sym<:opt_flag>($/)        { make 'opt_flag' }
 method param_flag:sym<named_flag>($/)       { make $<named_flag>.ast }
+
+method result_flag:sym<:slurpy>($/)         { make 'slurpy'   }
+method result_flag:sym<slurpy named>($/)    { make 'slurpy named' }
+method result_flag:sym<:optional>($/)       { make 'optional' }
+method result_flag:sym<:opt_flag>($/)       { make 'opt_flag' }
+method result_flag:sym<named_flag>($/)      { make $<named_flag>.ast }
 
 method named_flag($/) {
     make hash( named => ($<quote>[0] ?? dequote(~$<quote>[0]) !! undef) )
@@ -778,6 +809,12 @@ method validate_labels($/, $node) {
             $/.CURSOR.panic("Label '" ~ $_.value.name ~ "' not declared");
         }
     }
+}
+
+method create_label($name) {
+    my $label := POST::Label.new( :name($name) );
+    $!BLOCK.label($name, $label) unless $!BLOCK.label($name);
+    $label;
 }
 
 sub dequote($a) {
