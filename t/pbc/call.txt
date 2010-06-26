@@ -97,5 +97,31 @@ Answer is 42
 RESULT
 
 
+test_post( ":optional", <<'CODE', <<'RESULT');
+.sub "main"
+    hello()
+    hello("stranger")
+.end
+
+.sub "hello"
+    .param string who     :optional
+    .param int    has_who :opt_flag
+
+    print "Hello, "
+    if has_who goto has
+    say "World"
+    goto done
+  has:
+    say who
+
+  done:
+
+.end
+CODE
+Hello, World
+Hello, stranger
+RESULT
+
+
 
 # vim: ft=perl
