@@ -122,6 +122,31 @@ Hello, World
 Hello, stranger
 RESULT
 
+# Handling of args
+
+test_post( ":flat", <<'CODE', <<'RESULT');
+.sub "main"
+    $P0 = new "ResizablePMCArray"
+    push $P0, "Answer"
+    push $P0, "is"
+    push $P0, "42"
+    hello($P0 :flat)
+.end
+
+.sub "hello"
+    .param pmc answer
+    .param string is
+    .param int fortytwo
+    print answer
+    print " "
+    print is
+    print " "
+    say fortytwo
+.end
+CODE
+Answer is 42
+RESULT
+
 
 
 # vim: ft=perl
