@@ -44,6 +44,16 @@ C<.set_arg>, C<.get_result>, C<.set_return>, C<.yield>, etc.
 
 =back
 
+=head1 Invocation
+
+=over 4
+
+=item * "@ARGV" support.
+
+Currently examples/benchmark/fib.pir failing with "Too less positional passed"
+
+=back
+
 =cut
 
 # vim: ft=pod
