@@ -574,9 +574,14 @@ method pir_instruction:sym<call_assign_many>($/) {
 # Short PCC call.
 #proto regex call { <...> }
 method call:sym<pmc>($/) {
+    my $variable := $<variable>.ast;
+    if $variable.type ne 'p' {
+        $/.CURSOR.panic("Sub '{ $variable.name }' isn't a PMC");
+    }
+
     my $past := POST::Call.new(
         :calltype('call'),
-        :name($<variable>.ast),
+        :name($variable),
     );
     self.handle_pcc_args($/, $past);
     make $past;
