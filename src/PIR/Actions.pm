@@ -625,7 +625,7 @@ method arg($/) {
     }
     elsif $<quote> {
         # fatarrow
-        $past.modifier( hash( :named(dequote(~$<quote>)) ) );
+        $past.modifier( hash( :named(~$<quote>.ast<value>) ) );
     }
 
     make $past;
@@ -697,7 +697,7 @@ method result_flag:sym<:opt_flag>($/)       { make 'opt_flag' }
 method result_flag:sym<named_flag>($/)      { make $<named_flag>.ast }
 
 method named_flag($/) {
-    make hash( named => ($<quote>[0] ?? dequote(~$<quote>[0]) !! undef) )
+    make hash( named => ($<quote>[0] ?? ~$<quote>[0].ast<value> !! undef) )
 }
 
 method value($/) { make $<constant> ?? $<constant>.ast !! $<variable>.ast }
@@ -772,14 +772,14 @@ method subname($/) {
 method quote:sym<apos>($/) {
     make POST::Constant.new(
         :type("sc"),
-        :value(dequote(~$/))
+        :value(~$<quote_EXPR>.ast<value>)
     );
 }
 
 method quote:sym<dblq>($/) {
     make POST::Constant.new(
         :type("sc"),
-        :value(dequote(~$/))
+        :value(~$<quote_EXPR>.ast<value>)
     );
 }
 

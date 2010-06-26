@@ -113,7 +113,7 @@ token process_heredoc {
 }
 
 
-# TODO Some of combination of flags/type doesn't make any sense
+# Combination of flags/type checked in Actions
 rule param_decl {
     '.param' <pir_type> <name=ident> <param_flag>? <.nl>
 }
