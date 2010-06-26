@@ -58,8 +58,7 @@ is( @sig[0], 0x1 + 0x10 + 0x200, "... first with proper type");
 is( @sig[1], 0x1,                "... second with proper type");
 
 
-
-#pir::trace(4);
+@args := list();
 @args.push(POST::Constant.new(:type<sc>, :value<Hello, World>));
 
 $signature := $c.build_args_signature(@args, %context);
@@ -67,6 +66,25 @@ ok($signature.elements == 1, "Single string const");
 
 $elt := $signature[0];
 ok($elt == 0x11, "... [0]");
+
+
+# Named args.
+@args := list(
+    POST::Register.new(
+        :type<s>,
+        :name<hello>,
+        :modifier(
+            hash(:named(undef))
+        )
+    )
+);
+
+$signature := $c.build_args_signature(@args, %context);
+ok($signature.elements == 2, ":named produce 2 'args'");
+
+
+#$elt := $signature[0];
+#ok($elt == 0x11, "... [0]");
 
 
 done_testing();
