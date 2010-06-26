@@ -355,8 +355,9 @@ INIT {
 }
 
 our method build_single_arg($arg, %context) {
-    # XXX Build call signature arg according to PDD03
-    my $type := $arg.type;
+    # Build call signature arg according to PDD03
+    # POST::Value doesn't have .type. Lookup in symbols.
+    my $type := $arg.type // %context<sub>.symbol($arg.name).type;
     my $res;
 
     # Register types.
@@ -369,6 +370,7 @@ our method build_single_arg($arg, %context) {
     elsif $type eq 'sc' { $res := 1 + 0x10 }
     elsif $type eq 'pc' { $res := 2 + 0x10 }
     elsif $type eq 'nc' { $res := 3 + 0x10 }
+    else  { pir::die("Unknown arg type '$type'") }
 
     my $mod := $arg.modifier;
     if $mod {
