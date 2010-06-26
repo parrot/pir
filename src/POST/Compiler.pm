@@ -366,7 +366,12 @@ our method build_single_arg($arg, %context) {
 
     my $mod := $arg.modifier;
     if $mod {
-        if $mod eq 'slurpy'             { $res := $res + 0x20 }  # 5
+        if pir::isa__ips($mod, "Hash")  {
+            # named
+            # First is string constant with :named flag
+            $res := list(0x1 + 0x10 + 0x200, $res)
+        }
+        elsif $mod eq 'slurpy'             { $res := $res + 0x20 }  # 5
         elsif $mod eq 'flat'            { $res := $res + 0x20 }  # 5
         elsif $mod eq 'optional'        { $res := $res + 0x80 }  # 7
         elsif $mod eq 'opt_flag'        { $res := $res + 0x100 } # 8
