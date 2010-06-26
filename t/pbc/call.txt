@@ -37,6 +37,21 @@ CODE
 Hello, World
 RESULT
 
+test_post( "Hello, World (arg 2)", <<'CODE', <<'RESULT');
+.sub "main"
+    .local string h
+    h = "Hello, World"
+    "hello"(h)
+.end
+
+.sub "hello"
+    .param string greeting
+    say greeting
+.end
+CODE
+Hello, World
+RESULT
+
 test_post( "Multiple args", <<'CODE', <<'RESULT');
 .sub "main"
     $P0 = new "String"
