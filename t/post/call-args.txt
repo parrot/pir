@@ -82,4 +82,39 @@ CODE
 }
 RESULT
 
+test_post( "fatarrow", <<'CODE', <<'RESULT');
+.sub "main"
+    $P0("parent" => "Class")
+.end
+CODE
+"post" => PMC 'POST;Node'  {
+    <main_sub> => "main"
+    [0] => PMC 'POST;Sub'  {
+        <name> => "main"
+        <symtable> => Hash {
+            "$P0" => PMC 'POST;Register'  {
+                <name> => "$P0"
+                <type> => "p"
+            }
+        }
+        [0] => PMC 'POST;Call'  {
+            <calltype> => "call"
+            <name> => PMC 'POST;Value'  {
+                <name> => \post["$P0"]
+                <type> => \post["$P0"]
+            }
+            <params> => ResizablePMCArray (size:1) [
+                PMC 'POST;Constant'  {
+                    <modifier> => Hash {
+                        "named" => "parent"
+                    }
+                    <type> => "sc"
+                    <value> => "Class"
+                }
+            ]
+        }
+    }
+}
+RESULT
+
 # vim: ft=perl

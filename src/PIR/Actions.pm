@@ -610,7 +610,6 @@ method handle_pcc_args($/, $past) {
 #}
 
 method arg($/) {
-    # TODO fatarrow
     my $past := $<value>.ast;
 
     if $<arg_flag>[0] {
@@ -623,6 +622,10 @@ method arg($/) {
         }
 
         $past.modifier( $modifier );
+    }
+    elsif $<quote> {
+        # fatarrow
+        $past.modifier( hash( :named(dequote(~$<quote>)) ) );
     }
 
     make $past;
