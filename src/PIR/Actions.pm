@@ -63,42 +63,6 @@ method compilation_unit:sym<sub> ($/) {
     make $!BLOCK;
 }
 
-method param_decl($/) {
-    my $name := ~$<name>;
-    my $past := POST::Register.new(
-        :name($name),
-        :type(pir::substr__SSII(~$<pir_type>, 0, 1)),
-        :declared(1),
-    );
-
-    if $!BLOCK.symbol($name) {
-        $/.CURSOR.panic("Redeclaration of varaible '$name'");
-    }
-
-    if $<param_flag>[0] {
-        my $modifier := $<param_flag>[0].ast;
-        # Check (.type, .modifier) combination
-        if $modifier eq 'slurpy' || $modifier eq 'slurpy named' {
-            if $past.type ne 'p' {
-                $/.CURSOR.panic("Slurpy param '$name' isn't a PMC");
-            }
-        }
-        elsif $modifier eq 'opt_flag' {
-            if $past.type ne 'i' {
-                $/.CURSOR.panic(":opt_flag param '$name' isn't a INT");
-            }
-        }
-
-
-        $past.modifier( $modifier );
-    }
-
-    $!BLOCK.param($name, $past);
-    $!BLOCK.symbol($name, $past);
-
-    make $past;
-}
-
 method statement($/) {
     make $<pir_directive> ?? $<pir_directive>.ast !! $<labeled_instruction>.ast;
 }
@@ -646,8 +610,58 @@ method handle_pcc_args($/, $past) {
 #}
 
 method arg($/) {
-    # TODO Handle flags, fatarrow
-    make $<value>.ast;
+    # TODO fatarrow
+    my $past := $<value>.ast;
+
+    if $<arg_flag>[0] {
+        my $modifier := $<arg_flag>[0].ast;
+        # Check (.type, .modifier) combination
+        if $modifier eq 'flat' || $modifier eq 'flat named' {
+            if $past.type ne 'p' {
+                $/.CURSOR.panic("Flat param '{ $past.name }' isn't a PMC");
+            }
+        }
+
+        $past.modifier( $modifier );
+    }
+
+    make $past;
+}
+
+method param_decl($/) {
+    my $name := ~$<name>;
+    my $past := POST::Register.new(
+        :name($name),
+        :type(pir::substr__SSII(~$<pir_type>, 0, 1)),
+        :declared(1),
+    );
+
+    if $!BLOCK.symbol($name) {
+        $/.CURSOR.panic("Redeclaration of varaible '$name'");
+    }
+
+    if $<param_flag>[0] {
+        my $modifier := $<param_flag>[0].ast;
+        # Check (.type, .modifier) combination
+        if $modifier eq 'slurpy' || $modifier eq 'slurpy named' {
+            if $past.type ne 'p' {
+                $/.CURSOR.panic("Slurpy param '$name' isn't a PMC");
+            }
+        }
+        elsif $modifier eq 'opt_flag' {
+            if $past.type ne 'i' {
+                $/.CURSOR.panic(":opt_flag param '$name' isn't a INT");
+            }
+        }
+
+
+        $past.modifier( $modifier );
+    }
+
+    $!BLOCK.param($name, $past);
+    $!BLOCK.symbol($name, $past);
+
+    make $past;
 }
 
 method result($/) {
