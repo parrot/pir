@@ -76,9 +76,15 @@ method param_decl($/) {
     }
 
     if $<param_flag>[0] {
-        $past.modifier( $<param_flag>[0].ast );
-        # TODO Check (.type, .modifier) combination
-        # E.g. :slurpy can only be PMC (constant)
+        my $modifier := $<param_flag>[0].ast;
+        # Check (.type, .modifier) combination
+        if $modifier eq 'slurpy' || $modifier eq 'slurpy named' {
+            if $past.type ne 'p' {
+                $/.CURSOR.panic("Slurpy param '$name' isn't a PMC");
+            }
+        }
+
+        $past.modifier( $modifier );
     }
 
     $!BLOCK.param($name, $past);

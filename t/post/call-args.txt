@@ -22,9 +22,17 @@ CODE
 }
 RESULT
 
-test_post( "Bad :slurpy", <<'CODE', <<'RESULT', "fail_like" => "Slurpy param args isn't a PMC");
+test_post( "Bad :slurpy", <<'CODE', <<'RESULT', "fail_like" => "Slurpy param 'args' isn't a PMC");
 .sub "main"
     .param int args :slurpy
+.end
+CODE
+dummy
+RESULT
+
+test_post( "Bad :slurpy :named", <<'CODE', <<'RESULT', "fail_like" => "Slurpy param 'args' isn't a PMC");
+.sub "main"
+    .param int args :slurpy :named
 .end
 CODE
 dummy
