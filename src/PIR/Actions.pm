@@ -641,21 +641,7 @@ method param_decl($/) {
     }
 
     if $<param_flag>[0] {
-        my $modifier := $<param_flag>[0].ast;
-        # Check (.type, .modifier) combination
-        if $modifier eq 'slurpy' || $modifier eq 'slurpy named' {
-            if $past.type ne 'p' {
-                $/.CURSOR.panic("Slurpy param '$name' isn't a PMC");
-            }
-        }
-        elsif $modifier eq 'opt_flag' {
-            if $past.type ne 'i' {
-                $/.CURSOR.panic(":opt_flag param '$name' isn't a INT");
-            }
-        }
-
-
-        $past.modifier( $modifier );
+        self.param_result_flags($/, $past, $<param_flag>[0]);
     }
 
     $!BLOCK.param($name, $past);
@@ -666,7 +652,28 @@ method param_decl($/) {
 
 method result($/) {
     # TODO Handle flags
-    make $<variable>.ast;
+    my $past := $<variable>.ast;
+    if $<result_flag>[0] {
+        self.param_result_flags($/, $past, $<result_flag>[0]);
+    }
+    make $past;
+}
+
+method param_result_flags($/, $past, $flag) {
+    my $modifier := $flag.ast;
+    # Check (.type, .modifier) combination
+    if $modifier eq 'slurpy' || $modifier eq 'slurpy named' {
+        if $past.type ne 'p' {
+            $/.CURSOR.panic("Slurpy param '{ $past.name }' isn't a PMC");
+        }
+    }
+    elsif $modifier eq 'opt_flag' {
+        if $past.type ne 'i' {
+            $/.CURSOR.panic(":opt_flag param '{ $past.name }' isn't a INT");
+        }
+    }
+
+    $past.modifier( $modifier );
 }
 
 method arg_flag:sym<:flat>($/)              { make 'flat' }

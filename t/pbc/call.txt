@@ -148,5 +148,33 @@ Answer is 42
 RESULT
 
 
+# Handling of results
+
+test_post( ":slurpy result", <<'CODE', <<'RESULT');
+.sub "main"
+    ($P1 :slurpy) = "hello"()
+
+    $P0 = iter $P1
+  loop:
+    unless $P0 goto done
+    $S0 = shift $P0
+    print $S0
+    goto loop
+
+  done:  
+    say ""
+.end
+
+.sub "hello"
+    $P0 = new "String"
+    $P0 = "Answer"
+    .return ($P0, " is ", 42)
+.end
+
+CODE
+Answer is 42
+RESULT
+
+
 
 # vim: ft=perl
