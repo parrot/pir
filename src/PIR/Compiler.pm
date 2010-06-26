@@ -67,4 +67,28 @@ our method post($source, *%adverbs) {
     $source.ast;
 }
 
+INIT {
+    pir::load_bytecode('POST/Pattern.pbc');
+    POST::Pattern.new_subtype('POST::Pattern::Call',
+                              POST::Call,
+                              :attr(<name params results invocant calltype>));
+    POST::Pattern.new_subtype('POST::Pattern::Value',
+                              POST::Value,
+                              :attr(<name type flags declared>));
+    POST::Pattern::Value.new_subtype('POST::Pattern::Constant',
+                                     POST::Constant,
+                                     :attr(<value>));
+    POST::Pattern::Value.new_subtype('POST::Pattern::Key',
+                                     POST::Key);
+    POST::Pattern::Value.new_subtype('POST::Pattern::Register',
+                                     POST::Register,
+                                     :attr(<regno modifier>));
+    # TODO(tcurtis) do something for POST::Label and POST::Sub.
+}
+
+our method eliminate_constant_conditional ($post, *%adverbs) {
+    pir::say("Let's eliminate some constant conditionals.");
+    $post;
+}
+
 # vim: filetype=perl6:
