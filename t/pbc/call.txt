@@ -149,7 +149,7 @@ RESULT
 
 test_post( ":named", <<'CODE', <<'RESULT');
 .sub "main"
-    hello($P0 :flat)
+    hello("answer" => 42)
 .end
 
 .sub "hello"
