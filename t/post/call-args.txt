@@ -47,4 +47,39 @@ CODE
 dummy
 RESULT
 
+
+
+test_post( ":flat", <<'CODE', <<'RESULT');
+.sub "main"
+    $P0($P0 :flat)
+.end
+CODE
+"post" => PMC 'POST;Node'  {
+    <main_sub> => "main"
+    [0] => PMC 'POST;Sub'  {
+        <name> => "main"
+        <symtable> => Hash {
+            "$P0" => PMC 'POST;Register'  {
+                <name> => "$P0"
+                <type> => "p"
+            }
+        }
+        [0] => PMC 'POST;Call'  {
+            <calltype> => "call"
+            <name> => PMC 'POST;Value'  {
+                <name> => "$P0"
+                <type> => "p"
+            }
+            <params> => ResizablePMCArray (size:1) [
+                PMC 'POST;Value'  {
+                    <modifier> => "flat"
+                    <name> => \post["$P0"]
+                    <type> => \post["$P0"]
+                }
+            ]
+        }
+    }
+}
+RESULT
+
 # vim: ft=perl
