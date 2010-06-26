@@ -655,12 +655,22 @@ method result($/) {
     make $<variable>.ast;
 }
 
+method arg_flag:sym<:flat>($/)              { make 'flat' }
+method arg_flag:sym<flat named>($/)         { make 'flat named' }
+method arg_flag:sym<named_flag>($/)         { make $<named_flag>.ast }
+
 method param_flag:sym<:call_sig>($/)        { make 'call_sig' }
 method param_flag:sym<:slurpy>($/)          { make 'slurpy'   }
 method param_flag:sym<slurpy named>($/)     { make 'slurpy named' }
 method param_flag:sym<:optional>($/)        { make 'optional' }
 method param_flag:sym<:opt_flag>($/)        { make 'opt_flag' }
 method param_flag:sym<named_flag>($/)       { make $<named_flag>.ast }
+
+method result_flag:sym<:slurpy>($/)         { make 'slurpy'   }
+method result_flag:sym<slurpy named>($/)    { make 'slurpy named' }
+method result_flag:sym<:optional>($/)       { make 'optional' }
+method result_flag:sym<:opt_flag>($/)       { make 'opt_flag' }
+method result_flag:sym<named_flag>($/)      { make $<named_flag>.ast }
 
 method named_flag($/) {
     make hash( named => ($<quote>[0] ?? dequote(~$<quote>[0]) !! undef) )
