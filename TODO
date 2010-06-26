@@ -34,15 +34,13 @@ Macros are not expanded ATM.
 
 C<.set_arg>, C<.get_result>, C<.set_return>, C<.yield>, etc.
 
-=item * Param/returns pragmas.
-
-E.g. :flat, etc.
-
 =back
 
 =head1 PBC generating
 
 =over 4
+
+=item * :named args/params
 
 =back
 
