@@ -305,7 +305,7 @@ rule args {
 
 rule arg {
     | <quote> '=>' <value>
-    | <value> <arg_flag>*
+    | <value> <arg_flag>?
 }
 
 rule results {
@@ -313,7 +313,7 @@ rule results {
 }
 
 rule result {
-    <variable> <result_flag>*
+    <variable> <result_flag>?
 }
 
 token arg_flag {
