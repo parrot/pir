@@ -267,10 +267,8 @@ our multi method to_pbc(POST::Call $call, %context) {
             self.to_pbc($call<name>, %context);
         }
         else {
-            $SUB := %context<sub>.symbol($call<name><name>);
-            $bc.push($OPLIB<find_sub_not_null_p_s>);
-            self.to_pbc($SUB, %context);
-            self.to_pbc($call<name>, %context);
+            self.debug("Name is " ~ $call<name>.WHAT) if $DEBUG;
+            $SUB := $call<name>;
         }
 
         self.debug("invokecc_p") if $DEBUG;
