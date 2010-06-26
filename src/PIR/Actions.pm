@@ -83,6 +83,12 @@ method param_decl($/) {
                 $/.CURSOR.panic("Slurpy param '$name' isn't a PMC");
             }
         }
+        elsif $modifier eq 'opt_flag' {
+            if $past.type ne 'i' {
+                $/.CURSOR.panic(":opt_flag param '$name' isn't a INT");
+            }
+        }
+
 
         $past.modifier( $modifier );
     }
