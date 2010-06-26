@@ -364,6 +364,8 @@ our method build_single_arg($arg, %context) {
     elsif $type eq 'pc' { $res := 2 + 0x10 }
     elsif $type eq 'nc' { $res := 3 + 0x10 }
 
+    my $mod := $arg.modifier;
+    if $mod eq 'slurpy'     { $res := $res + 0x20 }
 
     $res;
 }

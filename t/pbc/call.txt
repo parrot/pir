@@ -72,6 +72,30 @@ Answer is 42
 RESULT
 
 
+test_post( ":slurpy", <<'CODE', <<'RESULT');
+.sub "main"
+    $P0 = new "String"
+    $P0 = "Answer"
+    "hello"($P0, " is ", 42)
+.end
+
+.sub "hello"
+    .param pmc bits :slurpy
+
+    $P0 = iter bits
+  loop:
+    unless $P0 goto done
+    $S0 = shift $P0
+    print $S0
+    goto loop
+
+  done:  
+    say ""
+.end
+CODE
+Answer is 42
+RESULT
+
 
 
 # vim: ft=perl
