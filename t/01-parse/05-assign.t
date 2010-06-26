@@ -117,7 +117,7 @@ $res := parse($c, q{
 	s = utf8:unicode:"Hello World"
 .end
 });
-todo($res, "String encodings");
+ok($res, "String encodings");
 
 done_testing();
 
