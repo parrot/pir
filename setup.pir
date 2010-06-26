@@ -37,6 +37,7 @@ No Configure step, no Makefile generated.
     $P1['src/POST/Sub.pir']      = 'src/POST/Sub.pm'
     $P1['src/POST/Value.pir']    = 'src/POST/Value.pm'
     $P1['src/POST/Constant.pir'] = 'src/POST/Constant.pm'
+    $P1['src/POST/String.pir']   = 'src/POST/String.pm'
     $P1['src/POST/Register.pir'] = 'src/POST/Register.pm'
     $P1['src/POST/Label.pir']    = 'src/POST/Label.pm'
     $P1['src/POST/Key.pir']      = 'src/POST/Key.pm'
@@ -66,6 +67,7 @@ src/POST/Value.pir
 src/POST/Constant.pir
 src/POST/Register.pir
 src/POST/Key.pir
+src/POST/String.pir
 
 src/POST/Label.pir
 
