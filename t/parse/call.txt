@@ -192,7 +192,7 @@
     foo(x, 'y' => y)
     foo(x, y :named('y'))
     foo(x :flat :named)
-    foo(a, b, c :flat, 'x' => 3, 'y' => 4, z :flat :named('z'))
+    foo(a, b, c :flat, 'x' => 3, 'y' => 4, z :flat :named)
 
     x = foo()                       # single result
     (i, j :optional, ar :slurpy, value :named('key') ) = foo()
