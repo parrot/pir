@@ -365,7 +365,14 @@ our method build_single_arg($arg, %context) {
     elsif $type eq 'nc' { $res := 3 + 0x10 }
 
     my $mod := $arg.modifier;
-    if $mod eq 'slurpy'     { $res := $res + 0x20 }
+    if $mod {
+        if $mod eq 'slurpy'             { $res := $res + 0x20 }  # 5
+        elsif $mod eq 'flat'            { $res := $res + 0x20 }  # 5
+        elsif $mod eq 'optional'        { $res := $res + 0x80 }  # 7
+        elsif $mod eq 'opt_flag'        { $res := $res + 0x100 } # 8
+        elsif $mod eq 'slurpy named'    { $res := $res + 0x200 } # 9
+        else { pir::die("Unsupported modifier $mod"); }
+    }
 
     $res;
 }
