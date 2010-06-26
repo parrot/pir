@@ -140,10 +140,10 @@ rule pir_directive:sym<.meth_call>  { <sym> <value> [',' <continuation=pir_regis
 rule pir_directive:sym<.nci_call>   { <sym> <value> [',' <continuation=pir_register> ]? }
 
 rule pir_directive:sym<.invocant>   { <sym> <value> }
-rule pir_directive:sym<.set_arg>    { <sym> <value> <arg_flag>* }
-rule pir_directive:sym<.set_return> { <sym> <value> <arg_flag>* }
-rule pir_directive:sym<.set_yield>  { <sym> <value> <arg_flag>* }
-rule pir_directive:sym<.get_result> { <sym> <value> <result_flag>* }
+rule pir_directive:sym<.set_arg>    { <sym> <value> <arg_flag>? }
+rule pir_directive:sym<.set_return> { <sym> <value> <arg_flag>? }
+rule pir_directive:sym<.set_yield>  { <sym> <value> <arg_flag>? }
+rule pir_directive:sym<.get_result> { <sym> <value> <result_flag>? }
 
 rule pir_directive:sym<.return>     { <sym> '(' <args>? ')' }
 rule pir_directive:sym<.yield>      { <sym> '(' <args>? ')' }
