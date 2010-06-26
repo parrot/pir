@@ -41,7 +41,24 @@ is( 2 + 0x20, $c.build_single_arg(POST::Register.new(:type<p>, :modifier<slurpy>
 is( 2 + 0x80, $c.build_single_arg(POST::Register.new(:type<p>, :modifier<optional>), %context), "Named PMC register" );
 is( 0 + 0x100, $c.build_single_arg(POST::Register.new(:type<i>, :modifier<opt_flag>), %context), "opt_flag" );
 
-#pir::trace(4);
+# Anonymouse :named.
+# "foo"(hello :named)
+my @sig := $c.build_single_arg(
+    POST::Register.new(
+        :type<s>,
+        :name<hello>,
+        :modifier(
+            hash(:named(undef))
+        )
+    ),
+    %context
+);
+is( +@sig, 2, "Named arg produces 2 fields");
+is( @sig[0], 0x1 + 0x10 + 0x200, "... first with proper type");
+is( @sig[1], 0x1,                "... second with proper type");
+
+
+@args := list();
 @args.push(POST::Constant.new(:type<sc>, :value<Hello, World>));
 
 $signature := $c.build_args_signature(@args, %context);
@@ -49,6 +66,25 @@ ok($signature.elements == 1, "Single string const");
 
 $elt := $signature[0];
 ok($elt == 0x11, "... [0]");
+
+
+# Named args.
+@args := list(
+    POST::Register.new(
+        :type<s>,
+        :name<hello>,
+        :modifier(
+            hash(:named(undef))
+        )
+    )
+);
+
+$signature := $c.build_args_signature(@args, %context);
+ok($signature.elements == 2, ":named produce 2 'args'");
+
+
+#$elt := $signature[0];
+#ok($elt == 0x11, "... [0]");
 
 
 done_testing();
