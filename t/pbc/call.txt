@@ -147,6 +147,39 @@ CODE
 Answer is 42
 RESULT
 
+test_post( ":named", <<'CODE', <<'RESULT');
+.sub "main"
+    hello($P0 :flat)
+.end
+
+.sub "hello"
+    .param int answer :named
+    print "Answer is "
+    say answer
+.end
+CODE
+Answer is 42
+RESULT
+
+test_post( ":named (2)", <<'CODE', <<'RESULT');
+.sub "main"
+    $P0 = new "Hash"
+    $P0["answer"] = 42
+    $P0["foo"]    = 1
+    $P0["bar"]    = 2
+    hello($P0 :flat)
+.end
+
+.sub "hello"
+    .param int answer :named
+    .param pmc kv     :named :slurpy
+    print "Answer is "
+    say answer
+.end
+CODE
+Answer is 42
+RESULT
+
 
 # Handling of results
 
