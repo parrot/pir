@@ -1,0 +1,34 @@
+test_post( ":slurpy", <<'CODE', <<'RESULT');
+.sub "main"
+    .param pmc args :slurpy
+.end
+CODE
+"post" => PMC 'POST;Node'  {
+    <main_sub> => "main"
+    [0] => PMC 'POST;Sub'  {
+        <name> => \post
+        <params> => ResizablePMCArray (size:1) [
+            PMC 'POST;Register'  {
+                <declared> => 1
+                <modifier> => "slurpy"
+                <name> => "args"
+                <type> => "p"
+            }
+        ]
+        <symtable> => Hash {
+            "args" => \post[0]
+        }
+    }
+}
+RESULT
+
+test_post( "Bad :slurpy", <<'CODE', <<'RESULT', "fail_like" => "Slurpy param args isn't a PMC");
+.sub "main"
+    .param int args :slurpy
+.end
+CODE
+dummy
+RESULT
+
+
+# vim: ft=perl
