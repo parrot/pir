@@ -141,8 +141,7 @@ method op($/) {
             my $label := pir::shift__IP($labels);
             if $label {
                 my $name  := ~$_;
-                my $label := POST::Label.new(:name($name));
-                $!BLOCK.label($name, $label) unless $!BLOCK.label($name);
+                my $label := self.create_label($name);
                 $past.push($label);
             }
             else {
@@ -286,9 +285,7 @@ method const_declaration:sym<string>($/) {
 method pir_instruction:sym<goto>($/) {
     make POST::Op.new(
         :pirop('branch'),
-        POST::Label.new(
-            :name(~$<ident>),
-        ),
+        self.create_label(~$<ident>),
     );
 }
 
@@ -296,9 +293,7 @@ method pir_instruction:sym<if>($/) {
     make POST::Op.new(
         :pirop('if'),
         $<variable>.ast,
-        POST::Label.new(
-            :name(~$<ident>),
-        ),
+        self.create_label(~$<ident>),
     );
 }
 
@@ -306,9 +301,7 @@ method pir_instruction:sym<unless>($/) {
     make POST::Op.new(
         :pirop('unless'),
         $<variable>.ast,
-        POST::Label.new(
-            :name(~$<ident>),
-        ),
+        self.create_label(~$<ident>),
     );
 }
 
@@ -317,9 +310,7 @@ method pir_instruction:sym<if_null>($/) {
     make POST::Op.new(
         :pirop('if_null'),
         $<variable>.ast,
-        POST::Label.new(
-            :name(~$<ident>),
-        ),
+        self.create_label(~$<ident>),
     );
 }
 
@@ -328,9 +319,7 @@ method pir_instruction:sym<unless_null>($/) {
     make POST::Op.new(
         :pirop('unless_null'),
         $<variable>.ast,
-        POST::Label.new(
-            :name(~$<ident>),
-        ),
+        self.create_label(~$<ident>),
     );
 }
 
@@ -348,9 +337,7 @@ method pir_instruction:sym<if_op>($/) {
         :pirop($cmp_op),
         $<lhs>.ast,
         $<rhs>.ast,
-        POST::Label.new(
-            :name(~$<ident>),
-        ),
+        self.create_label(~$<ident>),
     );
 }
 
@@ -369,9 +356,7 @@ method pir_instruction:sym<unless_op>($/) {
         :pirop($cmp_op),
         $<lhs>.ast,
         $<rhs>.ast,
-        POST::Label.new(
-            :name(~$<ident>),
-        ),
+        self.create_label(~$<ident>),
     );
 }
 
@@ -784,6 +769,12 @@ method validate_labels($/, $node) {
             $/.CURSOR.panic("Label '" ~ $_.value.name ~ "' not declared");
         }
     }
+}
+
+method create_label($name) {
+    my $label := POST::Label.new( :name($name) );
+    $!BLOCK.label($name, $label) unless $!BLOCK.label($name);
+    $label;
 }
 
 sub dequote($a) {
