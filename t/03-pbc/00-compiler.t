@@ -82,6 +82,23 @@ ok($elt == 0x11, "... [0]");
 $signature := $c.build_args_signature(@args, %context);
 ok($signature.elements == 2, ":named produce 2 'args'");
 
+$POST::Compiler::OPLIB := pir::new__ps("OpLib");
+%context<bytecode> := pir::new__ps("PackfileRawSegment");
+%context<constants> := pir::new__ps("PackfileConstantTable");
+
+# Fill constants with some values
+for <foo bar baz> {
+    %context<constants>.get_or_create_string($_);
+}
+my $hello := %context<constants>.get_or_create_string("hello");
+
+$c.build_pcc_call("set_args_pc", @args, %context);
+
+
+# 0 is "set_args_pc"
+# 1 is signature
+is( %context<bytecode>.at(2), $hello, ":named name stored");
+is( %context<bytecode>.at(3), 0,      ":named value stored");
 
 #$elt := $signature[0];
 #ok($elt == 0x11, "... [0]");

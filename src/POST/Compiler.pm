@@ -297,9 +297,15 @@ our method build_pcc_call($opname, @args, %context) {
     # Push signature and all args.
     $bc.push($OPLIB{ $opname });
     $bc.push($sig_idx);
-    for @args {
-        # XXX Handle :named params properly.
-        self.to_pbc($_, %context);
+    for @args -> $arg {
+        # Handle :named params 
+        if pir::isa__ips($arg.modifier, "Hash") {
+            my $name := $arg.modifier<named> // $arg.name;
+            %context<bytecode>.push(
+                %context<constants>.get_or_create_string($name)
+            );
+        }
+        self.to_pbc($arg, %context);
     }
 }
 
