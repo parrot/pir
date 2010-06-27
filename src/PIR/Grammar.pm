@@ -27,8 +27,8 @@ rule compilation_unit:sym<sub> {
     <.newpad>
     '.sub' <subname>
     [
-    || [ <.ws> <sub_pragma> ]*
-    || <.panic: "Unknown .sub pragma">
+    || [ <.ws> <sub_modifier> ]*
+    || <.panic: "Unknown .sub modifier">
     ]
     <ws> <.nl>
 
@@ -79,22 +79,22 @@ token macro_statement:sym<.label> { <sym> <.ws> '$' <ident> ':' <pir_instruction
 
 #token compilation_unit:sym<pragma> { }
 
-proto regex sub_pragma { <...> }
-token sub_pragma:sym<main>       { ':' <sym> }
-token sub_pragma:sym<init>       { ':' <sym> }
-token sub_pragma:sym<load>       { ':' <sym> }
-token sub_pragma:sym<immediate>  { ':' <sym> }
-token sub_pragma:sym<postcomp>   { ':' <sym> }
-token sub_pragma:sym<anon>       { ':' <sym> }
-token sub_pragma:sym<method>     { ':' <sym> }
-token sub_pragma:sym<lex>        { ':' <sym> }
+proto regex sub_modifier { <...> }
+token sub_modifier:sym<main>       { ':' <sym> }
+token sub_modifier:sym<init>       { ':' <sym> }
+token sub_modifier:sym<load>       { ':' <sym> }
+token sub_modifier:sym<immediate>  { ':' <sym> }
+token sub_modifier:sym<postcomp>   { ':' <sym> }
+token sub_modifier:sym<anon>       { ':' <sym> }
+token sub_modifier:sym<method>     { ':' <sym> }
+token sub_modifier:sym<lex>        { ':' <sym> }
 
-token sub_pragma:sym<nsentry>    { ':' <sym> [ '(' <string_constant> ')' ]? }
-token sub_pragma:sym<vtable>     { ':' <sym> [ '(' <string_constant> ')' ]? }
-token sub_pragma:sym<outer>      { ':' <sym> '(' <subname> ')' }
-token sub_pragma:sym<subid>      { ':' <sym> '(' <string_constant> ')' }
+token sub_modifier:sym<nsentry>    { ':' <sym> [ '(' <string_constant> ')' ]? }
+token sub_modifier:sym<vtable>     { ':' <sym> [ '(' <string_constant> ')' ]? }
+token sub_modifier:sym<outer>      { ':' <sym> '(' <subname> ')' }
+token sub_modifier:sym<subid>      { ':' <sym> '(' <string_constant> ')' }
 
-token sub_pragma:sym<multi>      { ':' <sym> '(' [ [<.ws><multi_type><.ws>] ** ',' ]? ')' }
+token sub_modifier:sym<multi>      { ':' <sym> '(' [ [<.ws><multi_type><.ws>] ** ',' ]? ')' }
 
 # TODO Do more strict parsing.
 token multi_type {

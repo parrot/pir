@@ -47,9 +47,9 @@ method compilation_unit:sym<sub> ($/) {
     my $name := $<subname>.ast;
     $!BLOCK.name( $name );
 
-    # TODO Handle pragmas.
+    # TODO Handle modifiers.
 
-    # TODO Handle :main pragma
+    # TODO Handle :main modifier
     $!MAIN := $name unless $!MAIN;
 
     if $<statement> {
