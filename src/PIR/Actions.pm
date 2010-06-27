@@ -372,7 +372,8 @@ method pir_instruction:sym<assign>($/) {
         my $oplib := self.oplib;
         try {
             # OpLib throws exception leaving $past uninitialized
-            my $op    := $oplib{$name ~ '_' ~ $variable.type};
+            my $type  := $variable.type // $!BLOCK.symbol($variable.name).type;
+            my $op    := $oplib{$name ~ '_' ~ $type};
             $past := POST::Op.new(
                 :pirop($name),
                 $variable
