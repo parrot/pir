@@ -138,6 +138,15 @@ method op_param($/) {
     make $<value> ?? $<value>.ast !! $<namespace_key>.ast
 }
 
+method namespace_key($/) {
+    my $past;
+    $past := POST::Key.new( :type('pc') );
+    for $<quote> {
+        $past.push($_.ast);
+    }
+    make $past;
+}
+
 method pir_key($/) {
     my $past;
     # Optimize for ki and kic type keys.
