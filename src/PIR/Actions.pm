@@ -66,7 +66,8 @@ method compilation_unit:sym<sub> ($/) {
 method compilation_unit:sym<.include>($/) {
     my $past := POST::Node.new;
     for $<quote><compilation_unit> {
-        $past.push( $_.ast );
+        my $child := $_.ast;
+        $past.push( $child ) if $child;
     }
     make $past;
 }
@@ -200,7 +201,8 @@ method pir_directive:sym<.local>($/) {
 method pir_directive:sym<.include>($/) { 
     my $past := POST::Node.new;
     for $<quote><statement> {
-        $past.push( $_.ast );
+        my $child := $_.ast;
+        $past.push( $_.ast ) if $child;
     }
     make $past;
 }
