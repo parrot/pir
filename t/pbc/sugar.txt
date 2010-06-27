@@ -181,4 +181,14 @@ test_post( "sym<binary_logic>", <<'CODE', <<'RESULT');
 CODE
 ok
 RESULT
+
+test_post( "sym<inplace>", <<'CODE', <<'RESULT');
+.sub "main"
+    $I0 = 40
+    $I0 += 2
+    say $I0
+.end
+CODE
+42
+RESULT
 # vim: ft=perl
