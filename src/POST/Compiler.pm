@@ -63,6 +63,12 @@ method pbc($post, %adverbs) {
     # Empty FIA for handling returns from "hello"
     %context<constants>[1] := pir::new__PS('FixedIntegerArray');
 
+    # Add a debug segment.
+    %context<debug> := pir::new__PS('PackFileDebug');
+
+    # Store the debug segment in bytecode
+    $pfdir<BYTECODE_hello.pir_DB> := %context<debug>;
+
     for @($post) -> $s {
         self.to_pbc($s, %context);
     }
