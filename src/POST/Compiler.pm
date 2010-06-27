@@ -282,25 +282,41 @@ our multi method to_pbc(POST::Call $call, %context) {
     my $bc := %context<bytecode>;
 
     if $call.calltype eq 'call' {
+        if $call.invocant {
+            $call<params>.unshift($call.invocant);
+        }
+
         self.build_pcc_call("set_args_pc", $call<params>, %context);
 
-        my $SUB;
-        if $call<name>.isa(POST::Constant) {
-            # Constant string. E.g. "foo"()
-            $SUB := %context<sub>.symbol("!SUB");
-            # XXX We can avoid find_sub_not_null when Sub is constant.
-            $bc.push($OPLIB<find_sub_not_null_p_sc>);
-            self.to_pbc($SUB, %context);
-            self.to_pbc($call<name>, %context);
+        if $call.invocant {
+            if $call.name.isa(POST::Constant) {
+                $bc.push($OPLIB<callmethodcc_p_sc>);
+                self.to_pbc($call.invocant, %context);
+                self.to_pbc($call.name, %context);
+            }
+            else {
+                pir::die("NYI");
+            }
         }
         else {
-            self.debug("Name is " ~ $call<name>.WHAT) if $DEBUG;
-            $SUB := $call<name>;
-        }
+            my $SUB;
+            if $call.name.isa(POST::Constant) {
+                # Constant string. E.g. "foo"()
+                $SUB := %context<sub>.symbol("!SUB");
+                # XXX We can avoid find_sub_not_null when Sub is constant.
+                $bc.push($OPLIB<find_sub_not_null_p_sc>);
+                self.to_pbc($SUB, %context);
+                self.to_pbc($call<name>, %context);
+            }
+            else {
+                self.debug("Name is " ~ $call<name>.WHAT) if $DEBUG;
+                $SUB := $call<name>;
+            }
 
-        self.debug("invokecc_p") if $DEBUG;
-        $bc.push($OPLIB<invokecc_p>);
-        self.to_pbc($SUB, %context);
+            self.debug("invokecc_p") if $DEBUG;
+            $bc.push($OPLIB<invokecc_p>);
+            self.to_pbc($SUB, %context);
+        }
 
         self.build_pcc_call("get_results_pc", $call<results>, %context);
     }
