@@ -1,0 +1,34 @@
+# It's not real "perl"! It just looks like it.
+test_post( "ascii text, unicode charset", <<'CODE', <<'RESULT');
+.sub "main"
+    say unicode:"Hello, unicode world"
+.end
+CODE
+Hello, unicode world
+RESULT
+
+test_post( "ascii text, unicode charset, utf8 encoding", <<'CODE', <<'RESULT');
+.sub "main"
+    say utf8:unicode:"Hello, unicode world"
+.end
+CODE
+Hello, unicode world
+RESULT
+
+test_post( "non-ascii chars, unicode charset, utf8 encoding", <<'CODE', <<'RESULT');
+.sub "main"
+    say unicode:"«ΔЙק<200e>ﻡ๗あ叶葉»"
+.end
+CODE
+«ΔЙק<200e>ﻡ๗あ叶葉»
+RESULT
+
+test_post( "ascii text, unicode charset, embedded quotes", <<'CODE', <<'RESULT');
+.sub "main"
+    say unicode:"Hello, \"unicode\" world"
+.end
+CODE
+Hello, "unicode" world
+RESULT
+
+# vim: ft=perl

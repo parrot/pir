@@ -440,14 +440,13 @@ token float_constant {
 token string_constant {
     [
     | <quote>
-    | <charset_string_constant>
+    | <typed_string>
     |  $<heredoc>=['<<' <heredoc_start>] # Heredoc
     ]
     { %*HEREDOC<node> := $/; $<bang> := "FOO"; }
 }
 
-token charset_string_constant {
-    #quote is escaped to make vim syntax highlighting less wrong
+token typed_string{
     [ <encoding> ':' ]?  <charset> ':' <?[\"]> <quote_EXPR: ':q'>
 }
 

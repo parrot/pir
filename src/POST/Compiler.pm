@@ -199,10 +199,7 @@ our multi method to_pbc(POST::Key $key, %context) {
 our multi method to_pbc(POST::Constant $op, %context) {
     my $idx;
     my $type := $op.type;
-    if $type eq 'sc' {
-        $idx := %context<constants>.get_or_create_string($op.value);
-    }
-    elsif $type eq 'ic' || $type eq 'kic' {
+    if $type eq 'ic' || $type eq 'kic' {
         $idx := $op.value;
     }
     else {
@@ -210,6 +207,36 @@ our multi method to_pbc(POST::Constant $op, %context) {
     }
 
     self.debug("Index $idx") if $DEBUG;
+    %context<bytecode>.push($idx);
+}
+
+our multi method to_pbc(POST::String $str, %context) {
+    my $idx;
+    my $type := $str.type;
+    if $type ne 'sc' {
+        pir::die("attempt to pass a non-sc value off as a string");
+    }
+    if $str.encoding eq 'fixed_8' && $str.charset eq 'ascii' {
+        $idx := %context<constants>.get_or_create_string($str.value);
+    }
+    else {
+        #create a ByteBuffer and convert it to a string with the give encoding/charset
+        my $bb := pir::new__ps('ByteBuffer');
+        my $str_val := $str.value;
+        Q:PIR{
+            .local pmc str_val, bb
+            .local string s
+            str_val = find_lex '$str_val'
+            bb      = find_lex '$bb'
+            s = str_val
+            bb = s
+        };
+        $idx := %context<constants>.get_or_create_string($bb.get_string(
+            $str.charset,
+            $str.encoding,
+        ));
+    }
+
     %context<bytecode>.push($idx);
 }
 

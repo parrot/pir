@@ -566,7 +566,12 @@ method call:sym<ident>($/) {
 
     my $past := POST::Call.new(
         :calltype('call'),
-        :name(POST::Constant.new(:type<sc>, :value(~$<ident>))),
+        :name(POST::String.new(
+            :type<sc>,
+            :value(~$<ident>),
+            :encoding<fixed_8>,
+            :charset<ascii>,
+        )),
     );
     self.handle_pcc_args($/, $past);
     make $past;
@@ -731,10 +736,32 @@ method float_constant($/) {
 }
 
 method string_constant($/) {
-    make POST::Constant.new(
-        :type<sc>,
-        :value($<quote>.ast<value>),
-    );
+    if $<quote> {
+        make POST::String.new(
+            :type<sc>,
+            :value($<quote>.ast<value>),
+            :encoding<fixed_8>,
+            :charset<ascii>,
+        );
+    }
+    elsif $<typed_string> {
+        my $encoding := +$<typed_string><encoding>
+                     ?? ~$<typed_string><encoding>[0]
+                     !! 'fixed_8';
+        my $charset  := ~$<typed_string><charset>;
+        make POST::String.new(
+            :type<sc>,
+            :value($<typed_string><quote_EXPR>.ast<value>),
+            :encoding($encoding),
+            :charset($charset),
+        );
+    }
+    elsif $<heredoc> {
+        pir::die("NYI");
+    }
+    else {
+        $/.CURSOR.panic("unknown string constant type");
+    }
 }
 
 method variable($/) {
@@ -770,16 +797,20 @@ method subname($/) {
 }
 
 method quote:sym<apos>($/) {
-    make POST::Constant.new(
-        :type("sc"),
-        :value(dequote(~$/))
+    make POST::String.new(
+        :type<sc>,
+        :value(dequote(~$/)),
+        :encoding<fixed_8>,
+        :charset<ascii>,
     );
 }
 
 method quote:sym<dblq>($/) {
-    make POST::Constant.new(
-        :type("sc"),
-        :value(dequote(~$/))
+    make POST::String.new(
+        :type<sc>,
+        :value(dequote(~$/)),
+        :encoding<fixed_8>,
+        :charset<ascii>,
     );
 }
 
