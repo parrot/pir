@@ -220,7 +220,7 @@ our multi method to_pbc(POST::String $str, %context) {
         $idx := %context<constants>.get_or_create_string($str.value);
     }
     else {
-        #create a ByteBuffer and convert it to a string with the give encoding/charset
+        #create a ByteBuffer and convert it to a string with the given encoding/charset
         my $bb := pir::new__ps('ByteBuffer');
         my $str_val := $str.value;
         Q:PIR{
