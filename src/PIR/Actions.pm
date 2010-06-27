@@ -814,7 +814,7 @@ method subname($/) {
 method quote:sym<apos>($/) {
     make POST::String.new(
         :type<sc>,
-        :value(~$<quote_EXPR>.ast<value>)
+        :value(~$<quote_EXPR>.ast<value>),
         :encoding<fixed_8>,
         :charset<ascii>,
     );
@@ -823,7 +823,7 @@ method quote:sym<apos>($/) {
 method quote:sym<dblq>($/) {
     make POST::String.new(
         :type<sc>,
-        :value(~$<quote_EXPR>.ast<value>)
+        :value(~$<quote_EXPR>.ast<value>),
         :encoding<fixed_8>,
         :charset<ascii>,
     );
