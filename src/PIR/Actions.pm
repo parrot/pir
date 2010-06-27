@@ -453,25 +453,30 @@ method pir_instruction:sym<unary>($/) {
     );
 }
 
-method pir_instruction:sym<binary_math>($/) {
+sub get_math_op($mathop) {
     my $op;
-    if    $<mathop> eq '+'   { $op := 'add'; }
-    elsif $<mathop> eq '-'   { $op := 'sub'; }
-    elsif $<mathop> eq '**'  { $op := 'pow'; } #parrot may not generate pow_x_x_x
-    elsif $<mathop> eq '/'   { $op := 'div'; }
-    elsif $<mathop> eq '%'   { $op := 'mod'; }
-    elsif $<mathop> eq '*'   { $op := 'mul'; }
-    elsif $<mathop> eq '.'   { $op := 'concat'; } #TODO: strings only
-    elsif $<mathop> eq '>>>' { $op := 'lsr'; }
-    elsif $<mathop> eq '<<'  { $op := 'shl'; }
-    elsif $<mathop> eq '>>'  { $op := 'shr'; }
-    elsif $<mathop> eq '&&'  { $op := 'and'; }
-    elsif $<mathop> eq '||'  { $op := 'or'; }
-    elsif $<mathop> eq '~~'  { $op := 'xor'; }
-    elsif $<mathop> eq '&'   { $op := 'band'; }
-    elsif $<mathop> eq '|'   { $op := 'bor'; }
-    elsif $<mathop> eq '~'   { $op := 'bxor'; }
-    else { $/.CURSOR.panic("Unhandled binary math op $<mathop>"); }
+    if    $mathop eq '+'   { $op := 'add'; }
+    elsif $mathop eq '-'   { $op := 'sub'; }
+    elsif $mathop eq '**'  { $op := 'pow'; } #parrot may not generate pow_x_x_x
+    elsif $mathop eq '/'   { $op := 'div'; }
+    elsif $mathop eq '%'   { $op := 'mod'; }
+    elsif $mathop eq '*'   { $op := 'mul'; }
+    elsif $mathop eq '.'   { $op := 'concat'; } #TODO: strings only
+    elsif $mathop eq '>>>' { $op := 'lsr'; }
+    elsif $mathop eq '<<'  { $op := 'shl'; }
+    elsif $mathop eq '>>'  { $op := 'shr'; }
+    elsif $mathop eq '&&'  { $op := 'and'; }
+    elsif $mathop eq '||'  { $op := 'or'; }
+    elsif $mathop eq '~~'  { $op := 'xor'; }
+    elsif $mathop eq '&'   { $op := 'band'; }
+    elsif $mathop eq '|'   { $op := 'bor'; }
+    elsif $mathop eq '~'   { $op := 'bxor'; }
+    $op;
+}
+
+method pir_instruction:sym<binary_math>($/) {
+    my $op := get_math_op(~$<mathop>)
+              // $/.CURSOR.panic("Unhandled binary math op $<mathop>");
 
     make POST::Op.new(
         :pirop($op),
@@ -499,6 +504,16 @@ method pir_instruction:sym<binary_logic>($/) {
     );
 }
 
+
+method pir_instruction:sym<inplace>($/) {
+    my $op := get_math_op(~$<mathop>)
+              // $/.CURSOR.panic("Unhandled binary math op $<mathop>");
+    make POST::Op.new(
+        :pirop($op),
+        $<variable>.ast,
+        $<rhs>.ast,
+    );
+}
 
 
 method pir_instruction:sym<call>($/) { make $<call>.ast; }
@@ -630,7 +645,7 @@ method arg($/) {
     }
     elsif $<quote> {
         # fatarrow
-        $past.modifier( hash( :named(dequote(~$<quote>)) ) );
+        $past.modifier( hash( :named(~$<quote>.ast<value>) ) );
     }
 
     make $past;
@@ -702,7 +717,7 @@ method result_flag:sym<:opt_flag>($/)       { make 'opt_flag' }
 method result_flag:sym<named_flag>($/)      { make $<named_flag>.ast }
 
 method named_flag($/) {
-    make hash( named => ($<quote>[0] ?? dequote(~$<quote>[0]) !! undef) )
+    make hash( named => ($<quote>[0] ?? ~$<quote>[0].ast<value> !! undef) )
 }
 
 method value($/) { make $<constant> ?? $<constant>.ast !! $<variable>.ast }
@@ -799,7 +814,7 @@ method subname($/) {
 method quote:sym<apos>($/) {
     make POST::String.new(
         :type<sc>,
-        :value(dequote(~$/)),
+        :value(~$<quote_EXPR>.ast<value>)
         :encoding<fixed_8>,
         :charset<ascii>,
     );
@@ -808,7 +823,7 @@ method quote:sym<apos>($/) {
 method quote:sym<dblq>($/) {
     make POST::String.new(
         :type<sc>,
-        :value(dequote(~$/)),
+        :value(~$<quote_EXPR>.ast<value>)
         :encoding<fixed_8>,
         :charset<ascii>,
     );
@@ -846,11 +861,6 @@ method create_label($name) {
     my $label := POST::Label.new( :name($name) );
     $!BLOCK.label($name, $label) unless $!BLOCK.label($name);
     $label;
-}
-
-sub dequote($a) {
-    my $l := pir::length__IS($a);
-    pir::substr__SSII($a, 1, $l-2);
 }
 
 method oplib() {

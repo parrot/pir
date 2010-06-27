@@ -40,8 +40,6 @@ C<.set_arg>, C<.get_result>, C<.set_return>, C<.yield>, etc.
 
 =over 4
 
-=item * :named args/params
-
 =back
 
 =head1 Invocation

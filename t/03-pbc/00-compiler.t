@@ -37,6 +37,7 @@ is( 3 + 0x10, $c.build_single_arg(POST::Register.new(:type<nc>), %context), "Num
 
 # Slurpy
 is( 2 + 0x20, $c.build_single_arg(POST::Register.new(:type<p>, :modifier<slurpy>), %context), "Slurpy PMC register" );
+is( 2 + 0x20 + 0x200, $c.build_single_arg(POST::Register.new(:type<p>, :modifier("slurpy named")), %context), "Slurpy PMC register" );
 
 is( 2 + 0x80, $c.build_single_arg(POST::Register.new(:type<p>, :modifier<optional>), %context), "Named PMC register" );
 is( 0 + 0x100, $c.build_single_arg(POST::Register.new(:type<i>, :modifier<opt_flag>), %context), "opt_flag" );
@@ -45,7 +46,7 @@ is( 0 + 0x100, $c.build_single_arg(POST::Register.new(:type<i>, :modifier<opt_fl
 # "foo"(hello :named)
 my @sig := $c.build_single_arg(
     POST::Register.new(
-        :type<s>,
+        :type<p>,
         :name<hello>,
         :modifier(
             hash(:named(undef))
@@ -55,7 +56,7 @@ my @sig := $c.build_single_arg(
 );
 is( +@sig, 2, "Named arg produces 2 fields");
 is( @sig[0], 0x1 + 0x10 + 0x200, "... first with proper type");
-is( @sig[1], 0x1,                "... second with proper type");
+is( @sig[1], 0x2        + 0x200, "... second with proper type");
 
 
 @args := list();
@@ -82,6 +83,23 @@ ok($elt == 0x11, "... [0]");
 $signature := $c.build_args_signature(@args, %context);
 ok($signature.elements == 2, ":named produce 2 'args'");
 
+$POST::Compiler::OPLIB := pir::new__ps("OpLib");
+%context<bytecode> := pir::new__ps("PackfileRawSegment");
+%context<constants> := pir::new__ps("PackfileConstantTable");
+
+# Fill constants with some values
+for <foo bar baz> {
+    %context<constants>.get_or_create_string($_);
+}
+my $hello := %context<constants>.get_or_create_string("hello");
+
+$c.build_pcc_call("set_args_pc", @args, %context);
+
+
+# 0 is "set_args_pc"
+# 1 is signature
+is( %context<bytecode>.at(2), $hello, ":named name stored");
+is( %context<bytecode>.at(3), 0,      ":named value stored");
 
 #$elt := $signature[0];
 #ok($elt == 0x11, "... [0]");

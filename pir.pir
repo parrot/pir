@@ -57,6 +57,12 @@
     push self, value
 .end
 
+.sub 'at' :method
+    .param int key
+    $I0 = self[key]
+    .return ($I0)
+.end
+
 .namespace ['PackfileFixupTable']
 .sub 'push' :method
     .param pmc value

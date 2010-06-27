@@ -324,9 +324,15 @@ our method build_pcc_call($opname, @args, %context) {
     # Push signature and all args.
     $bc.push($OPLIB{ $opname });
     $bc.push($sig_idx);
-    for @args {
-        # XXX Handle :named params properly.
-        self.to_pbc($_, %context);
+    for @args -> $arg {
+        # Handle :named params 
+        if pir::isa__ips($arg.modifier, "Hash") {
+            my $name := $arg.modifier<named> // $arg.name;
+            %context<bytecode>.push(
+                %context<constants>.get_or_create_string($name)
+            );
+        }
+        self.to_pbc($arg, %context);
     }
 }
 
@@ -376,8 +382,9 @@ INIT {
 }
 
 our method build_single_arg($arg, %context) {
-    # XXX Build call signature arg according to PDD03
-    my $type := $arg.type;
+    # Build call signature arg according to PDD03
+    # POST::Value doesn't have .type. Lookup in symbols.
+    my $type := $arg.type // %context<sub>.symbol($arg.name).type;
     my $res;
 
     # Register types.
@@ -390,19 +397,20 @@ our method build_single_arg($arg, %context) {
     elsif $type eq 'sc' { $res := 1 + 0x10 }
     elsif $type eq 'pc' { $res := 2 + 0x10 }
     elsif $type eq 'nc' { $res := 3 + 0x10 }
+    else  { pir::die("Unknown arg type '$type'") }
 
     my $mod := $arg.modifier;
     if $mod {
         if pir::isa__ips($mod, "Hash")  {
             # named
             # First is string constant with :named flag
-            $res := list(0x1 + 0x10 + 0x200, $res)
+            $res := list(0x1 + 0x10 + 0x200, $res + 0x200)
         }
-        elsif $mod eq 'slurpy'             { $res := $res + 0x20 }  # 5
+        elsif $mod eq 'slurpy'          { $res := $res + 0x20 }  # 5
         elsif $mod eq 'flat'            { $res := $res + 0x20 }  # 5
         elsif $mod eq 'optional'        { $res := $res + 0x80 }  # 7
         elsif $mod eq 'opt_flag'        { $res := $res + 0x100 } # 8
-        elsif $mod eq 'slurpy named'    { $res := $res + 0x200 } # 9
+        elsif $mod eq 'slurpy named'    { $res := $res + 0x20 + 0x200 } # 5 + 9
         else { pir::die("Unsupported modifier $mod"); }
     }
 
