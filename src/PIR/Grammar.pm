@@ -125,7 +125,20 @@ rule pir_directive:sym<.lex>        { <sym> <string_constant> ',' <pir_register>
 rule pir_directive:sym<.file>       { <sym> <string_constant> }
 rule pir_directive:sym<.line>       { <sym> <int_constant> }
 rule pir_directive:sym<.annotate>   { <sym> <string_constant> ',' <constant> }
-rule pir_directive:sym<.include>    { <sym> <quote> }
+rule pir_directive:sym<.include>    {
+    <sym> <quote>
+    {
+        my $filename    := ~$<quote>;
+        $filename       := pir::substr__ssii($filename, 1, pir::length__is($filename) -2 );
+        my $include     := slurp($filename);
+        my $compiler    := pir::compreg__ps('PIRATE');
+        my $grammar := $compiler.parsegrammar();
+        my $actions := $compiler.parseactions();
+        $<include>  := $grammar.parse($include, :p<0>, :actions($actions), :rule<statement_list>);
+        #_dumper($<include>);
+        $<quote><statement> := $<include><statement>;
+    }
+}
 
 # PCC
 rule pir_directive:sym<.begin_call>     { <sym> }
@@ -496,4 +509,7 @@ token pod_directive { <ident> }
 
 token newpad { <?> }
 
+INIT {
+    pir::load_bytecode("nqp-setting.pbc");
+};
 # vim: ft=perl6

@@ -179,7 +179,13 @@ method pir_directive:sym<.local>($/) {
 #rule pir_directive:sym<.file>       { <sym> <string_constant> }
 #rule pir_directive:sym<.line>       { <sym> <int_constant> }
 #rule pir_directive:sym<.annotate>   { <sym> <string_constant> ',' <constant> }
-#rule pir_directive:sym<.include>    { <sym> <quote> }
+method pir_directive:sym<.include>($/) { 
+    my $past := POST::Node.new;
+    for $<quote><statement> {
+        $past.push( $_.ast );
+    }
+    make $past;
+}
 
 # PCC
 #rule pir_directive:sym<.begin_call>     { <sym> }
