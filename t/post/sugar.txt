@@ -19,7 +19,9 @@ CODE
                 <name> => \post["$S0"]
                 <type> => \post["$S0"]
             }
-            [1] => PMC 'POST;Constant'  {
+            [1] => PMC 'POST;String'  {
+                <charset> => "ascii"
+                <encoding> => "fixed_8"
                 <type> => "sc"
                 <value> => "hello"
             }

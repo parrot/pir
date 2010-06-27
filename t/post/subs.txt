@@ -22,7 +22,9 @@ CODE
         <name> => "main"
         [0] => PMC 'POST;Op'  {
             <pirop> => "say"
-            [0] => PMC 'POST;Constant'  {
+            [0] => PMC 'POST;String'  {
+                <charset> => "ascii"
+                <encoding> => "fixed_8"
                 <type> => "sc"
                 <value> => "Hello, World"
             }

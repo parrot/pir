@@ -104,7 +104,9 @@ CODE
                 <type> => \post["$P0"]
             }
             <params> => ResizablePMCArray (size:1) [
-                PMC 'POST;Constant'  {
+                PMC 'POST;String'  {
+                    <charset> => "ascii"
+                    <encoding> => "fixed_8"
                     <modifier> => Hash {
                         "named" => "parent"
                     }

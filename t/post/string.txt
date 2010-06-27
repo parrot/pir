@@ -23,7 +23,7 @@ CODE
                 <charset> => "unicode"
                 <encoding> => "fixed_8"
                 <type> => "sc"
-                <value> => undef
+                <value> => "a cow"
             }
         }
     }
