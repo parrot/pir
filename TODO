@@ -8,8 +8,6 @@ TODO - This is the TODO file for a PIR implementation in NQP.
 
 =item * C<strings>
 
-Parsing of charset/encoding.
-
 Double-quoted strings doesn't interpolate.
 
 =item * C<heredoc>
