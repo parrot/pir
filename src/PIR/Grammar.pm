@@ -50,9 +50,7 @@ rule compilation_unit:sym<.line>        { <sym> \d+ ',' <quote> }
 rule compilation_unit:sym<.include>     {
     <sym> <quote>
     {
-        my $filename    := ~$<quote>;
-        $filename       := pir::substr__ssii($filename, 1, pir::length__is($filename) -2 );
-        my $include     := slurp($filename);
+        my $include     := load_include_file($<quote>);
         my $compiler    := pir::compreg__ps('PIRATE');
         my $grammar := $compiler.parsegrammar();
         my $actions := $compiler.parseactions();
@@ -142,12 +140,16 @@ rule pir_directive:sym<.annotate>   { <sym> <string_constant> ',' <constant> }
 rule pir_directive:sym<.include>    {
     <sym> <quote>
     {
-        my $filename    := ~$<quote>;
-        $filename       := pir::substr__ssii($filename, 1, pir::length__is($filename) -2 );
-        my $include     := slurp($filename);
+        my $include     := load_include_file($<quote>);
         my $compiler    := pir::compreg__ps('PIRATE');
         my $grammar := $compiler.parsegrammar();
         my $actions := $compiler.parseactions();
+        Q:PIR{
+            .local pmc actions, sub
+            find_lex actions, '$actions'
+            sub = new ['POST';'Sub']
+            setattribute actions, '$!BLOCK', sub
+        };
         $<include>  := $grammar.parse($include, :p<0>, :actions($actions), :rule<statement_list>);
         #_dumper($<include>);
         $<quote><statement> := $<include><statement>;
@@ -522,6 +524,21 @@ token pod_comment {
 token pod_directive { <ident> }
 
 token newpad { <?> }
+
+sub load_include_file($node) {
+    my $filename := ~$node;
+    $filename    := pir::substr__ssii($filename, 1, pir::length__is($filename) -2 );
+    my $include;
+    try {
+        $include  := slurp($filename);
+    };
+    unless $include {
+        pir::load_bytecode("config.pbc");
+        my $config := _config();
+        $filename := $config<libdir> ~ $config<versiondir> ~ '/include/' ~ $filename;
+        $include  := slurp($filename);
+    }
+}
 
 INIT {
     pir::load_bytecode("nqp-setting.pbc");
