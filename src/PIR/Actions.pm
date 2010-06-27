@@ -817,11 +817,6 @@ method create_label($name) {
     $label;
 }
 
-sub dequote($a) {
-    my $l := pir::length__IS($a);
-    pir::substr__SSII($a, 1, $l-2);
-}
-
 method oplib() {
     $!OPLIB := pir::new__ps('OpLib') unless pir::defined__ip($!OPLIB);
     $!OPLIB;
