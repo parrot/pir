@@ -47,7 +47,21 @@ rule compilation_unit:sym<.namespace>   { <sym> <namespace_key> }
 rule compilation_unit:sym<.loadlib>     { <sym> <quote> }
 rule compilation_unit:sym<.HLL>         { <sym> <quote> }
 rule compilation_unit:sym<.line>        { <sym> \d+ ',' <quote> }
-rule compilation_unit:sym<.include>     { <sym> <quote> }
+rule compilation_unit:sym<.include>     {
+    <sym> <quote>
+    {
+        my $filename    := ~$<quote>;
+        $filename       := pir::substr__ssii($filename, 1, pir::length__is($filename) -2 );
+        my $include     := slurp($filename);
+        my $compiler    := pir::compreg__ps('PIRATE');
+        my $grammar := $compiler.parsegrammar();
+        my $actions := $compiler.parseactions();
+        $<include>  := $grammar.parse($include, :p<0>, :actions($actions), :rule<top>);
+        #_dumper($<include>);
+        $<quote><compilation_unit> := $<include><compilation_unit>;
+    }
+}
+
 rule compilation_unit:sym<.macro_const> { <sym> <ident> <value> }
 
 # Macros. TODO. Args can be multilines enclosed in { }.

@@ -63,6 +63,15 @@ method compilation_unit:sym<sub> ($/) {
     make $!BLOCK;
 }
 
+method compilation_unit:sym<.include>($/) {
+    my $past := POST::Node.new;
+    for $<quote><compilation_unit> {
+        $past.push( $_.ast );
+    }
+    make $past;
+}
+
+
 method statement($/) {
     make $<pir_directive> ?? $<pir_directive>.ast !! $<labeled_instruction>.ast;
 }
