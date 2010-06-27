@@ -195,7 +195,7 @@ rule const_declaration:sym<string> {
 }
 # .const "Sub" foo = "sub_id"
 rule const_declaration:sym<pmc> {
-    <string_constant> <variable> '=' <string_constant>
+    <type=string_constant> <variable> '=' <value=string_constant>
 }
 
 

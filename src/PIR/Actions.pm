@@ -283,6 +283,15 @@ method const_declaration:sym<string>($/) {
     make $past;
 }
 
+# XXX It's wrong. We have to store PMC type and use it appropriately.
+method const_declaration:sym<pmc>($/) {
+    make POST::Constant.new(
+        :type('pc'),
+        :name(~$<variable>),
+        :value(~$<value>.ast),
+    );
+}
+
 # Sugarized ops.
 method pir_instruction:sym<goto>($/) {
     make POST::Op.new(
