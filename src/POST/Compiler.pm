@@ -64,7 +64,7 @@ method pbc($post, %adverbs) {
     %context<constants>[1] := pir::new__PS('FixedIntegerArray');
 
     # Add a debug segment.
-    %context<debug> := pir::new__PS('PackFileDebug');
+    %context<debug> := pir::new__PS('PackfileDebug');
 
     # Store the debug segment in bytecode
     $pfdir<BYTECODE_hello.pir_DB> := %context<debug>;
