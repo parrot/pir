@@ -14,10 +14,6 @@ Double-quoted strings doesn't interpolate.
 
 Heredocs are parsed. But original node isn't updated.
 
-=item * C<.include>
-
-Catch pmichaud for ideas of best way of implementing it.
-
 =back
 
 =head1 PAST/POST generating
