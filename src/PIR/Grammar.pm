@@ -430,7 +430,11 @@ token reg_number {
 token variable {
     | <pir_register>
     | <!before keyword> <ident>  # TODO Check it in lexicals
-    | '.' <ident>                # Macro
+    | <macro_value>
+}
+
+token macro_value {
+    '.' <ident>
 }
 
 token subname {

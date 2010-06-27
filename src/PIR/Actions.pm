@@ -10,6 +10,7 @@ has $!BLOCK;
 has $!MAIN;
 
 has $!OPLIB;
+has %!MACRO_CONST;
 
 INIT {
     pir::load_bytecode("nqp-setting.pbc");
@@ -72,6 +73,11 @@ method compilation_unit:sym<.include>($/) {
     make $past;
 }
 
+method compilation_unit:sym<.macro_const>($/) {
+    my $name  := ~$<ident>.ast;
+    my $value := $<value>.ast;
+    %!MACRO_CONST{ $name } := $value;
+}
 
 method statement($/) {
     make $<pir_directive> ?? $<pir_directive>.ast !! $<labeled_instruction>.ast;
@@ -814,7 +820,7 @@ method variable($/) {
             :name(~$<ident>),
         );
     }
-    else {
+    elsif $<pir_register> {
         # Numbered register
         my $type := ~$<pir_register><INSP>;
         my $name := '$' ~ $type ~ ~$<pir_register><reg_number>;
@@ -829,6 +835,10 @@ method variable($/) {
             :name($name),
             :type($type),
         ));
+    }
+    else {
+        $past := %!MACRO_CONST{ ~$<ident> }
+                 // $/.CURSOR.panic("Undefined macro { ~$<ident> }");
     }
 
     make $past;

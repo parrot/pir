@@ -1,0 +1,24 @@
+test_post( ".macro_const", <<'CODE', <<'RESULT');
+.macro_const answer "42"
+.sub "foo"
+    say .answer
+.end
+CODE
+"post" => PMC 'POST;Node'  {
+    <main_sub> => "foo"
+    [0] => PMC 'POST;Sub'  {
+        <name> => \post
+        [0] => PMC 'POST;Op'  {
+            <pirop> => "say"
+            [0] => PMC 'POST;String'  {
+                <charset> => "ascii"
+                <encoding> => "fixed_8"
+                <type> => "sc"
+                <value> => "42"
+            }
+        }
+    }
+}
+RESULT
+
+
