@@ -133,7 +133,7 @@ rule param_decl {
 # Various .local, .lex, etc
 proto regex pir_directive { <...> }
 rule pir_directive:sym<.local>      { <sym> <pir_type> [ <ident> ] ** ',' }
-rule pir_directive:sym<.lex>        { <sym> <string_constant> ',' <pir_register> }
+rule pir_directive:sym<.lex>        { <sym> <string_constant> ',' <variable> }
 rule pir_directive:sym<.file>       { <sym> <string_constant> }
 rule pir_directive:sym<.line>       { <sym> <int_constant> }
 rule pir_directive:sym<.annotate>   { <sym> <string_constant> ',' <constant> }
