@@ -838,7 +838,7 @@ method variable($/) {
     }
     else {
         $past := %!MACRO_CONST{ ~$<ident> }
-                 // $/.CURSOR.panic("Undefined macro { ~$<ident> }");
+                 ; #// $/.CURSOR.panic("Undefined macro { ~$<ident> }");
     }
 
     make $past;
