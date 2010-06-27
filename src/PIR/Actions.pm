@@ -116,7 +116,7 @@ method op($/) {
         :pirop(~$<name>),
     );
 
-    # TODO Validate via OpLib
+    # TODO We need 2 way passing here to create proper opname.
     my $oplib := self.oplib;
     my $op_family := $oplib.op_family(~$<name>);
     my $pirop     := $op_family.shift;
@@ -124,7 +124,11 @@ method op($/) {
     if $<op_params>[0] {
         my $labels := pir::iter__PP($pirop.labels);
         for $<op_params>[0]<op_param> {
-            my $label := pir::shift__IP($labels);
+            my $label;
+            # See TODO
+            try {
+                $label := pir::shift__IP($labels);
+            };
             if $label {
                 my $name  := ~$_;
                 my $label := self.create_label($name);
@@ -257,9 +261,10 @@ method pir_directive:sym<.tailcall>($/) {
 method pir_directive:sym<.const>($/) {
     my $past := $<const_declaration>.ast;
     my $name := $past.name;
-    if $!BLOCK.symbol($name) {
-        $/.CURSOR.panic("Redeclaration of varaible '$name'");
-    }
+    # XXX NQP invoke this method too early!
+    #if $!BLOCK.symbol($name) {
+    #    $/.CURSOR.panic("Redeclaration of variable '$name'");
+    #}
     $!BLOCK.symbol($name, $past);
 }
 
