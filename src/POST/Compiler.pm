@@ -76,6 +76,17 @@ method pbc($post, %adverbs) {
     $pf;
 };
 
+our multi method to_pbc($what, %context) {
+    pir::die($what.WHAT);
+}
+
+our multi method to_pbc(ResizablePMCArray @list, %context) {
+    for @list {
+        self.to_pbc($_, %context);
+    }
+}
+
+
 our multi method to_pbc(POST::Sub $sub, %context) {
     # Store current Sub in context to resolve symbols and constants.
     %context<sub> := $sub;
@@ -207,6 +218,9 @@ our multi method to_pbc(POST::Constant $op, %context) {
     my $type := $op.type;
     if $type eq 'ic' || $type eq 'kic' {
         $idx := $op.value;
+    }
+    elsif $type eq 'nc' {
+        $idx := %context<constants>.get_or_create_number($op.value);
     }
     else {
         pir::die("NYI");
