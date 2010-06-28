@@ -67,32 +67,22 @@ our method post($source, *%adverbs) {
     $source.ast;
 }
 
+sub hash (*%result) { %result; }
+
 our method eliminate_constant_conditional ($post, *%adverbs) {
-    #pir::say("Let's eliminate some constant conditionals.");
     my $conditional_ops :=
-        / [ eq ] /; #| ne | lt | le | gt | ge ] # [ _ [ num | str ] ]?
+        / [ eq | ne ] /; #| lt | le | gt | ge ] # [ _ [ num | str ] ]?
     my $nonpmc := / ic | nc | sc /;
-    pir::load_bytecode('Data/Dumper.pbc');
-    my $dumper := pir::new__PP(Data::Dumper);
     my $pattern :=
        POST::Pattern::Op.new(:pirop($conditional_ops),
                              POST::Pattern::Constant.new(:type($nonpmc)),
                              POST::Pattern::Constant.new(:type($nonpmc)),
                              POST::Pattern::Label.new());
-#    $dumper.dumper($pattern);
+    my %op_funcs := hash(:eq(sub ($l, $r) { pir::iseq__IPP($l, $r) }),
+       		    	 :ne(sub ($l, $r) { pir::isne__IPP($l, $r) }));
     my &eliminate := sub ($/) {
-       #pir::say('eliminating');
-       pir::load_bytecode('Data/Dumper.pbc');
-       my $dumper := pir::new__PP(Data::Dumper);
-#       $dumper.dumper($/.from());
-       my $op := $<pirop>.orig();
-       my $condition;
-       if $op eq 'eq' {
-           #pir::say($/[0].from().value());
-           #pir::say($/[1].from().value());
-           $condition := pir::iseq__iPP($/[0].orig().value(),
-                                        $/[1].orig().value());
-       }
+       my $condition := %op_funcs{$<pirop>.orig}($/[0].orig().value(),
+                                                 $/[1].orig().value());
        if $condition {
            return POST::Op.new(:pirop<branch>, $/[2].orig());
        }
