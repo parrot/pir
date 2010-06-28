@@ -71,7 +71,7 @@ sub hash (*%result) { %result; }
 
 our method eliminate_constant_conditional ($post, *%adverbs) {
     my $conditional_ops :=
-        / [ eq | ne | lt | le | gt | ge ] /; # [ _ [ num | str ] ]?
+        / [ eq | ne | lt | le | gt | ge ] /;
     my $nonpmc := / ic | nc | sc /;
     my $pattern :=
        POST::Pattern::Op.new(:pirop($conditional_ops),
