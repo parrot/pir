@@ -132,12 +132,12 @@ document.
 
 
   sub_def:
-    ".sub" sub_id sub_pragmas* nl body
+    ".sub" sub_id sub_modifiers* nl body
 
   sub_id:
     identifier | string_constant
 
-  sub_pragma:
+  sub_modifier:
       ":load"
     | ":init"
     | ":immediate"
@@ -145,20 +145,20 @@ document.
     | ":main"
     | ":anon"
     | ":lex"
-    | vtable_pragma
-    | multi_pragma
-    | outer_pragma
+    | vtable_modifier
+    | multi_modifier
+    | outer_modifier
 
-  vtable_pragma:
+  vtable_modifier:
     ":vtable" parenthesized_string?
 
   parenthesized_string:
     "(" string_constant ")"
 
-  multi_pragma:
+  multi_modifier:
     ":multi" "(" multi_types? ")"
 
-  outer_pragma:
+  outer_modifier:
     ":outer" "(" sub_id ")"
 
   multi_tyes:
@@ -210,7 +210,7 @@ discussed in the section defining local declarations.
 
 Run this subroutine during the B<load_library> opcode.
 B<:load> is ignored, if another subroutine in that file is marked with
-B<:main>. If multiple subs have the B<:load> pragma, the subs are
+B<:main>. If multiple subs have the B<:load> modifier, the subs are
 run in source code order.
 
 =item *
@@ -1059,7 +1059,7 @@ then one can write in a subroutine:
 
 =head2 PIR Pragmas
 
-  pragma:
+  modifier:
       new_operators
     | loadlib
     | namespace

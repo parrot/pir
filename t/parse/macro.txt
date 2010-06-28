@@ -60,6 +60,6 @@
 
 # TEST .include
 
-.include "Hello"
+.include "t/parse/include.pir"
 
 

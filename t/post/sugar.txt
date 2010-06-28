@@ -19,7 +19,9 @@ CODE
                 <name> => \post["$S0"]
                 <type> => \post["$S0"]
             }
-            [1] => PMC 'POST;Constant'  {
+            [1] => PMC 'POST;String'  {
+                <charset> => "ascii"
+                <encoding> => "fixed_8"
                 <type> => "sc"
                 <value> => "hello"
             }
@@ -98,4 +100,36 @@ CODE
 dummy
 RESULT
 
+test_post( "sym<assign> for POST::Value", <<'CODE', <<'RESULT');
+.sub "main"
+    .local string h
+    h = "hello"
+.end
+CODE
+"post" => PMC 'POST;Node'  {
+    <main_sub> => "main"
+    [0] => PMC 'POST;Sub'  {
+        <name> => "main"
+        <symtable> => Hash {
+            "h" => PMC 'POST;Register'  {
+                <declared> => 1
+                <name> => "h"
+                <type> => "s"
+            }
+        }
+        [0] => PMC 'POST;Op'  {
+            <pirop> => "set"
+            [0] => PMC 'POST;Value'  {
+                <name> => "h"
+            }
+            [1] => PMC 'POST;String'  {
+                <charset> => "ascii"
+                <encoding> => "fixed_8"
+                <type> => "sc"
+                <value> => "hello"
+            }
+        }
+    }
+}
+RESULT
 # vim: ft=perl

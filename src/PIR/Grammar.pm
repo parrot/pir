@@ -27,8 +27,8 @@ rule compilation_unit:sym<sub> {
     <.newpad>
     '.sub' <subname>
     [
-    || [ <.ws> <sub_pragma> ]*
-    || <.panic: "Unknown .sub pragma">
+    || [ <.ws> <sub_modifier> ]*
+    || <.panic: "Unknown .sub modifier">
     ]
     <ws> <.nl>
 
@@ -47,7 +47,19 @@ rule compilation_unit:sym<.namespace>   { <sym> <namespace_key> }
 rule compilation_unit:sym<.loadlib>     { <sym> <quote> }
 rule compilation_unit:sym<.HLL>         { <sym> <quote> }
 rule compilation_unit:sym<.line>        { <sym> \d+ ',' <quote> }
-rule compilation_unit:sym<.include>     { <sym> <quote> }
+rule compilation_unit:sym<.include>     {
+    <sym> <quote>
+    {
+        my $include     := load_include_file($<quote>);
+        my $compiler    := pir::compreg__ps('PIRATE');
+        my $grammar := $compiler.parsegrammar();
+        my $actions := $compiler.parseactions();
+        $<include>  := $grammar.parse($include, :p<0>, :actions($actions), :rule<top>);
+        #_dumper($<include>);
+        $<quote><compilation_unit> := $<include><compilation_unit>;
+    }
+}
+
 rule compilation_unit:sym<.macro_const> { <sym> <ident> <value> }
 
 # Macros. TODO. Args can be multilines enclosed in { }.
@@ -67,22 +79,22 @@ token macro_statement:sym<.label> { <sym> <.ws> '$' <ident> ':' <pir_instruction
 
 #token compilation_unit:sym<pragma> { }
 
-proto regex sub_pragma { <...> }
-token sub_pragma:sym<main>       { ':' <sym> }
-token sub_pragma:sym<init>       { ':' <sym> }
-token sub_pragma:sym<load>       { ':' <sym> }
-token sub_pragma:sym<immediate>  { ':' <sym> }
-token sub_pragma:sym<postcomp>   { ':' <sym> }
-token sub_pragma:sym<anon>       { ':' <sym> }
-token sub_pragma:sym<method>     { ':' <sym> }
-token sub_pragma:sym<lex>        { ':' <sym> }
+proto regex sub_modifier { <...> }
+token sub_modifier:sym<main>       { ':' <sym> }
+token sub_modifier:sym<init>       { ':' <sym> }
+token sub_modifier:sym<load>       { ':' <sym> }
+token sub_modifier:sym<immediate>  { ':' <sym> }
+token sub_modifier:sym<postcomp>   { ':' <sym> }
+token sub_modifier:sym<anon>       { ':' <sym> }
+token sub_modifier:sym<method>     { ':' <sym> }
+token sub_modifier:sym<lex>        { ':' <sym> }
 
-token sub_pragma:sym<nsentry>    { ':' <sym> [ '(' <string_constant> ')' ]? }
-token sub_pragma:sym<vtable>     { ':' <sym> [ '(' <string_constant> ')' ]? }
-token sub_pragma:sym<outer>      { ':' <sym> '(' <subname> ')' }
-token sub_pragma:sym<subid>      { ':' <sym> '(' <string_constant> ')' }
+token sub_modifier:sym<nsentry>    { ':' <sym> [ '(' <string_constant> ')' ]? }
+token sub_modifier:sym<vtable>     { ':' <sym> [ '(' <string_constant> ')' ]? }
+token sub_modifier:sym<outer>      { ':' <sym> '(' <subname> ')' }
+token sub_modifier:sym<subid>      { ':' <sym> '(' <string_constant> ')' }
 
-token sub_pragma:sym<multi>      { ':' <sym> '(' [ [<.ws><multi_type><.ws>] ** ',' ]? ')' }
+token sub_modifier:sym<multi>      { ':' <sym> '(' [ [<.ws><multi_type><.ws>] ** ',' ]? ')' }
 
 # TODO Do more strict parsing.
 token multi_type {
@@ -113,7 +125,7 @@ token process_heredoc {
 }
 
 
-# TODO Some of combination of flags/type doesn't make any sense
+# Combination of flags/type checked in Actions
 rule param_decl {
     '.param' <pir_type> <name=ident> <param_flag>? <.nl>
 }
@@ -121,11 +133,28 @@ rule param_decl {
 # Various .local, .lex, etc
 proto regex pir_directive { <...> }
 rule pir_directive:sym<.local>      { <sym> <pir_type> [ <ident> ] ** ',' }
-rule pir_directive:sym<.lex>        { <sym> <string_constant> ',' <pir_register> }
+rule pir_directive:sym<.lex>        { <sym> <string_constant> ',' <variable> }
 rule pir_directive:sym<.file>       { <sym> <string_constant> }
 rule pir_directive:sym<.line>       { <sym> <int_constant> }
 rule pir_directive:sym<.annotate>   { <sym> <string_constant> ',' <constant> }
-rule pir_directive:sym<.include>    { <sym> <quote> }
+rule pir_directive:sym<.include>    {
+    <sym> <quote>
+    {
+        my $include     := load_include_file($<quote>);
+        my $compiler    := pir::compreg__ps('PIRATE');
+        my $grammar := $compiler.parsegrammar();
+        my $actions := $compiler.parseactions();
+        Q:PIR{
+            .local pmc actions, sub
+            find_lex actions, '$actions'
+            sub = new ['POST';'Sub']
+            setattribute actions, '$!BLOCK', sub
+        };
+        $<include>  := $grammar.parse($include, :p<0>, :actions($actions), :rule<statement_list>);
+        #_dumper($<include>);
+        $<quote><statement> := $<include><statement>;
+    }
+}
 
 # PCC
 rule pir_directive:sym<.begin_call>     { <sym> }
@@ -140,10 +169,10 @@ rule pir_directive:sym<.meth_call>  { <sym> <value> [',' <continuation=pir_regis
 rule pir_directive:sym<.nci_call>   { <sym> <value> [',' <continuation=pir_register> ]? }
 
 rule pir_directive:sym<.invocant>   { <sym> <value> }
-rule pir_directive:sym<.set_arg>    { <sym> <value> <arg_flag>* }
-rule pir_directive:sym<.set_return> { <sym> <value> <arg_flag>* }
-rule pir_directive:sym<.set_yield>  { <sym> <value> <arg_flag>* }
-rule pir_directive:sym<.get_result> { <sym> <value> <result_flag>* }
+rule pir_directive:sym<.set_arg>    { <sym> <value> <arg_flag>? }
+rule pir_directive:sym<.set_return> { <sym> <value> <arg_flag>? }
+rule pir_directive:sym<.set_yield>  { <sym> <value> <arg_flag>? }
+rule pir_directive:sym<.get_result> { <sym> <value> <result_flag>? }
 
 rule pir_directive:sym<.return>     { <sym> '(' <args>? ')' }
 rule pir_directive:sym<.yield>      { <sym> '(' <args>? ')' }
@@ -166,7 +195,7 @@ rule const_declaration:sym<string> {
 }
 # .const "Sub" foo = "sub_id"
 rule const_declaration:sym<pmc> {
-    <string_constant> <variable> '=' <string_constant>
+    <type=string_constant> <variable> '=' <value=string_constant>
 }
 
 
@@ -305,7 +334,7 @@ rule args {
 
 rule arg {
     | <quote> '=>' <value>
-    | <value> <arg_flag>*
+    | <value> <arg_flag>?
 }
 
 rule results {
@@ -313,17 +342,20 @@ rule results {
 }
 
 rule result {
-    <variable> <result_flag>*
+    <variable> <result_flag>?
 }
 
-token arg_flag {
-    | ':flat'
-    | <named_flag>
+proto token arg_flag { <...> }
+token arg_flag:sym<:flat>       { <sym> <?before <ws> [ ',' | ')' ]> } # LTM...
+rule  arg_flag:sym<flat named>  {
+    | ':flat' ':named'
+    | ':named' ':flat'
 }
+token arg_flag:sym<named_flag>    { <named_flag> }
 
 proto token param_flag { <...> }
 token param_flag:sym<:call_sig>     { <sym> } # TODO call_sig can be only one.
-token param_flag:sym<:slurpy>       { <sym> <?before <ws> \v> } # LTM...
+token param_flag:sym<:slurpy>       { <sym> <?before <ws> [ ',' | ')' | \v ]> } # LTM...
 rule  param_flag:sym<slurpy named>  {
     | ':slurpy' ':named'
     | ':named' ':slurpy'
@@ -332,16 +364,20 @@ token param_flag:sym<:optional>     { <sym> }
 token param_flag:sym<:opt_flag>     { <sym> }
 token param_flag:sym<named_flag>    { <named_flag> }
 
+proto token result_flag { <...> }
+token result_flag:sym<:slurpy>       { <sym> <?before <ws> [ ',' | ')' | \v ]> } # LTM...
+rule  result_flag:sym<slurpy named>  {
+    | ':slurpy' ':named'
+    | ':named' ':slurpy'
+}
+token result_flag:sym<:optional>     { <sym> }
+token result_flag:sym<:opt_flag>     { <sym> }
+token result_flag:sym<named_flag>    { <named_flag> }
+
 rule named_flag {
     ':named' [ '(' <quote> ')' ]?
 }
 
-token result_flag {
-    | ':slurpy'
-    | ':optional'
-    | ':opt_flag'
-    | <named_flag>
-}
 
 token unary {
     '!' | '-' | '~'
@@ -394,7 +430,11 @@ token reg_number {
 token variable {
     | <pir_register>
     | <!before keyword> <ident>  # TODO Check it in lexicals
-    | '.' <ident>                # Macro
+    | <macro_value>
+}
+
+token macro_value {
+    '.' <ident>
 }
 
 token subname {
@@ -433,14 +473,13 @@ token float_constant {
 token string_constant {
     [
     | <quote>
-    | <charset_string_constant>
+    | <typed_string>
     |  $<heredoc>=['<<' <heredoc_start>] # Heredoc
     ]
     { %*HEREDOC<node> := $/; $<bang> := "FOO"; }
 }
 
-token charset_string_constant {
-    #quote is escaped to make vim syntax highlighting less wrong
+token typed_string{
     [ <encoding> ':' ]?  <charset> ':' <?[\"]> <quote_EXPR: ':q'>
 }
 
@@ -490,4 +529,22 @@ token pod_directive { <ident> }
 
 token newpad { <?> }
 
+sub load_include_file($node) {
+    my $filename := ~$node;
+    $filename    := pir::substr__ssii($filename, 1, pir::length__is($filename) -2 );
+    my $include;
+    try {
+        $include  := slurp($filename);
+    };
+    unless $include {
+        pir::load_bytecode("config.pbc");
+        my $config := _config();
+        $filename := $config<libdir> ~ $config<versiondir> ~ '/include/' ~ $filename;
+        $include  := slurp($filename);
+    }
+}
+
+INIT {
+    pir::load_bytecode("nqp-setting.pbc");
+};
 # vim: ft=perl6

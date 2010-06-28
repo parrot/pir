@@ -26,6 +26,10 @@ our multi method type()       { self.attr('type', undef,  0); }
 our multi method flags(%flags) { self.attr('flags', %flags, 1); }
 our multi method flags()       { self.attr('flags', undef,  0); }
 
+# PCC call modifier. E.g. :slurpy, :flat, etc
+our multi method modifier($param) { self.attr('modifier', $param, 1); }
+our multi method modifier()       { self.attr('modifier', undef,  0); }
+
 our multi method declared()    { 0 };
 
 # vim: ft=perl6

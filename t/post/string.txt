@@ -1,0 +1,34 @@
+test_post( "simple typed string", <<'CODE', <<'RESULT');
+.sub "main"
+    $S0 = unicode:"a cow"
+.end
+CODE
+"post" => PMC 'POST;Node'  {
+    <main_sub> => "main"
+    [0] => PMC 'POST;Sub'  {
+        <name> => \post
+        <symtable> => Hash {
+            "$S0" => PMC 'POST;Register'  {
+                <name> => "$S0"
+                <type> => "s"
+            }
+        }
+        [0] => PMC 'POST;Op'  {
+            <pirop> => "set"
+            [0] => PMC 'POST;Value'  {
+                <name> => \post["$S0"]
+                <type> => \post["$S0"]
+            }
+            [1] => PMC 'POST;String'  {
+                <charset> => "unicode"
+                <encoding> => "fixed_8"
+                <type> => "sc"
+                <value> => "a cow"
+            }
+        }
+    }
+}
+RESULT
+
+
+# vim: ft=perl

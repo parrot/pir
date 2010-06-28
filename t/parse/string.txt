@@ -1,28 +1,42 @@
 # TEST unicode charset, default encoding
-
 .sub main
     $S0 = unicode:"HELLO"
 .end
 
-
 # TEST unicode charset, utf8 encoding
-
 .sub main
     $S0 = utf8:unicode:"HELLO"
 .end
 
-
-# TEST unicode charset, funny chars
-
+# TEST unicode charset, non-ascii chars
 .sub main
     $S0 = unicode:"«ΔЙק‎م๗あ叶葉»"
 .end
 
-
 # TEST unicode charset, embedded escapes
-
 .sub main
     $S0 = unicode:"\"Hello,\" said the cow."
 .end
 
+# TEST ascii charset
+.sub main
+    $S0 = ascii:"Hello World"
+.end
 
+# TEST binary charset
+.sub main
+    .local string s
+    s = binary:"Hello WOrld"
+.end
+
+# TEST unicode charset
+.sub main
+    .local string s
+    s = unicode:"Hello world"
+.end
+
+# TEST iso-8859-1 charset
+.sub main
+    .local string s
+    s = iso-8859-1:"Hello world"
+.end

@@ -8,15 +8,11 @@ TODO - This is the TODO file for a PIR implementation in NQP.
 
 =item * C<strings>
 
-Parsing of charset/encoding
+Double-quoted strings doesn't interpolate.
 
 =item * C<heredoc>
 
 Heredocs are parsed. But original node isn't updated.
-
-=item * C<.include>
-
-Catch pmichaud for ideas of best way of implementing it.
 
 =back
 
@@ -32,15 +28,23 @@ Macros are not expanded ATM.
 
 C<.set_arg>, C<.get_result>, C<.set_return>, C<.yield>, etc.
 
-=item * Param/returns pragmas.
-
-E.g. :flat, etc.
-
 =back
 
 =head1 PBC generating
 
 =over 4
+
+=item * Add file information to the PackFileDebug.
+
+=back
+
+=head1 Invocation
+
+=over 4
+
+=item * "@ARGV" support.
+
+Currently examples/benchmark/fib.pir failing with "Too less positional passed"
 
 =back
 

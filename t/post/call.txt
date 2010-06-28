@@ -15,7 +15,9 @@ CODE
         }
         [0] => PMC 'POST;Call'  {
             <calltype> => "call"
-            <name> => PMC 'POST;Constant'  {
+            <name> => PMC 'POST;String'  {
+                <charset> => "ascii"
+                <encoding> => "fixed_8"
                 <type> => "sc"
                 <value> => "foo"
             }
@@ -41,12 +43,16 @@ CODE
         }
         [0] => PMC 'POST;Call'  {
             <calltype> => "call"
-            <name> => PMC 'POST;Constant'  {
+            <name> => PMC 'POST;String'  {
+                <charset> => "ascii"
+                <encoding> => "fixed_8"
                 <type> => "sc"
                 <value> => "foo"
             }
             <params> => ResizablePMCArray (size:2) [
-                PMC 'POST;Constant'  {
+                PMC 'POST;String'  {
+                    <charset> => "ascii"
+                    <encoding> => "fixed_8"
                     <type> => "sc"
                     <value> => "answer"
                 },
@@ -89,7 +95,9 @@ CODE
         }
         [0] => PMC 'POST;Call'  {
             <calltype> => "call"
-            <name> => PMC 'POST;Constant'  {
+            <name> => PMC 'POST;String'  {
+                <charset> => "ascii"
+                <encoding> => "fixed_8"
                 <type> => "sc"
                 <value> => "foo"
             }
@@ -138,7 +146,9 @@ CODE
         }
         [0] => PMC 'POST;Call'  {
             <calltype> => "call"
-            <name> => PMC 'POST;Constant'  {
+            <name> => PMC 'POST;String'  {
+                <charset> => "ascii"
+                <encoding> => "fixed_8"
                 <type> => "sc"
                 <value> => "foo"
             }
@@ -219,7 +229,9 @@ CODE
                 <name> => \post["$P0"]
                 <type> => \post["$P0"]
             }
-            <name> => PMC 'POST;Constant'  {
+            <name> => PMC 'POST;String'  {
+                <charset> => "ascii"
+                <encoding> => "fixed_8"
                 <type> => "sc"
                 <value> => "foo"
             }
@@ -275,7 +287,9 @@ CODE
         }
         [0] => PMC 'POST;Call'  {
             <calltype> => "tailcall"
-            <name> => PMC 'POST;Constant'  {
+            <name> => PMC 'POST;String'  {
+                <charset> => "ascii"
+                <encoding> => "fixed_8"
                 <type> => "sc"
                 <value> => "main"
             }
@@ -297,7 +311,9 @@ CODE
         [0] => PMC 'POST;Call'  {
             <calltype> => "return"
             <params> => ResizablePMCArray (size:2) [
-                PMC 'POST;Constant'  {
+                PMC 'POST;String'  {
+                    <charset> => "ascii"
+                    <encoding> => "fixed_8"
                     <type> => "sc"
                     <value> => "answer"
                 },
@@ -324,7 +340,9 @@ CODE
         [0] => PMC 'POST;Call'  {
             <calltype> => "yield"
             <params> => ResizablePMCArray (size:2) [
-                PMC 'POST;Constant'  {
+                PMC 'POST;String'  {
+                    <charset> => "ascii"
+                    <encoding> => "fixed_8"
                     <type> => "sc"
                     <value> => "answer"
                 },

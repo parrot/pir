@@ -17,15 +17,15 @@ $res := parse($c, q{
 .end
 });
 
-ok(!$res, "Wrong pragma was caught");
+ok(!$res, "Wrong modifier was caught");
 
-for <main init load immediate postcomp anon method nsentry> -> $pragma {
+for <main init load immediate postcomp anon method nsentry> -> $modifier {
 $res := parse($c, qq{
-.sub "foo" :$pragma
+.sub "foo" :$modifier
 .end
 });
 
-ok($res, ":$pragma pragma parsed");
+ok($res, ":$modifier modifier parsed");
 }
 
 $res := parse($c, q{
@@ -33,25 +33,25 @@ $res := parse($c, q{
 .end
 });
 
-ok($res, "Multiple pragmas parsed");
+ok($res, "Multiple modifiers parsed");
 
 $res := parse($c, q{
 .sub "foo" :vtable("get_string")
 .end
 });
-ok($res, ":vtable pragma parsed");
+ok($res, ":vtable modifier parsed");
 
 $res := parse($c, q{
 .sub "foo" :outer("outer")
 .end
 });
-ok($res, ":outer pragma parsed");
+ok($res, ":outer modifier parsed");
 
 $res := parse($c, q{
 .sub "foo" :subid("subid")
 .end
 });
-ok($res, ":subid pragma parsed");
+ok($res, ":subid modifier parsed");
 
 $res := parse($c, q{
 .sub "foo" :multi(_)
@@ -147,7 +147,7 @@ $res := parse($c, q{
     .return ("42" :named, array :flat, hash :flat :named)
 .end
 });
-ok($res, ".return (42, '42', 41.9999)");
+ok($res, ".return (42 :named, array :flat, hash :flat :named)");
 
 ########## .tailcall
 $res := parse($c, q{

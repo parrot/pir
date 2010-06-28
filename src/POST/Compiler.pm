@@ -63,12 +63,29 @@ method pbc($post, %adverbs) {
     # Empty FIA for handling returns from "hello"
     %context<constants>[1] := pir::new__PS('FixedIntegerArray');
 
+    # Add a debug segment.
+    %context<debug> := pir::new__PS('PackfileDebug');
+
+    # Store the debug segment in bytecode
+    $pfdir<BYTECODE_hello.pir_DB> := %context<debug>;
+
     for @($post) -> $s {
         self.to_pbc($s, %context);
     }
 
     $pf;
 };
+
+our multi method to_pbc($what, %context) {
+    pir::die($what.WHAT);
+}
+
+our multi method to_pbc(ResizablePMCArray @list, %context) {
+    for @list {
+        self.to_pbc($_, %context);
+    }
+}
+
 
 our multi method to_pbc(POST::Sub $sub, %context) {
     # Store current Sub in context to resolve symbols and constants.
@@ -199,17 +216,47 @@ our multi method to_pbc(POST::Key $key, %context) {
 our multi method to_pbc(POST::Constant $op, %context) {
     my $idx;
     my $type := $op.type;
-    if $type eq 'sc' {
-        $idx := %context<constants>.get_or_create_string($op.value);
-    }
-    elsif $type eq 'ic' || $type eq 'kic' {
+    if $type eq 'ic' || $type eq 'kic' {
         $idx := $op.value;
+    }
+    elsif $type eq 'nc' {
+        $idx := %context<constants>.get_or_create_number($op.value);
     }
     else {
         pir::die("NYI");
     }
 
     self.debug("Index $idx") if $DEBUG;
+    %context<bytecode>.push($idx);
+}
+
+our multi method to_pbc(POST::String $str, %context) {
+    my $idx;
+    my $type := $str.type;
+    if $type ne 'sc' {
+        pir::die("attempt to pass a non-sc value off as a string");
+    }
+    if $str.encoding eq 'fixed_8' && $str.charset eq 'ascii' {
+        $idx := %context<constants>.get_or_create_string($str.value);
+    }
+    else {
+        #create a ByteBuffer and convert it to a string with the given encoding/charset
+        my $bb := pir::new__ps('ByteBuffer');
+        my $str_val := $str.value;
+        Q:PIR{
+            .local pmc str_val, bb
+            .local string s
+            str_val = find_lex '$str_val'
+            bb      = find_lex '$bb'
+            s = str_val
+            bb = s
+        };
+        $idx := %context<constants>.get_or_create_string($bb.get_string(
+            $str.charset,
+            $str.encoding,
+        ));
+    }
+
     %context<bytecode>.push($idx);
 }
 
@@ -255,25 +302,41 @@ our multi method to_pbc(POST::Call $call, %context) {
     my $bc := %context<bytecode>;
 
     if $call.calltype eq 'call' {
+        if $call.invocant {
+            $call<params>.unshift($call.invocant);
+        }
+
         self.build_pcc_call("set_args_pc", $call<params>, %context);
 
-        my $SUB;
-        if $call<name>.isa(POST::Constant) {
-            # Constant string. E.g. "foo"()
-            $SUB := %context<sub>.symbol("!SUB");
-            # XXX We can avoid find_sub_not_null when Sub is constant.
-            $bc.push($OPLIB<find_sub_not_null_p_sc>);
-            self.to_pbc($SUB, %context);
-            self.to_pbc($call<name>, %context);
+        if $call.invocant {
+            if $call.name.isa(POST::Constant) {
+                $bc.push($OPLIB<callmethodcc_p_sc>);
+                self.to_pbc($call.invocant, %context);
+                self.to_pbc($call.name, %context);
+            }
+            else {
+                pir::die("NYI");
+            }
         }
         else {
-            self.debug("Name is " ~ $call<name>.WHAT) if $DEBUG;
-            $SUB := $call<name>;
-        }
+            my $SUB;
+            if $call.name.isa(POST::Constant) {
+                # Constant string. E.g. "foo"()
+                $SUB := %context<sub>.symbol("!SUB");
+                # XXX We can avoid find_sub_not_null when Sub is constant.
+                $bc.push($OPLIB<find_sub_not_null_p_sc>);
+                self.to_pbc($SUB, %context);
+                self.to_pbc($call<name>, %context);
+            }
+            else {
+                self.debug("Name is " ~ $call<name>.WHAT) if $DEBUG;
+                $SUB := $call<name>;
+            }
 
-        self.debug("invokecc_p") if $DEBUG;
-        $bc.push($OPLIB<invokecc_p>);
-        self.to_pbc($SUB, %context);
+            self.debug("invokecc_p") if $DEBUG;
+            $bc.push($OPLIB<invokecc_p>);
+            self.to_pbc($SUB, %context);
+        }
 
         self.build_pcc_call("get_results_pc", $call<results>, %context);
     }
@@ -297,9 +360,15 @@ our method build_pcc_call($opname, @args, %context) {
     # Push signature and all args.
     $bc.push($OPLIB{ $opname });
     $bc.push($sig_idx);
-    for @args {
-        # XXX Handle :named params properly.
-        self.to_pbc($_, %context);
+    for @args -> $arg {
+        # Handle :named params 
+        if pir::isa__ips($arg.modifier, "Hash") {
+            my $name := $arg.modifier<named> // $arg.name;
+            %context<bytecode>.push(
+                %context<constants>.get_or_create_string($name)
+            );
+        }
+        self.to_pbc($arg, %context);
     }
 }
 
@@ -349,8 +418,9 @@ INIT {
 }
 
 our method build_single_arg($arg, %context) {
-    # XXX Build call signature arg according to PDD03
-    my $type := $arg.type;
+    # Build call signature arg according to PDD03
+    # POST::Value doesn't have .type. Lookup in symbols.
+    my $type := $arg.type // %context<sub>.symbol($arg.name).type;
     my $res;
 
     # Register types.
@@ -363,7 +433,22 @@ our method build_single_arg($arg, %context) {
     elsif $type eq 'sc' { $res := 1 + 0x10 }
     elsif $type eq 'pc' { $res := 2 + 0x10 }
     elsif $type eq 'nc' { $res := 3 + 0x10 }
+    else  { pir::die("Unknown arg type '$type'") }
 
+    my $mod := $arg.modifier;
+    if $mod {
+        if pir::isa__ips($mod, "Hash")  {
+            # named
+            # First is string constant with :named flag
+            $res := list(0x1 + 0x10 + 0x200, $res + 0x200)
+        }
+        elsif $mod eq 'slurpy'          { $res := $res + 0x20 }  # 5
+        elsif $mod eq 'flat'            { $res := $res + 0x20 }  # 5
+        elsif $mod eq 'optional'        { $res := $res + 0x80 }  # 7
+        elsif $mod eq 'opt_flag'        { $res := $res + 0x100 } # 8
+        elsif $mod eq 'slurpy named'    { $res := $res + 0x20 + 0x200 } # 5 + 9
+        else { pir::die("Unsupported modifier $mod"); }
+    }
 
     $res;
 }

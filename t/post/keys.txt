@@ -82,4 +82,45 @@ CODE
 }
 RESULT
 
+test_post( "Key.type == pc", <<'CODE', <<'RESULT');
+.sub "main"
+    $P0 = new ['POST';'Node']
+.end
+CODE
+"post" => PMC 'POST;Node'  {
+    <main_sub> => "main"
+    [0] => PMC 'POST;Sub'  {
+        <name> => "main"
+        <symtable> => Hash {
+            "$P0" => PMC 'POST;Register'  {
+                <name> => "$P0"
+                <type> => "p"
+            }
+        }
+        [0] => PMC 'POST;Op'  {
+            <pirop> => "new"
+            [0] => PMC 'POST;Value'  {
+                <name> => \post["$P0"]
+                <type> => \post["$P0"]
+            }
+            [1] => PMC 'POST;Key'  {
+                <type> => "pc"
+                [0] => PMC 'POST;String'  {
+                    <charset> => "ascii"
+                    <encoding> => "fixed_8"
+                    <type> => "sc"
+                    <value> => "POST"
+                }
+                [1] => PMC 'POST;String'  {
+                    <charset> => "ascii"
+                    <encoding> => "fixed_8"
+                    <type> => "sc"
+                    <value> => "Node"
+                }
+            }
+        }
+    }
+}
+RESULT
+
 # vim: ft=perl

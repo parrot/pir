@@ -52,5 +52,14 @@ CODE
 dummy
 RESULT
 
+test_post( "Undeclared label in sugarised op", <<'CODE', <<'RESULT', "fail_like" => "Label 'done' not declared");
+.sub "main"
+    if $I0 goto done
+.end
+CODE
+ok
+RESULT
+
+
 
 # vim: ft=perl

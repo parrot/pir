@@ -29,6 +29,7 @@
 .include 'src/POST/Call.pir'
 .include 'src/POST/Value.pir'
 .include 'src/POST/Constant.pir'
+.include 'src/POST/String.pir'
 .include 'src/POST/Register.pir'
 .include 'src/POST/Label.pir'
 .include 'src/POST/Key.pir'
@@ -55,6 +56,12 @@
 .sub 'push' :method
     .param int value
     push self, value
+.end
+
+.sub 'at' :method
+    .param int key
+    $I0 = self[key]
+    .return ($I0)
 .end
 
 .namespace ['PackfileFixupTable']
