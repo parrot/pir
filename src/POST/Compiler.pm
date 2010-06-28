@@ -80,12 +80,9 @@ our multi method to_pbc($what, %context) {
     pir::die($what.WHAT);
 }
 
-our multi method to_pbc(ResizablePMCArray @list, %context) {
-    for @list {
-        self.to_pbc($_, %context);
-    }
+our multi method to_pbc(Undef $what, %context) {
+    # Do nothing.
 }
-
 
 our multi method to_pbc(POST::Sub $sub, %context) {
     # Store current Sub in context to resolve symbols and constants.
@@ -159,6 +156,9 @@ our multi method to_pbc(POST::Sub $sub, %context) {
 
     %context<fixup>.push($P1);
 }
+
+##########################################
+# Emiting pbc
 
 our multi method to_pbc(POST::Op $op, %context) {
     # Generate full name
@@ -349,6 +349,12 @@ our multi method to_pbc(POST::Call $call, %context) {
     }
 }
 
+# /Emiting pbc
+##########################################
+
+##########################################
+# PCC related functions
+
 our method build_pcc_call($opname, @args, %context) {
     my $bc        := %context<bytecode>;
     my $signature := self.build_args_signature(@args, %context);
@@ -404,19 +410,6 @@ our method build_args_signature(@args, %context) {
     $signature;
 }
 
-my %flags;
-INIT {
-    %flags := (
-        flat    => pir::shl__iii(1, 5),
-        slurpy  => pir::shl__iii(1, 5),
-
-        optional  => pir::shl__iii(1, 7),
-        opt_flag  => pir::shl__iii(1, 8),
-
-        named   => pir::shl__iii(1, 9),
-    );
-}
-
 our method build_single_arg($arg, %context) {
     # Build call signature arg according to PDD03
     # POST::Value doesn't have .type. Lookup in symbols.
@@ -452,6 +445,9 @@ our method build_single_arg($arg, %context) {
 
     $res;
 }
+
+# /PCC related functions
+##########################################
 
 our method fixup_labels($sub, $labels_todo, $bc) {
     self.debug("Fixup labels") if $DEBUG;
