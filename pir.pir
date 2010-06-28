@@ -20,6 +20,7 @@
 .include 'src/PIR/Actions.pir'
 .include 'src/PIR/Grammar.pir'
 .include 'src/PIR/Compiler.pir'
+.include 'src/PIR/Patterns.pir'
 
 #.HLL 'parrot'
 .include 'src/POST/VanillaAllocator.pir'

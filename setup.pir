@@ -31,6 +31,7 @@ No Configure step, no Makefile generated.
     $P1['src/PIR/Actions.pir']  = 'src/PIR/Actions.pm'
     $P1['src/PIR/Grammar.pir']  = 'src/PIR/Grammar.pm'
     $P1['src/PIR/Compiler.pir'] = 'src/PIR/Compiler.pm'
+    $P1['src/PIR/Patterns.pir'] = 'src/PIR/Patterns.pm'
 
     $P1['src/POST/Compiler.pir'] = 'src/POST/Compiler.pm'
     $P1['src/POST/Call.pir']     = 'src/POST/Call.pm'
@@ -57,6 +58,7 @@ pir.pir
 src/PIR/Actions.pir
 src/PIR/Grammar.pir
 src/PIR/Compiler.pir
+src/PIR/Patterns.pir
 
 src/POST/Compiler.pir
 src/POST/Call.pir

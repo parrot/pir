@@ -67,28 +67,42 @@ our method post($source, *%adverbs) {
     $source.ast;
 }
 
-INIT {
-    pir::load_bytecode('POST/Pattern.pbc');
-    POST::Pattern.new_subtype('POST::Pattern::Call',
-                              POST::Call,
-                              :attr(<name params results invocant calltype>));
-    POST::Pattern.new_subtype('POST::Pattern::Value',
-                              POST::Value,
-                              :attr(<name type flags declared>));
-    POST::Pattern::Value.new_subtype('POST::Pattern::Constant',
-                                     POST::Constant,
-                                     :attr(<value>));
-    POST::Pattern::Value.new_subtype('POST::Pattern::Key',
-                                     POST::Key);
-    POST::Pattern::Value.new_subtype('POST::Pattern::Register',
-                                     POST::Register,
-                                     :attr(<regno modifier>));
-    # TODO(tcurtis) do something for POST::Label and POST::Sub.
-}
-
 our method eliminate_constant_conditional ($post, *%adverbs) {
-    pir::say("Let's eliminate some constant conditionals.");
-    $post;
+    #pir::say("Let's eliminate some constant conditionals.");
+    my $conditional_ops :=
+        / [ eq ] /; #| ne | lt | le | gt | ge ] # [ _ [ num | str ] ]?
+    my $nonpmc := / ic | nc | sc /;
+    pir::load_bytecode('Data/Dumper.pbc');
+    my $dumper := pir::new__PP(Data::Dumper);
+    my $pattern :=
+       POST::Pattern::Op.new(:pirop($conditional_ops),
+                             POST::Pattern::Constant.new(:type($nonpmc)),
+                             POST::Pattern::Constant.new(:type($nonpmc)),
+                             POST::Pattern::Label.new());
+#    $dumper.dumper($pattern);
+    my &eliminate := sub ($/) {
+       #pir::say('eliminating');
+       pir::load_bytecode('Data/Dumper.pbc');
+       my $dumper := pir::new__PP(Data::Dumper);
+#       $dumper.dumper($/.from());
+       my $op := $<pirop>.orig();
+       my $condition;
+       if $op eq 'eq' {
+           #pir::say($/[0].from().value());
+           #pir::say($/[1].from().value());
+           $condition := pir::iseq__iPP($/[0].orig().value(),
+                                        $/[1].orig().value());
+       }
+       if $condition {
+           return POST::Op.new(:pirop<branch>, $/[2].orig());
+       }
+       else {
+           return POST::Op.new(:pirop<noop>);
+       }
+       $/.orig();
+    };
+
+    $pattern.transform($post, &eliminate);
 }
 
 # vim: filetype=perl6:
