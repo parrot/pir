@@ -71,7 +71,7 @@ sub hash (*%result) { %result; }
 
 our method eliminate_constant_conditional ($post, *%adverbs) {
     my $conditional_ops :=
-        / [ eq | ne | lt ] /; #| le | gt | ge ] # [ _ [ num | str ] ]?
+        / [ eq | ne | lt | le ] /; #| gt | ge ] # [ _ [ num | str ] ]?
     my $nonpmc := / ic | nc | sc /;
     my $pattern :=
        POST::Pattern::Op.new(:pirop($conditional_ops),
@@ -80,7 +80,8 @@ our method eliminate_constant_conditional ($post, *%adverbs) {
                              POST::Pattern::Label.new());
     my %op_funcs := hash(:eq(sub ($l, $r) { pir::iseq__IPP($l, $r) }),
        		    	 :ne(sub ($l, $r) { pir::isne__IPP($l, $r) }),
-			 :lt(sub ($l, $r) { pir::islt__IPP($l, $r) }));
+			 :lt(sub ($l, $r) { pir::islt__IPP($l, $r) }),
+			 :le(sub ($l, $r) { pir::isle__IPP($l, $r) }));
     my &eliminate := sub ($/) {
        my $condition := %op_funcs{$<pirop>.orig}($/[0].orig().value(),
                                                  $/[1].orig().value());
