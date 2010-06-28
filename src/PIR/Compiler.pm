@@ -77,7 +77,7 @@ our method eliminate_constant_conditional ($post, *%adverbs) {
        POST::Pattern::Op.new(:pirop($conditional_ops),
                              POST::Pattern::Constant.new(:type($nonpmc)),
                              POST::Pattern::Constant.new(:type($nonpmc)),
-                             POST::Pattern::Label.new());
+                             POST::Pattern::Label.new);
     my %op_funcs := hash(:eq(sub ($l, $r) { pir::iseq__IPP($l, $r) }),
        		    	 :ne(sub ($l, $r) { pir::isne__IPP($l, $r) }),
 			 :lt(sub ($l, $r) { pir::islt__IPP($l, $r) }),
@@ -85,15 +85,15 @@ our method eliminate_constant_conditional ($post, *%adverbs) {
 			 :gt(sub ($l, $r) { pir::isgt__IPP($l, $r) }),
 			 :ge(sub ($l, $r) { pir::isge__IPP($l, $r) }));
     my &eliminate := sub ($/) {
-       my $condition := %op_funcs{$<pirop>.orig}($/[0].orig().value(),
-                                                 $/[1].orig().value());
+       my $condition := %op_funcs{$<pirop>.orig}($/[0].orig.value,
+                                                 $/[1].orig.value);
        if $condition {
-           return POST::Op.new(:pirop<branch>, $/[2].orig());
+           return POST::Op.new(:pirop<branch>, $/[2].orig);
        }
        else {
            return POST::Op.new(:pirop<noop>);
        }
-       $/.orig();
+       $/.orig;
     };
 
     $pattern.transform($post, &eliminate);
