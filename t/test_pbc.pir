@@ -15,7 +15,7 @@
     #pir::trace(4);
     .local pmc c
     c = compreg 'PIRATE'
-    $P0 = split ' ', 'parse post pbc'
+    $P0 = split ' ', 'parse post eliminate_constant_conditional pbc'
     c.'stages'($P0)
 
     .local pmc post
