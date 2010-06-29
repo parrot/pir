@@ -1,0 +1,99 @@
+test_post("True eq_ic_ic_ic", <<'CODE', <<'RESULT', "stages" => "parse post eliminate_constant_conditional pbc", "target" => "eliminate_constant_conditional");
+.sub main :main
+     if 1 == 1 goto done
+   done:
+.end
+CODE
+"eliminate_constant_conditional" => PMC 'POST;Node'  {
+    <main_sub> => "main"
+    [0] => PMC 'POST;Sub'  {
+        <labels> => Hash {
+            "done" => PMC 'POST;Label'  {
+                <declared> => 1
+                <name> => "done"
+            }
+        }
+        <name> => \eliminate_constant_conditional
+        [0] => PMC 'POST;Op'  {
+            <pirop> => "branch"
+            [0] => PMC 'POST;Label'  {
+                <name> => "done"
+            }
+        }
+        [1] => \eliminate_constant_conditional["done"]
+    }
+}
+RESULT
+test_post("False eq_ic_ic_ic", <<'CODE', <<'RESULT', "stages" => "parse post eliminate_constant_conditional pbc", "target" => "eliminate_constant_conditional");
+.sub main :main
+     if 1 == 2 goto done
+   done:
+.end
+CODE
+"eliminate_constant_conditional" => PMC 'POST;Node'  {
+    <main_sub> => "main"
+    [0] => PMC 'POST;Sub'  {
+        <labels> => Hash {
+            "done" => PMC 'POST;Label'  {
+                <declared> => 1
+                <name> => "done"
+            }
+        }
+        <name> => "main"
+        [0] => PMC 'POST;Op'  {
+            <pirop> => "noop"
+        }
+        [1] => \eliminate_constant_conditional["done"]
+    }
+}
+RESULT
+test_post("True ne_ic_ic_ic", <<'CODE', <<'RESULT', "stages" => "parse post eliminate_constant_conditional pbc", "target" => "eliminate_constant_conditional");
+.sub main :main
+     if 1 != 1 goto done
+   done:
+.end
+CODE
+"eliminate_constant_conditional" => PMC 'POST;Node'  {
+    <main_sub> => "main"
+    [0] => PMC 'POST;Sub'  {
+        <labels> => Hash {
+            "done" => PMC 'POST;Label'  {
+                <declared> => 1
+                <name> => "done"
+            }
+        }
+        <name> => "main"
+        [0] => PMC 'POST;Op'  {
+            <pirop> => "branch"
+            [0] => PMC 'POST;Label'  {
+                <name> => "done"
+            }
+        }
+        [1] => \eliminate_constant_conditional["done"]
+    }
+}
+RESULT
+test_post("False ne_ic_ic_ic", <<'CODE', <<'RESULT', "stages" => "parse post eliminate_constant_conditional pbc", "target" => "eliminate_constant_conditional");
+.sub main :main
+     if 1 != 2 goto done
+   done:
+.end
+CODE
+"eliminate_constant_conditional" => PMC 'POST;Node'  {
+    <main_sub> => "main"
+    [0] => PMC 'POST;Sub'  {
+        <labels> => Hash {
+            "done" => PMC 'POST;Label'  {
+                <declared> => 1
+                <name> => "done"
+            }
+        }
+        <name> => "main"
+        [0] => PMC 'POST;Op'  {
+            <pirop> => "noop"
+        }
+        [1] => \eliminate_constant_conditional["done"]
+    }
+}
+RESULT
+
