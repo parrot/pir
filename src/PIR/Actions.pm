@@ -611,6 +611,9 @@ method call:sym<pmc>($/) {
 }
 
 method call:sym<sub>($/) {
+    # We need register to store Sub PMC. Either constant or from find_sub_not_null
+    $!BLOCK.symbol('!SUB', POST::Register.new(:name('!SUB'), :type('p')));
+
     my $past := POST::Call.new(
         :calltype('call'),
         :name($<quote>.ast),
@@ -620,6 +623,9 @@ method call:sym<sub>($/) {
 }
 
 method call:sym<ident>($/) {
+    # We need register to store Sub PMC. Either constant or from find_sub_not_null
+    $!BLOCK.symbol('!SUB', POST::Register.new(:name('!SUB'), :type('p')));
+
     my $past := POST::Call.new(
         :calltype('call'),
         :name(POST::String.new(
