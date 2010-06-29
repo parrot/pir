@@ -89,11 +89,6 @@ our multi method to_pbc(POST::Sub $sub, %context) {
     # Store current Sub in context to resolve symbols and constants.
     %context<sub> := $sub;
 
-    # Allocate registers.
-    my @n_regs_used := $REGALLOC.process($sub);
-    self.debug('n_regs_used ' ~ @n_regs_used.join('-')) if $DEBUG;
-    self.dumper($sub.symtable, "regs") if $DEBUG;
-
     my $bc := %context<bytecode>;
 
     # Todo-list of Labels.
@@ -130,6 +125,12 @@ our multi method to_pbc(POST::Sub $sub, %context) {
 
     # Fixup labels to set real offsets
     self.fixup_labels($sub, %context<labels_todo>, %context<bytecode>);
+
+    # Allocate registers. We have to do it late because we can introduce
+    # new temporary registers.
+    my @n_regs_used := $REGALLOC.process($sub);
+    self.debug('n_regs_used ' ~ @n_regs_used.join('-')) if $DEBUG;
+    self.dumper($sub.symtable, "regs") if $DEBUG;
 
     # Now create Sub PMC using hash of values.
     my %sub := hash(
@@ -323,7 +324,8 @@ our multi method to_pbc(POST::Call $call, %context) {
             my $SUB;
             if $call.name.isa(POST::Constant) {
                 # Constant string. E.g. "foo"()
-                $SUB := %context<sub>.symbol("!SUB");
+                $SUB := %context<sub>.symbol("!PMC")
+                        // %context<sub>.symbol("!PMC", POST::Register.new(:name<!PMC>, :type<p>));
                 # XXX We can avoid find_sub_not_null when Sub is constant.
                 $bc.push($OPLIB<find_sub_not_null_p_sc>);
                 self.to_pbc($SUB, %context);
