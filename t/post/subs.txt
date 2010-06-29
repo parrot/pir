@@ -3,11 +3,14 @@ test_post( "Empty sub", <<'CODE', <<'RESULT');
 .sub "main"
 .end
 CODE
-"post" => PMC 'POST;Node'  {
+"post" => PMC 'POST;File'  {
     <main_sub> => "main"
-    [0] => PMC 'POST;Sub'  {
-        <name> => \post
+    <subs> => Hash {
+        "main" => PMC 'POST;Sub'  {
+            <name> => \post
+        }
     }
+    [0] => \post["main"]
 }
 RESULT
 
@@ -16,20 +19,23 @@ test_post( "Simple sub", <<'CODE', <<'RESULT');
     say "Hello, World"
 .end
 CODE
-"post" => PMC 'POST;Node'  {
+"post" => PMC 'POST;File'  {
     <main_sub> => "main"
-    [0] => PMC 'POST;Sub'  {
-        <name> => "main"
-        [0] => PMC 'POST;Op'  {
-            <pirop> => "say"
-            [0] => PMC 'POST;String'  {
-                <charset> => "ascii"
-                <encoding> => "fixed_8"
-                <type> => "sc"
-                <value> => "Hello, World"
+    <subs> => Hash {
+        "main" => PMC 'POST;Sub'  {
+            <name> => "main"
+            [0] => PMC 'POST;Op'  {
+                <pirop> => "say"
+                [0] => PMC 'POST;String'  {
+                    <charset> => "ascii"
+                    <encoding> => "fixed_8"
+                    <type> => "sc"
+                    <value> => "Hello, World"
+                }
             }
         }
     }
+    [0] => \post["main"]
 }
 RESULT
 
@@ -41,39 +47,42 @@ test_post( "Symtable (params)", <<'CODE', <<'RESULT');
     .param num    d
 .end
 CODE
-"post" => PMC 'POST;Node'  {
+"post" => PMC 'POST;File'  {
     <main_sub> => "main"
-    [0] => PMC 'POST;Sub'  {
-        <name> => "main"
-        <params> => ResizablePMCArray (size:4) [
-            PMC 'POST;Register'  {
-                <declared> => 1
-                <name> => "a"
-                <type> => "p"
-            },
-            PMC 'POST;Register'  {
-                <declared> => 1
-                <name> => "b"
-                <type> => "s"
-            },
-            PMC 'POST;Register'  {
-                <declared> => 1
-                <name> => "c"
-                <type> => "i"
-            },
-            PMC 'POST;Register'  {
-                <declared> => 1
-                <name> => "d"
-                <type> => "n"
+    <subs> => Hash {
+        "main" => PMC 'POST;Sub'  {
+            <name> => "main"
+            <params> => ResizablePMCArray (size:4) [
+                PMC 'POST;Register'  {
+                    <declared> => 1
+                    <name> => "a"
+                    <type> => "p"
+                },
+                PMC 'POST;Register'  {
+                    <declared> => 1
+                    <name> => "b"
+                    <type> => "s"
+                },
+                PMC 'POST;Register'  {
+                    <declared> => 1
+                    <name> => "c"
+                    <type> => "i"
+                },
+                PMC 'POST;Register'  {
+                    <declared> => 1
+                    <name> => "d"
+                    <type> => "n"
+                }
+            ]
+            <symtable> => Hash {
+                "a" => \post["main"][0],
+                "b" => \post["main"][1],
+                "c" => \post["main"][2],
+                "d" => \post["main"][3]
             }
-        ]
-        <symtable> => Hash {
-            "a" => \post[0],
-            "b" => \post[1],
-            "c" => \post[2],
-            "d" => \post[3]
         }
     }
+    [0] => \post["main"]
 }
 RESULT
 
@@ -91,27 +100,30 @@ test_post( "Symtable (params usage)", <<'CODE', <<'RESULT');
     say a
 .end
 CODE
-"post" => PMC 'POST;Node'  {
+"post" => PMC 'POST;File'  {
     <main_sub> => "main"
-    [0] => PMC 'POST;Sub'  {
-        <name> => "main"
-        <params> => ResizablePMCArray (size:1) [
-            PMC 'POST;Register'  {
-                <declared> => 1
-                <name> => "a"
-                <type> => "p"
+    <subs> => Hash {
+        "main" => PMC 'POST;Sub'  {
+            <name> => "main"
+            <params> => ResizablePMCArray (size:1) [
+                PMC 'POST;Register'  {
+                    <declared> => 1
+                    <name> => "a"
+                    <type> => "p"
+                }
+            ]
+            <symtable> => Hash {
+                "a" => \post["main"][0]
             }
-        ]
-        <symtable> => Hash {
-            "a" => \post[0]
-        }
-        [0] => PMC 'POST;Op'  {
-            <pirop> => "say"
-            [0] => PMC 'POST;Value'  {
-                <name> => "a"
+            [0] => PMC 'POST;Op'  {
+                <pirop> => "say"
+                [0] => PMC 'POST;Value'  {
+                    <name> => "a"
+                }
             }
         }
     }
+    [0] => \post["main"]
 }
 RESULT
 
@@ -121,24 +133,27 @@ test_post( "Symtable (.local usage)", <<'CODE', <<'RESULT');
     say a
 .end
 CODE
-"post" => PMC 'POST;Node'  {
+"post" => PMC 'POST;File'  {
     <main_sub> => "main"
-    [0] => PMC 'POST;Sub'  {
-        <name> => "main"
-        <symtable> => Hash {
-            "a" => PMC 'POST;Register'  {
-                <declared> => 1
-                <name> => "a"
-                <type> => "p"
+    <subs> => Hash {
+        "main" => PMC 'POST;Sub'  {
+            <name> => "main"
+            <symtable> => Hash {
+                "a" => PMC 'POST;Register'  {
+                    <declared> => 1
+                    <name> => "a"
+                    <type> => "p"
+                }
             }
-        }
-        [0] => PMC 'POST;Op'  {
-            <pirop> => "say"
-            [0] => PMC 'POST;Value'  {
-                <name> => "a"
+            [0] => PMC 'POST;Op'  {
+                <pirop> => "say"
+                [0] => PMC 'POST;Value'  {
+                    <name> => "a"
+                }
             }
         }
     }
+    [0] => \post["main"]
 }
 RESULT
 

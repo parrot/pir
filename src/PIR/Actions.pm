@@ -6,6 +6,7 @@
 
 class PIR::Actions is HLL::Actions;
 
+has $!FILE;
 has $!BLOCK;
 has $!MAIN;
 
@@ -20,17 +21,22 @@ method TOP($/) {
     make $<top>.ast;
 }
 
-method top($/) {
-    my $past := POST::Node.new;
-    for $<compilation_unit> {
-        my $child := $_.ast;
-        $past.push($child) if $child;
+method top($/, $key?) {
+    if $key eq 'begin' {
+        $!FILE := POST::File.new;
     }
+    else {
+        my $past := $!FILE;
+        for $<compilation_unit> {
+            my $child := $_.ast;
+            $past.push($child) if $child;
+        }
 
-    # Remember :main sub.
-    $past<main_sub> := $!MAIN;
+        # Remember :main sub.
+        $past<main_sub> := $!MAIN;
 
-    make $past;
+        make $past;
+    }
 }
 
 method compilation_unit:sym<.HLL> ($/) {
@@ -60,6 +66,9 @@ method compilation_unit:sym<sub> ($/) {
     }
 
     self.validate_labels($/, $!BLOCK);
+
+    # Store self in POST::File constants to be used during PBC emiting.
+    $!FILE.sub($name, $!BLOCK);
 
     make $!BLOCK;
 }

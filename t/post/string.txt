@@ -3,30 +3,33 @@ test_post( "simple typed string", <<'CODE', <<'RESULT');
     $S0 = unicode:"a cow"
 .end
 CODE
-"post" => PMC 'POST;Node'  {
+"post" => PMC 'POST;File'  {
     <main_sub> => "main"
-    [0] => PMC 'POST;Sub'  {
-        <name> => \post
-        <symtable> => Hash {
-            "$S0" => PMC 'POST;Register'  {
-                <name> => "$S0"
-                <type> => "s"
+    <subs> => Hash {
+        "main" => PMC 'POST;Sub'  {
+            <name> => \post
+            <symtable> => Hash {
+                "$S0" => PMC 'POST;Register'  {
+                    <name> => "$S0"
+                    <type> => "s"
+                }
             }
-        }
-        [0] => PMC 'POST;Op'  {
-            <pirop> => "set"
-            [0] => PMC 'POST;Value'  {
-                <name> => \post["$S0"]
-                <type> => \post["$S0"]
-            }
-            [1] => PMC 'POST;String'  {
-                <charset> => "unicode"
-                <encoding> => "fixed_8"
-                <type> => "sc"
-                <value> => "a cow"
+            [0] => PMC 'POST;Op'  {
+                <pirop> => "set"
+                [0] => PMC 'POST;Value'  {
+                    <name> => \post["main"]["$S0"]
+                    <type> => \post["main"]["$S0"]
+                }
+                [1] => PMC 'POST;String'  {
+                    <charset> => "unicode"
+                    <encoding> => "fixed_8"
+                    <type> => "sc"
+                    <value> => "a cow"
+                }
             }
         }
     }
+    [0] => \post["main"]
 }
 RESULT
 
