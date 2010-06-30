@@ -23,6 +23,7 @@
 
 #.HLL 'parrot'
 .include 'src/POST/VanillaAllocator.pir'
+.include 'src/POST/LinearScanAllocator.pir'
 .include 'src/POST/Compiler.pir'
 .include 'src/POST/File.pir'
 .include 'src/POST/Sub.pir'
@@ -43,6 +44,7 @@
     .local pmc stages
     # We actually create POST tree from Parse.
     stages = split ' ', 'parse post pbc'
+    #XXX: default: output = input.pbc, taget=pbc
     $P0 = compreg 'PIRATE'
     $P0.'stages'(stages)
     $P0.'command_line'(args)

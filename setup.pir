@@ -44,6 +44,7 @@ No Configure step, no Makefile generated.
     $P1['src/POST/Key.pir']      = 'src/POST/Key.pm'
 
     $P1['src/POST/VanillaAllocator.pir'] = 'src/POST/VanillaAllocator.pm'
+    $P1['src/POST/LinearScanAllocator.pir'] = 'src/POST/LinearScanAllocator.pm'
 
     # Functions for testing.
     $P1['t/parse.pir'] = 't/parse.nqp'
@@ -74,6 +75,7 @@ src/POST/String.pir
 src/POST/Label.pir
 
 src/POST/VanillaAllocator.pir
+src/POST/LinearScanAllocator.pir
 
 SOURCES
     $P3['pir.pbc'] = $P4
