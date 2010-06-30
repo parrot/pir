@@ -32,6 +32,13 @@ method pbc($post, %adverbs) {
     # Emitting context. Contains fixups, consts, etc.
     my %context := self.create_context($post);
 
+    %context<pir_file> := $post;
+
+    # Iterate over Subs and put them into POST::File table.
+    # Used for discriminating find_sub_not_null vs "constant Subs" in
+    # PCC call handling.
+    self.enumerate_subs($post);
+
     for @($post) -> $s {
         self.to_pbc($s, %context);
     }
@@ -111,7 +118,18 @@ our multi method to_pbc(POST::Sub $sub, %context) {
     );
 
     # and store it in PackfileConstantTable
-    my $idx := %context<constants>.push(pir::new__PSP('Sub', %sub));
+    # We can have pre-allocated constant for this sub already.
+    # XXX Use .namespace for generating full name!
+    my $idx := $sub.constant_index;
+    if pir::defined__ip($idx) {
+        self.debug("Reusing old constant") if $DEBUG;
+        %context<constants>[$idx] := pir::new__PSP('Sub', %sub);
+    }
+    else {
+        self.debug("Allocate new constant") if $DEBUG;
+        $idx := %context<constants>.push(pir::new__PSP('Sub', %sub));
+        $sub.constant_index($idx);
+    }
 
     self.debug("Fixup $subname") if $DEBUG;
     my $P1 := pir::new__PSP('PackfileFixupEntry', hash(
@@ -283,17 +301,40 @@ our multi method to_pbc(POST::Call $call, %context) {
         }
         else {
             my $SUB;
+            my $processed := 0;
             if $call.name.isa(POST::Constant) {
                 # Constant string. E.g. "foo"()
-                $SUB := %context<sub>.symbol("!SUB");
-                # XXX We can avoid find_sub_not_null when Sub is constant.
-                $bc.push($OPLIB<find_sub_not_null_p_sc>);
-                self.to_pbc($SUB, %context);
-                self.to_pbc($call<name>, %context);
+                # Avoid find_sub_not_null when Sub is constant.
+                my $invocable_sub := %context<pir_file>.sub($call<name><value>);
+                self.debug("invocable_sub $invocable_sub") if $DEBUG;
+                if $invocable_sub {
+                    my $idx := $invocable_sub.constant_index;
+                    unless pir::defined__ip($idx) {
+                        # Allocate new space in constant table. We'll reuse it later.
+                        $idx := %context<constants>.push(pir::new__ps("Integer"));
+                        $invocable_sub.constant_index($idx);
+                    }
+
+                    $SUB := %context<sub>.symbol("!SUB");
+                    $bc.push($OPLIB<set_p_pc>);
+                    self.to_pbc($SUB, %context);
+                    $bc.push($idx);
+
+                    $processed := 1;
+                }
             }
-            else {
-                self.debug("Name is " ~ $call<name>.WHAT) if $DEBUG;
-                $SUB := $call<name>;
+
+            unless $processed {
+                if $call.name.isa(POST::Constant) {
+                    $SUB := %context<sub>.symbol("!SUB");
+                    $bc.push($OPLIB<find_sub_not_null_p_sc>);
+                    self.to_pbc($SUB, %context);
+                    self.to_pbc($call<name>, %context);
+                }
+                else {
+                    self.debug("Name is " ~ $call<name>.WHAT) if $DEBUG;
+                    $SUB := $call<name>;
+                }
             }
 
             self.debug("invokecc_p") if $DEBUG;
@@ -454,6 +495,14 @@ our method create_context($past) {
     #$pfdir<BYTECODE_hello.pir_DB> := %context<debug>;
 
     %context;
+}
+
+# XXX This is required only for PAST->POST generated tree.
+our method enumerate_subs(POST::File $post) {
+    for @($post) -> $sub {
+        # XXX Should we emit warning on duplicates?
+        $post.sub($sub.name, $sub);
+    }
 }
 
 our method fixup_labels($sub, $labels_todo, $bc) {
