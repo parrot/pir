@@ -71,6 +71,50 @@ Get or set Sub index in PackfileConstantTable
 our multi method constant_index() { self<constant_index>; }
 our multi method constant_index($idx) { self<constant_index> := $idx; $idx }
 
+=Modifiers
+Various sub modifiers.
+
+=item C<namespace>
+=item C<hll>
+=item C<outer>
+=item C<multi>
+=item C<subid>
+Declared in "old" POST.
+
+our multi method main()     { self<main>; }
+our multi method main($val) { self<main> := ?$val }
+
+our multi method init()     { self<init>; }
+our multi method init($val) { self<init> := ?$val }
+
+our multi method load()     { self<load>; }
+our multi method load($val) { self<load> := ?$val }
+
+our multi method immediate()     { self<immediate>; }
+our multi method immediate($val) { self<immediate> := ?$val }
+
+our multi method postcomp()     { self<postcomp>; }
+our multi method postcomp($val) { self<postcomp> := ?$val }
+
+our multi method anon()     { self<anon>; }
+our multi method anon($val) { self<anon> := ?$val }
+
+our multi method method()     { self<method>; }
+our multi method method($val) { self<method> := ?$val }
+
+our multi method lex()        { self<lex>; }
+our multi method lex($val)    { self<lex> := ?$val }
+
+
+our multi method nsentry()     { self<nsentry>; }
+our multi method nsentry($val) { self<nsentry> := $val }
+
+our multi method vtable()     { self<vtable>; }
+our multi method vtable($val) { self<vtable> := $val; $val }
+
+
+=end
+
 INIT {
     pir::load_bytecode('nqp-setting.pbc');
 }
