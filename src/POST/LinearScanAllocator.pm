@@ -1,6 +1,6 @@
 =begin Description
 
-Vanilla register allocator. Mutate Sub by assigning numbers to registers.
+Linear Scan Register Allocator
 
 =end Description
 
@@ -8,20 +8,29 @@ class POST::LinearScanAllocator;
 
 our $recycler;
 
-INIT {
-    $recycler := POST::LinearScanAllocator::RegisterRecycler.new;
-}
-
 =item C<process>
 Allocate registers. Returns 4-elements list with number of used INSP registers.
 
 our method process(POST::Sub $sub) {
 
-    #for each instruction in the sub
-        #for each symbol
-            #if it hasn't been seen,
-                #store its starting position
-            #update its last position
+    #breaks if in an INIT block
+    unless pir::defined($recycler) {
+        $recycler := POST::LinearScanAllocator::RegisterRecycler.new;
+    }
+    $recycler.reset;
+
+    my $op_num := 0;
+
+    for @($sub) -> $op {
+        for @($op) -> $arg {
+            pir::say("found a thing with type { $arg<type>} name d { $arg<name> }");
+            unless pir::defined($sub.symtable{ $arg<name> }<start>) {
+                $sub.symtable{ $arg<name> }<start> := $op_num;
+            }
+            $sub.symtable{ $arg<name> }<end> := $op_num;
+        }
+        $op_num++;
+    }
 
     #walk the liveness range list
         #if you hit a starting position
@@ -37,11 +46,14 @@ our method process(POST::Sub $sub) {
 class POST::LinearScanAllocator::RegisterRecycler;
 
 
-our %free_reg_list;
+our %reg_usage_list;
 our %free_reg_count;
 
-INIT {
-    %free_reg_list := hash( 
+=item C<reset>
+Clear all internal state.
+
+our method reset() {
+    %reg_usage_list := hash( 
         i => (),
         n => (),
         s => (),
@@ -54,7 +66,6 @@ INIT {
         p => 0,
     );
 }
-
 
 =item C<get_register>
 Get a free register number from the list.
@@ -70,13 +81,13 @@ our method get_register($type) {
         $reg_num := %free_reg_count{$type};
     }
     else {
-        for %free_reg_list{$type} {
+        for %reg_usage_list{$type} {
             last if $_ == 0;
             $reg_num++;
         }
         %free_reg_count{$type}--;
     }
-    %free_reg_list{$type}[ $reg_num ] := 1;
+    %reg_usage_list{$type}[ $reg_num ] := 1;
     $reg_num;
 }
 
@@ -88,14 +99,14 @@ our method free_register($type, $num) {
     if $type ne 'i' && $type ne 'n' && $type ne 's' && $type eq 'p' {
         pir::die("unknown register type '$type'");
     }
-    if $num > +%free_reg_list{$type} {
+    if $num > +%reg_usage_list{$type} {
         pir::die("attempt to free uncreated register");
     }
 
     #mark the register number as free
-    %free_reg_list{$type}[$num] := 0;
+    %reg_usage_list{$type}[$num] := 0;
     #increment the number of free register
-    %free_reg_count{$type}--;
+    %free_reg_count{$type}++;
 }
 
 =item C<n_regs_used>
@@ -103,10 +114,10 @@ Return an array containing the total number of registers used by each type.
 
 our method n_regs_used() {
     (
-        +%free_reg_list<i>,
-        +%free_reg_list<n>,
-        +%free_reg_list<s>,
-        +%free_reg_list<p>,
+        +%reg_usage_list<i>,
+        +%reg_usage_list<n>,
+        +%reg_usage_list<s>,
+        +%reg_usage_list<p>,
     );
 }
 
