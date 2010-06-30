@@ -65,6 +65,12 @@ our method param($name, POST::Register $param) {
 }
 
 
+=item C<constant_index>($idx?)
+Get or set Sub index in PackfileConstantTable
+
+our multi method constant_index() { self<constant_index>; }
+our multi method constant_index($idx) { self<constant_index> := $idx; $idx }
+
 INIT {
     pir::load_bytecode('nqp-setting.pbc');
 }
