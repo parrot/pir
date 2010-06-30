@@ -47,13 +47,25 @@ method compilation_unit:sym<.namespace> ($/) {
     our $*NAMESPACE := $<namespace_key>[0] ?? $<namespace_key>[0].ast !! undef;
 }
 
-method newpad($/) { $!BLOCK := POST::Sub.new; }
+method newpad($/) {
+    $!BLOCK := POST::Sub.new;
+    $!BLOCK.hll($*HLL) if $*HLL;
+    $!BLOCK.namespace($*NAMESPACE) if $*NAMESPACE;
+}
 
 method compilation_unit:sym<sub> ($/) {
     my $name := $<subname>.ast;
     $!BLOCK.name( $name );
 
-    # TODO Handle modifiers.
+    # Handle modifiers.
+    if $<sub_modifier> {
+        for $<sub_modifier> {
+            my $name := $_<sym>;
+            $!BLOCK."$name"($_.ast // 1);
+        }
+    }
+
+
 
     # TODO Handle :main modifier
     $!MAIN := $name unless $!MAIN;
