@@ -30,52 +30,17 @@ method pbc($post, %adverbs) {
     $DEBUG := %adverbs<debug>;
 
     # Emitting context. Contains fixups, consts, etc.
-    my %context;
-
-    my $pf := pir::new__PS("Packfile");
-
-    # Scaffolding
-    # Packfile will be created with fresh directory
-    my $pfdir := $pf.get_directory;
-
-    # We need some constants
-    %context<constants> := pir::new__PS('PackfileConstantTable');
-
-
-    # Add PackfileConstantTable into directory.
-    $pfdir<CONSTANTS_hello.pir> := %context<constants>;
-
-    # Generate bytecode
-    %context<bytecode> := pir::new__PS('PackfileRawSegment');
-
-    # Store bytecode
-    $pfdir<BYTECODE_hello.pir> := %context<bytecode>;
-
-    # Dark magik. Create Fixup for Sub.
-    %context<fixup> := pir::new__PS('PackfileFixupTable');
-
-    # Add it to Directory now because adding FixupEntries require Directory
-    $pfdir<FIXUP_hello.pir> := %context<fixup>;
-
-    # Interpreter.
-    %context<constants>[0] := pir::getinterp__P();
-
-    # Empty FIA for handling returns from "hello"
-    %context<constants>[1] := pir::new__PS('FixedIntegerArray');
-
-    # TODO pbc_disassemble crashes without proper debug.
-    # Add a debug segment.
-    # %context<debug> := pir::new__PS('PackfileDebug');
-
-    # Store the debug segment in bytecode
-    #$pfdir<BYTECODE_hello.pir_DB> := %context<debug>;
+    my %context := self.create_context($post);
 
     for @($post) -> $s {
         self.to_pbc($s, %context);
     }
 
-    $pf;
+    %context<packfile>;
 };
+
+##########################################
+# Emiting pbc
 
 our multi method to_pbc($what, %context) {
     pir::die($what.WHAT);
@@ -157,9 +122,6 @@ our multi method to_pbc(POST::Sub $sub, %context) {
 
     %context<fixup>.push($P1);
 }
-
-##########################################
-# Emiting pbc
 
 our multi method to_pbc(POST::Op $op, %context) {
     # Generate full name
@@ -449,6 +411,50 @@ our method build_single_arg($arg, %context) {
 
 # /PCC related functions
 ##########################################
+
+our method create_context($past) {
+    my %context;
+
+    %context<packfile> := pir::new__PS("Packfile");
+
+    # Scaffolding
+    # Packfile will be created with fresh directory
+    my $pfdir := %context<packfile>.get_directory;
+
+    # We need some constants
+    %context<constants> := pir::new__PS('PackfileConstantTable');
+
+
+    # Add PackfileConstantTable into directory.
+    $pfdir<CONSTANTS_hello.pir> := %context<constants>;
+
+    # Generate bytecode
+    %context<bytecode> := pir::new__PS('PackfileRawSegment');
+
+    # Store bytecode
+    $pfdir<BYTECODE_hello.pir> := %context<bytecode>;
+
+    # Dark magik. Create Fixup for Sub.
+    %context<fixup> := pir::new__PS('PackfileFixupTable');
+
+    # Add it to Directory now because adding FixupEntries require Directory
+    $pfdir<FIXUP_hello.pir> := %context<fixup>;
+
+    # Interpreter.
+    %context<constants>[0] := pir::getinterp__P();
+
+    # Empty FIA for handling returns from "hello"
+    %context<constants>[1] := pir::new__PS('FixedIntegerArray');
+
+    # TODO pbc_disassemble crashes without proper debug.
+    # Add a debug segment.
+    # %context<debug> := pir::new__PS('PackfileDebug');
+
+    # Store the debug segment in bytecode
+    #$pfdir<BYTECODE_hello.pir_DB> := %context<debug>;
+
+    %context;
+}
 
 our method fixup_labels($sub, $labels_todo, $bc) {
     self.debug("Fixup labels") if $DEBUG;
