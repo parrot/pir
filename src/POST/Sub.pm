@@ -112,8 +112,16 @@ our multi method nsentry($val) { self<nsentry> := $val }
 our multi method vtable()     { self<vtable>; }
 our multi method vtable($val) { self<vtable> := $val; $val }
 
-
 =end
+
+our method full_name() {
+    if self<namespace> {
+        self<namespace>.Str ~ self.name
+    }
+    else {
+        self.name;
+    }
+};
 
 INIT {
     pir::load_bytecode('nqp-setting.pbc');
