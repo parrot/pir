@@ -4,24 +4,28 @@ test_post("True eq_ic_ic_ic", <<'CODE', <<'RESULT', "stages" => "parse post elim
    done:
 .end
 CODE
-"eliminate_constant_conditional" => PMC 'POST;Node'  {
+"eliminate_constant_conditional" => PMC 'POST;File'  {
     <main_sub> => "main"
-    [0] => PMC 'POST;Sub'  {
-        <labels> => Hash {
-            "done" => PMC 'POST;Label'  {
-                <declared> => 1
-                <name> => "done"
+    <subs> => Hash {
+        "main" => PMC 'POST;Sub'  {
+            <labels> => Hash {
+                "done" => PMC 'POST;Label'  {
+                    <declared> => 1
+                    <name> => "done"
+                }
             }
-        }
-        <name> => \eliminate_constant_conditional
-        [0] => PMC 'POST;Op'  {
-            <pirop> => "branch"
-            [0] => PMC 'POST;Label'  {
-                <name> => "done"
+            <main> => 1
+            <name> => \eliminate_constant_conditional
+            [0] => PMC 'POST;Op'  {
+                <pirop> => "branch"
+                [0] => PMC 'POST;Label'  {
+                    <name> => "done"
+                }
             }
+            [1] => \eliminate_constant_conditional["main"]["done"]
         }
-        [1] => \eliminate_constant_conditional["done"]
     }
+    [0] => \eliminate_constant_conditional["main"]
 }
 RESULT
 test_post("False eq_ic_ic_ic", <<'CODE', <<'RESULT', "stages" => "parse post eliminate_constant_conditional pbc", "target" => "eliminate_constant_conditional");
@@ -30,21 +34,25 @@ test_post("False eq_ic_ic_ic", <<'CODE', <<'RESULT', "stages" => "parse post eli
    done:
 .end
 CODE
-"eliminate_constant_conditional" => PMC 'POST;Node'  {
+"eliminate_constant_conditional" => PMC 'POST;File'  {
     <main_sub> => "main"
-    [0] => PMC 'POST;Sub'  {
-        <labels> => Hash {
-            "done" => PMC 'POST;Label'  {
-                <declared> => 1
-                <name> => "done"
+    <subs> => Hash {
+        "main" => PMC 'POST;Sub'  {
+            <labels> => Hash {
+                "done" => PMC 'POST;Label'  {
+                    <declared> => 1
+                    <name> => "done"
+                }
             }
+            <main> => 1
+            <name> => "main"
+            [0] => PMC 'POST;Op'  {
+                <pirop> => "noop"
+            }
+            [1] => \eliminate_constant_conditional["main"]["done"]
         }
-        <name> => "main"
-        [0] => PMC 'POST;Op'  {
-            <pirop> => "noop"
-        }
-        [1] => \eliminate_constant_conditional["done"]
     }
+    [0] => \eliminate_constant_conditional["main"]
 }
 RESULT
 test_post("True ne_ic_ic_ic", <<'CODE', <<'RESULT', "stages" => "parse post eliminate_constant_conditional pbc", "target" => "eliminate_constant_conditional");
@@ -53,24 +61,28 @@ test_post("True ne_ic_ic_ic", <<'CODE', <<'RESULT', "stages" => "parse post elim
    done:
 .end
 CODE
-"eliminate_constant_conditional" => PMC 'POST;Node'  {
+"eliminate_constant_conditional" => PMC 'POST;File'  {
     <main_sub> => "main"
-    [0] => PMC 'POST;Sub'  {
-        <labels> => Hash {
-            "done" => PMC 'POST;Label'  {
-                <declared> => 1
-                <name> => "done"
+    <subs> => Hash {
+        "main" => PMC 'POST;Sub'  {
+            <labels> => Hash {
+                "done" => PMC 'POST;Label'  {
+                    <declared> => 1
+                    <name> => "done"
+                }
             }
-        }
-        <name> => "main"
-        [0] => PMC 'POST;Op'  {
-            <pirop> => "branch"
-            [0] => PMC 'POST;Label'  {
-                <name> => "done"
+            <main> => 1
+            <name> => "main"
+            [0] => PMC 'POST;Op'  {
+                <pirop> => "branch"
+                [0] => PMC 'POST;Label'  {
+                    <name> => "done"
+                }
             }
+            [1] => \eliminate_constant_conditional["main"]["done"]
         }
-        [1] => \eliminate_constant_conditional["done"]
     }
+    [0] => \eliminate_constant_conditional["main"]
 }
 RESULT
 test_post("False ne_ic_ic_ic", <<'CODE', <<'RESULT', "stages" => "parse post eliminate_constant_conditional pbc", "target" => "eliminate_constant_conditional");
@@ -79,21 +91,25 @@ test_post("False ne_ic_ic_ic", <<'CODE', <<'RESULT', "stages" => "parse post eli
    done:
 .end
 CODE
-"eliminate_constant_conditional" => PMC 'POST;Node'  {
+"eliminate_constant_conditional" => PMC 'POST;File'  {
     <main_sub> => "main"
-    [0] => PMC 'POST;Sub'  {
-        <labels> => Hash {
-            "done" => PMC 'POST;Label'  {
-                <declared> => 1
-                <name> => "done"
+    <subs> => Hash {
+        "main" => PMC 'POST;Sub'  {
+            <labels> => Hash {
+                "done" => PMC 'POST;Label'  {
+                    <declared> => 1
+                    <name> => "done"
+                }
             }
+            <main> => 1
+            <name> => "main"
+            [0] => PMC 'POST;Op'  {
+                <pirop> => "noop"
+            }
+            [1] => \eliminate_constant_conditional["main"]["done"]
         }
-        <name> => "main"
-        [0] => PMC 'POST;Op'  {
-            <pirop> => "noop"
-        }
-        [1] => \eliminate_constant_conditional["done"]
     }
+    [0] => \eliminate_constant_conditional["main"]
 }
 RESULT
 test_post("True le_ic_ic_ic", <<'CODE', <<'RESULT', "stages" => "parse post eliminate_constant_conditional pbc", "target" => "eliminate_constant_conditional");
@@ -102,24 +118,28 @@ test_post("True le_ic_ic_ic", <<'CODE', <<'RESULT', "stages" => "parse post elim
    done:
 .end
 CODE
-"eliminate_constant_conditional" => PMC 'POST;Node'  {
+"eliminate_constant_conditional" => PMC 'POST;File'  {
     <main_sub> => "main"
-    [0] => PMC 'POST;Sub'  {
-        <labels> => Hash {
-            "done" => PMC 'POST;Label'  {
-                <declared> => 1
-                <name> => "done"
+    <subs> => Hash {
+        "main" => PMC 'POST;Sub'  {
+            <labels> => Hash {
+                "done" => PMC 'POST;Label'  {
+                    <declared> => 1
+                    <name> => "done"
+                }
             }
-        }
-        <name> => "main"
-        [0] => PMC 'POST;Op'  {
-            <pirop> => "branch"
-            [0] => PMC 'POST;Label'  {
-                <name> => "done"
+            <main> => 1
+            <name> => "main"
+            [0] => PMC 'POST;Op'  {
+                <pirop> => "branch"
+                [0] => PMC 'POST;Label'  {
+                    <name> => "done"
+                }
             }
+            [1] => \eliminate_constant_conditional["main"]["done"]
         }
-        [1] => \eliminate_constant_conditional["done"]
     }
+    [0] => \eliminate_constant_conditional["main"]
 }
 RESULT
 test_post("False le_ic_ic_ic", <<'CODE', <<'RESULT', "stages" => "parse post eliminate_constant_conditional pbc", "target" => "eliminate_constant_conditional");
@@ -128,21 +148,25 @@ test_post("False le_ic_ic_ic", <<'CODE', <<'RESULT', "stages" => "parse post eli
    done:
 .end
 CODE
-"eliminate_constant_conditional" => PMC 'POST;Node'  {
+"eliminate_constant_conditional" => PMC 'POST;File'  {
     <main_sub> => "main"
-    [0] => PMC 'POST;Sub'  {
-        <labels> => Hash {
-            "done" => PMC 'POST;Label'  {
-                <declared> => 1
-                <name> => "done"
+    <subs> => Hash {
+        "main" => PMC 'POST;Sub'  {
+            <labels> => Hash {
+                "done" => PMC 'POST;Label'  {
+                    <declared> => 1
+                    <name> => "done"
+                }
             }
+            <main> => 1
+            <name> => "main"
+            [0] => PMC 'POST;Op'  {
+                <pirop> => "noop"
+            }
+            [1] => \eliminate_constant_conditional["main"]["done"]
         }
-        <name> => "main"
-        [0] => PMC 'POST;Op'  {
-            <pirop> => "noop"
-        }
-        [1] => \eliminate_constant_conditional["done"]
     }
+    [0] => \eliminate_constant_conditional["main"]
 }
 RESULT
 test_post("True lt_ic_ic_ic", <<'CODE', <<'RESULT', "stages" => "parse post eliminate_constant_conditional pbc", "target" => "eliminate_constant_conditional");
@@ -151,24 +175,28 @@ test_post("True lt_ic_ic_ic", <<'CODE', <<'RESULT', "stages" => "parse post elim
    done:
 .end
 CODE
-"eliminate_constant_conditional" => PMC 'POST;Node'  {
+"eliminate_constant_conditional" => PMC 'POST;File'  {
     <main_sub> => "main"
-    [0] => PMC 'POST;Sub'  {
-        <labels> => Hash {
-            "done" => PMC 'POST;Label'  {
-                <declared> => 1
-                <name> => "done"
+    <subs> => Hash {
+        "main" => PMC 'POST;Sub'  {
+            <labels> => Hash {
+                "done" => PMC 'POST;Label'  {
+                    <declared> => 1
+                    <name> => "done"
+                }
             }
-        }
-        <name> => "main"
-        [0] => PMC 'POST;Op'  {
-            <pirop> => "branch"
-            [0] => PMC 'POST;Label'  {
-                <name> => "done"
+            <main> => 1
+            <name> => "main"
+            [0] => PMC 'POST;Op'  {
+                <pirop> => "branch"
+                [0] => PMC 'POST;Label'  {
+                    <name> => "done"
+                }
             }
+            [1] => \eliminate_constant_conditional["main"]["done"]
         }
-        [1] => \eliminate_constant_conditional["done"]
     }
+    [0] => \eliminate_constant_conditional["main"]
 }
 RESULT
 test_post("False lt_ic_ic_ic", <<'CODE', <<'RESULT', "stages" => "parse post eliminate_constant_conditional pbc", "target" => "eliminate_constant_conditional");
@@ -177,21 +205,25 @@ test_post("False lt_ic_ic_ic", <<'CODE', <<'RESULT', "stages" => "parse post eli
    done:
 .end
 CODE
-"eliminate_constant_conditional" => PMC 'POST;Node'  {
+"eliminate_constant_conditional" => PMC 'POST;File'  {
     <main_sub> => "main"
-    [0] => PMC 'POST;Sub'  {
-        <labels> => Hash {
-            "done" => PMC 'POST;Label'  {
-                <declared> => 1
-                <name> => "done"
+    <subs> => Hash {
+        "main" => PMC 'POST;Sub'  {
+            <labels> => Hash {
+                "done" => PMC 'POST;Label'  {
+                    <declared> => 1
+                    <name> => "done"
+                }
             }
+            <main> => 1
+            <name> => "main"
+            [0] => PMC 'POST;Op'  {
+                <pirop> => "noop"
+            }
+            [1] => \eliminate_constant_conditional["main"]["done"]
         }
-        <name> => "main"
-        [0] => PMC 'POST;Op'  {
-            <pirop> => "noop"
-        }
-        [1] => \eliminate_constant_conditional["done"]
     }
+    [0] => \eliminate_constant_conditional["main"]
 }
 RESULT
 test_post("True gt_ic_ic_ic", <<'CODE', <<'RESULT', "stages" => "parse post eliminate_constant_conditional pbc", "target" => "eliminate_constant_conditional");
@@ -200,24 +232,28 @@ test_post("True gt_ic_ic_ic", <<'CODE', <<'RESULT', "stages" => "parse post elim
    done:
 .end
 CODE
-"eliminate_constant_conditional" => PMC 'POST;Node'  {
+"eliminate_constant_conditional" => PMC 'POST;File'  {
     <main_sub> => "main"
-    [0] => PMC 'POST;Sub'  {
-        <labels> => Hash {
-            "done" => PMC 'POST;Label'  {
-                <declared> => 1
-                <name> => "done"
+    <subs> => Hash {
+        "main" => PMC 'POST;Sub'  {
+            <labels> => Hash {
+                "done" => PMC 'POST;Label'  {
+                    <declared> => 1
+                    <name> => "done"
+                }
             }
-        }
-        <name> => "main"
-        [0] => PMC 'POST;Op'  {
-            <pirop> => "branch"
-            [0] => PMC 'POST;Label'  {
-                <name> => "done"
+            <main> => 1
+            <name> => "main"
+            [0] => PMC 'POST;Op'  {
+                <pirop> => "branch"
+                [0] => PMC 'POST;Label'  {
+                    <name> => "done"
+                }
             }
+            [1] => \eliminate_constant_conditional["main"]["done"]
         }
-        [1] => \eliminate_constant_conditional["done"]
     }
+    [0] => \eliminate_constant_conditional["main"]
 }
 RESULT
 test_post("False gt_ic_ic_ic", <<'CODE', <<'RESULT', "stages" => "parse post eliminate_constant_conditional pbc", "target" => "eliminate_constant_conditional");
@@ -226,21 +262,25 @@ test_post("False gt_ic_ic_ic", <<'CODE', <<'RESULT', "stages" => "parse post eli
    done:
 .end
 CODE
-"eliminate_constant_conditional" => PMC 'POST;Node'  {
+"eliminate_constant_conditional" => PMC 'POST;File'  {
     <main_sub> => "main"
-    [0] => PMC 'POST;Sub'  {
-        <labels> => Hash {
-            "done" => PMC 'POST;Label'  {
-                <declared> => 1
-                <name> => "done"
+    <subs> => Hash {
+        "main" => PMC 'POST;Sub'  {
+            <labels> => Hash {
+                "done" => PMC 'POST;Label'  {
+                    <declared> => 1
+                    <name> => "done"
+                }
             }
+            <main> => 1
+            <name> => "main"
+            [0] => PMC 'POST;Op'  {
+                <pirop> => "noop"
+            }
+            [1] => \eliminate_constant_conditional["main"]["done"]
         }
-        <name> => "main"
-        [0] => PMC 'POST;Op'  {
-            <pirop> => "noop"
-        }
-        [1] => \eliminate_constant_conditional["done"]
     }
+    [0] => \eliminate_constant_conditional["main"]
 }
 RESULT
 test_post("True gt_ic_ic_ic", <<'CODE', <<'RESULT', "stages" => "parse post eliminate_constant_conditional pbc", "target" => "eliminate_constant_conditional");
@@ -249,24 +289,28 @@ test_post("True gt_ic_ic_ic", <<'CODE', <<'RESULT', "stages" => "parse post elim
    done:
 .end
 CODE
-"eliminate_constant_conditional" => PMC 'POST;Node'  {
+"eliminate_constant_conditional" => PMC 'POST;File'  {
     <main_sub> => "main"
-    [0] => PMC 'POST;Sub'  {
-        <labels> => Hash {
-            "done" => PMC 'POST;Label'  {
-                <declared> => 1
-                <name> => "done"
+    <subs> => Hash {
+        "main" => PMC 'POST;Sub'  {
+            <labels> => Hash {
+                "done" => PMC 'POST;Label'  {
+                    <declared> => 1
+                    <name> => "done"
+                }
             }
-        }
-        <name> => "main"
-        [0] => PMC 'POST;Op'  {
-            <pirop> => "branch"
-            [0] => PMC 'POST;Label'  {
-                <name> => "done"
+            <main> => 1
+            <name> => "main"
+            [0] => PMC 'POST;Op'  {
+                <pirop> => "branch"
+                [0] => PMC 'POST;Label'  {
+                    <name> => "done"
+                }
             }
+            [1] => \eliminate_constant_conditional["main"]["done"]
         }
-        [1] => \eliminate_constant_conditional["done"]
     }
+    [0] => \eliminate_constant_conditional["main"]
 }
 RESULT
 test_post("False gt_ic_ic_ic", <<'CODE', <<'RESULT', "stages" => "parse post eliminate_constant_conditional pbc", "target" => "eliminate_constant_conditional");
@@ -275,20 +319,24 @@ test_post("False gt_ic_ic_ic", <<'CODE', <<'RESULT', "stages" => "parse post eli
    done:
 .end
 CODE
-"eliminate_constant_conditional" => PMC 'POST;Node'  {
+"eliminate_constant_conditional" => PMC 'POST;File'  {
     <main_sub> => "main"
-    [0] => PMC 'POST;Sub'  {
-        <labels> => Hash {
-            "done" => PMC 'POST;Label'  {
-                <declared> => 1
-                <name> => "done"
+    <subs> => Hash {
+        "main" => PMC 'POST;Sub'  {
+            <labels> => Hash {
+                "done" => PMC 'POST;Label'  {
+                    <declared> => 1
+                    <name> => "done"
+                }
             }
+            <main> => 1
+            <name> => "main"
+            [0] => PMC 'POST;Op'  {
+                <pirop> => "noop"
+            }
+            [1] => \eliminate_constant_conditional["main"]["done"]
         }
-        <name> => "main"
-        [0] => PMC 'POST;Op'  {
-            <pirop> => "noop"
-        }
-        [1] => \eliminate_constant_conditional["done"]
     }
+    [0] => \eliminate_constant_conditional["main"]
 }
 RESULT
