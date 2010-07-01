@@ -6,7 +6,7 @@ Linear Scan Register Allocator
 
 class POST::LinearScanAllocator;
 
-our $recycler;
+my $recycler;
 
 =item C<process>
 Allocate registers. Returns 4-elements list with number of used INSP registers.
@@ -20,26 +20,76 @@ our method process(POST::Sub $sub) {
     $recycler.reset;
 
     my $op_num := 0;
+    my %liveness;
+    %liveness<start> := ();
+    %liveness<end>   := ();
 
     for @($sub) -> $op {
-        for @($op) -> $arg {
-            pir::say("found a thing with type { $arg<type>} name d { $arg<name> }");
-            unless pir::defined($sub.symtable{ $arg<name> }<start>) {
-                $sub.symtable{ $arg<name> }<start> := $op_num;
+        my @starts := ();
+
+        #catch POST::Call and POST::Op
+        my @reg_list := $op<params> ??
+            $op<params> !!
+            @($op);
+        for @reg_list -> $arg {
+
+            my $sym;
+            if ?$arg<type> {
+                $sym := $arg;
             }
-            $sub.symtable{ $arg<name> }<end> := $op_num;
+            else {
+                $sym := $sub.symtable{ $arg<name> };
+                #pir::say("looked up {$arg<name>} in the symtable");
+            }
+
+            #pir::say("found a thing with type { $sym<type>} named { $sym<name> }");
+            next unless self._is_insp_reg($sym);
+            #pir::say("looks like it's a register");
+
+            unless pir::defined($sub.symtable{ $sym<name> }<start>) {
+                $sub.symtable{ $sym<name> }<start>:= +$op_num;
+                @starts.push( $sym<name> );
+            }
+            $sub.symtable{ $sym<name> }<end> := +$op_num;
+            #_dumper( $sub.symtable{ $sym<name> });
         }
+        %liveness<start>.push( @starts );
+        %liveness<end>.push( () );
         $op_num++;
     }
 
-    #walk the liveness range list
-        #if you hit a starting position
-            #grab a register from the recycler
-            #assign it to the symbol
-        #if you hit an end position
+    #_dumper($sub.symtable);
+    #for $sub.symtable {
+    #    pir::say("found symbol {$_}, range is {$sub.symtable{$_}<start>} -> {$sub.symtable{$_}<end>}");
+    #}
+    my $n := 0;
+    while ($n < +%liveness<start>) {
+        pir::say("liveness analysis: n = $n");        
+        for %liveness<start>[$n] -> $sym_name {
+            my $sym := $sub.symtable{ $sym_name };
+            pir::say("found a live symbol: {$sym<name>}");
+            pir::say("symbol {$sym<name>} will become dead at {$sym<end>}");
+            $sym.regno( $recycler.get_register( $sym<type> ));
+            %liveness<end>[ $sym<end> ].push($sym_name);
+        }
+        for %liveness<end>[$n] -> $sym_name {
             #give that number back to the recycler
+            my $sym := $sub.symtable{ $sym_name };
+            pir::say("found a dead symbol {$sym<name>}: will return regno {$sym.regno}");
+            $recycler.free_register( $sym<type>, $sym.regno );
+        }
+        $n++;
+    }
         
     $recycler.n_regs_used;
+}
+
+our multi method _is_insp_reg($obj) { 0 }
+our multi method _is_insp_reg(POST::Register $reg) {
+    $reg<type> eq 'i' || $reg<type> eq 'n' || $reg<type> eq 's' || $reg<type> eq 'p'
+}
+our multi method _is_insp_reg(POST::Value $val) {
+    $val<type> eq 'i' || $val<type> eq 'n' || $val<type> eq 's' || $val<type> eq 'p'
 }
 
 
@@ -71,8 +121,8 @@ our method reset() {
 Get a free register number from the list.
 
 our method get_register($type) {
-    if $type ne 'i' && $type ne 'n' && $type ne 's' && $type eq 'p' {
-        pir::die("unknown register type '$type'");
+    unless ($type eq 'i') || ($type eq 'n') || ($type eq 's') || ($type eq 'p') {
+        pir::die("unknown register type in get_register: '$type'");
     }
 
     my $reg_num := 0;
@@ -96,8 +146,8 @@ our method get_register($type) {
 Mark a register number as being unused.
 
 our method free_register($type, $num) {
-    if $type ne 'i' && $type ne 'n' && $type ne 's' && $type eq 'p' {
-        pir::die("unknown register type '$type'");
+    unless ($type eq 'i') || ($type eq 'n') || ($type eq 's') || ($type eq 'p') {
+        pir::die("unknown register type in free_register: '$type'");
     }
     if $num > +%reg_usage_list{$type} {
         pir::die("attempt to free uncreated register");
