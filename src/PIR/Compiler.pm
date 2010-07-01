@@ -99,4 +99,29 @@ our method eliminate_constant_conditional ($post, *%adverbs) {
     $pattern.transform($post, &eliminate);
 }
 
+method fold_arithmetic($post) {
+    my $foldable_ops := / add /;
+    my $non_pmc := / ic | nc /;
+    my $pattern :=
+        POST::Pattern::Op.new(:pirop($foldable_ops),
+			      POST::Pattern::Value.new,
+			      POST::Pattern::Constant.new(:type($non_pmc)),
+			      POST::Pattern::Constant.new(:type($non_pmc)));
+    my %op_funcs := hash(:add(sub ($l, $r) { pir::add__PPP($l, $r); }));
+
+    my &fold := sub ($/) {
+	my $op := $/.orig.pirop;
+        my $val := %op_funcs{$op}($/[1].orig.value, $/[2].orig.value);
+	my $result_type := 
+	    ($/[1].orig.type eq 'nc' || $/[1].orig.type eq 'nc'
+	     ?? 'nc'
+	     !! 'ic');
+        POST::Op.new(:pirop<set>,
+		     $/[0].orig,
+		     POST::Constant.new(:value($val),
+					:type($result_type)));
+    }
+    $pattern.transform($post, &fold);
+}
+
 # vim: filetype=perl6:
