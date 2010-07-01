@@ -113,7 +113,7 @@ method fold_arithmetic($post) {
 	my $op := $/.orig.pirop;
         my $val := %op_funcs{$op}($/[1].orig.value, $/[2].orig.value);
 	my $result_type := 
-	    ($/[1].orig.type eq 'nc' || $/[1].orig.type eq 'nc'
+	    ($/[1].orig.type eq 'nc' || $/[2].orig.type eq 'nc'
 	     ?? 'nc'
 	     !! 'ic');
         POST::Op.new(:pirop<set>,
