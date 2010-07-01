@@ -21,7 +21,7 @@ our $DEBUG;
 
 our $REGALLOC;
 INIT {
-    $REGALLOC := POST::VanillaAllocator.new;
+    $REGALLOC := POST::LinearScanAllocator.new;
 }
 
 method pbc($post, %adverbs) {
