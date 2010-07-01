@@ -234,5 +234,36 @@ CODE
 }
 RESULT
 
+test_post( ".namespace handling", <<'CODE', <<'RESULT');
+.namespace ['Foo';'Bar']
+.sub "main"
+.end
+CODE
+"post" => PMC 'POST;File'  {
+    <main_sub> => "main"
+    <subs> => Hash {
+        "main" => PMC 'POST;Sub'  {
+            <name> => "main"
+            <namespace> => PMC 'POST;Key'  {
+                <type> => "pc"
+                [0] => PMC 'POST;String'  {
+                    <charset> => "ascii"
+                    <encoding> => "fixed_8"
+                    <type> => "sc"
+                    <value> => "Foo"
+                }
+                [1] => PMC 'POST;String'  {
+                    <charset> => "ascii"
+                    <encoding> => "fixed_8"
+                    <type> => "sc"
+                    <value> => "Bar"
+                }
+            }
+        }
+    }
+    [0] => \post["main"]
+}
+RESULT
+
 
 # vim: ft=perl6
