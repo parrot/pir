@@ -12,6 +12,14 @@ class POST::Pattern::Call is POST::Pattern {
     method target_class () { POST::Call; }
 }
 
+class POST::Pattern::File is POST::Pattern {
+    my @attributes := pir::clone__PP(POST::Pattern.attributes());
+    pir::push(@attributes, 'subs');
+    method attributes() { @attributes; }
+
+    method target_class () { POST::File; }
+}
+
 class POST::Pattern::Value is POST::Pattern {
     my @attributes := pir::clone__PP(POST::Pattern.attributes());
     for (<name type flags declared>) {
