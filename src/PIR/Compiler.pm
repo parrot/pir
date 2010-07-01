@@ -107,17 +107,24 @@ method fold_arithmetic($post) {
                               POST::Pattern::Value.new,
                               POST::Pattern::Constant.new(:type($non_pmc)),
                               POST::Pattern::Constant.new(:type($non_pmc)));
-    my %op_funcs := hash(:add(sub ($l, $r) { pir::add__PPP($l, $r); }),
-                         :sub(sub ($l, $r) { pir::sub__PPP($l, $r); }),
-                         :mul(sub ($l, $r) { pir::mul__PPP($l, $r); }));
+    my %op_funcs := hash(:add(sub ($l, $r, $result_type) {
+                                  pir::add__PPP($l, $r);
+                              }),
+                         :sub(sub ($l, $r, $result_type) {
+                                  pir::sub__PPP($l, $r);
+                             }),
+                         :mul(sub ($l, $r, $result_type) {
+                                  pir::mul__PPP($l, $r);
+                             }));
 
     my &fold := sub ($/) {
         my $op := $/.orig.pirop;
-        my $val := %op_funcs{$op}($/[1].orig.value, $/[2].orig.value);
         my $result_type := 
             ($/[1].orig.type eq 'nc' || $/[2].orig.type eq 'nc'
              ?? 'nc'
              !! 'ic');
+        my $val := %op_funcs{$op}($/[1].orig.value, $/[2].orig.value,
+                                  $result_type);
         POST::Op.new(:pirop<set>,
                      $/[0].orig,
                      POST::Constant.new(:value($val),
