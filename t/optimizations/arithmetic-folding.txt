@@ -326,3 +326,167 @@ CODE
     [0] => \fold_arithmetic["main"]
 }
 RESULT
+test_post("mul_i_ic_ic", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+.sub main :main
+    $I0 = 2 * 1
+    say $I0
+.end
+CODE
+"fold_arithmetic" => PMC 'POST;File'  {
+    <main_sub> => "main"
+    <subs> => Hash {
+        "main" => PMC 'POST;Sub'  {
+            <main> => 1
+            <name> => "main"
+            <symtable> => Hash {
+                "$I0" => PMC 'POST;Register'  {
+                    <name> => "$I0"
+                    <type> => "i"
+                }
+            }
+            [0] => PMC 'POST;Op'  {
+                <pirop> => "set"
+                [0] => PMC 'POST;Value'  {
+                    <name> => "$I0"
+                    <type> => "i"
+                }
+                [1] => PMC 'POST;Constant'  {
+                    <type> => "ic"
+                    <value> => "2"
+                }
+            }
+            [1] => PMC 'POST;Op'  {
+                <pirop> => "say"
+                [0] => PMC 'POST;Value'  {
+                    <name> => \fold_arithmetic["main"]["$I0"]
+                    <type> => \fold_arithmetic["main"]["$I0"]
+                }
+            }
+        }
+    }
+    [0] => \fold_arithmetic["main"]
+}
+RESULT
+test_post("mul_n_nc_ic", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+.sub main :main
+    $N0 = 2.0 * 1
+    say $N0
+.end
+CODE
+"fold_arithmetic" => PMC 'POST;File'  {
+    <main_sub> => "main"
+    <subs> => Hash {
+        "main" => PMC 'POST;Sub'  {
+            <main> => 1
+            <name> => "main"
+            <symtable> => Hash {
+                "$N0" => PMC 'POST;Register'  {
+                    <name> => "$N0"
+                    <type> => "n"
+                }
+            }
+            [0] => PMC 'POST;Op'  {
+                <pirop> => "set"
+                [0] => PMC 'POST;Value'  {
+                    <name> => "$N0"
+                    <type> => "n"
+                }
+                [1] => PMC 'POST;Constant'  {
+                    <type> => "nc"
+                    <value> => "2"
+                }
+            }
+            [1] => PMC 'POST;Op'  {
+                <pirop> => "say"
+                [0] => PMC 'POST;Value'  {
+                    <name> => \fold_arithmetic["main"]["$N0"]
+                    <type> => \fold_arithmetic["main"]["$N0"]
+                }
+            }
+        }
+    }
+    [0] => \fold_arithmetic["main"]
+}
+RESULT
+test_post("mul_n_ic_nc", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+.sub main :main
+    $N0 = 2 * 1.0
+    say $N0
+.end
+CODE
+"fold_arithmetic" => PMC 'POST;File'  {
+    <main_sub> => "main"
+    <subs> => Hash {
+        "main" => PMC 'POST;Sub'  {
+            <main> => 1
+            <name> => "main"
+            <symtable> => Hash {
+                "$N0" => PMC 'POST;Register'  {
+                    <name> => "$N0"
+                    <type> => "n"
+                }
+            }
+            [0] => PMC 'POST;Op'  {
+                <pirop> => "set"
+                [0] => PMC 'POST;Value'  {
+                    <name> => "$N0"
+                    <type> => "n"
+                }
+                [1] => PMC 'POST;Constant'  {
+                    <type> => "nc"
+                    <value> => "2"
+                }
+            }
+            [1] => PMC 'POST;Op'  {
+                <pirop> => "say"
+                [0] => PMC 'POST;Value'  {
+                    <name> => \fold_arithmetic["main"]["$N0"]
+                    <type> => \fold_arithmetic["main"]["$N0"]
+                }
+            }
+        }
+    }
+    [0] => \fold_arithmetic["main"]
+}
+RESULT
+test_post("mul_n_nc_nc", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+.sub main :main
+    $N0 = 2.0 * 1.0
+    say $N0
+.end
+CODE
+"fold_arithmetic" => PMC 'POST;File'  {
+    <main_sub> => "main"
+    <subs> => Hash {
+        "main" => PMC 'POST;Sub'  {
+            <main> => 1
+            <name> => "main"
+            <symtable> => Hash {
+                "$N0" => PMC 'POST;Register'  {
+                    <name> => "$N0"
+                    <type> => "n"
+                }
+            }
+            [0] => PMC 'POST;Op'  {
+                <pirop> => "set"
+                [0] => PMC 'POST;Value'  {
+                    <name> => "$N0"
+                    <type> => "n"
+                }
+                [1] => PMC 'POST;Constant'  {
+                    <type> => "nc"
+                    <value> => "2"
+                }
+            }
+            [1] => PMC 'POST;Op'  {
+                <pirop> => "say"
+                [0] => PMC 'POST;Value'  {
+                    <name> => \fold_arithmetic["main"]["$N0"]
+                    <type> => \fold_arithmetic["main"]["$N0"]
+                }
+            }
+        }
+    }
+    [0] => \fold_arithmetic["main"]
+}
+RESULT
