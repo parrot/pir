@@ -79,11 +79,11 @@ our method eliminate_constant_conditional ($post, *%adverbs) {
                              POST::Pattern::Constant.new(:type($nonpmc)),
                              POST::Pattern::Label.new);
     my %op_funcs := hash(:eq(sub ($l, $r) { pir::iseq__IPP($l, $r) }),
-       		    	 :ne(sub ($l, $r) { pir::isne__IPP($l, $r) }),
-			 :lt(sub ($l, $r) { pir::islt__IPP($l, $r) }),
-			 :le(sub ($l, $r) { pir::isle__IPP($l, $r) }),
-			 :gt(sub ($l, $r) { pir::isgt__IPP($l, $r) }),
-			 :ge(sub ($l, $r) { pir::isge__IPP($l, $r) }));
+                         :ne(sub ($l, $r) { pir::isne__IPP($l, $r) }),
+                         :lt(sub ($l, $r) { pir::islt__IPP($l, $r) }),
+                         :le(sub ($l, $r) { pir::isle__IPP($l, $r) }),
+                         :gt(sub ($l, $r) { pir::isgt__IPP($l, $r) }),
+                         :ge(sub ($l, $r) { pir::isge__IPP($l, $r) }));
     my &eliminate := sub ($/) {
        my $condition := %op_funcs{$<pirop>.orig}($/[0].orig.value,
                                                  $/[1].orig.value);
@@ -104,22 +104,22 @@ method fold_arithmetic($post) {
     my $non_pmc := / ic | nc /;
     my $pattern :=
         POST::Pattern::Op.new(:pirop($foldable_ops),
-			      POST::Pattern::Value.new,
-			      POST::Pattern::Constant.new(:type($non_pmc)),
-			      POST::Pattern::Constant.new(:type($non_pmc)));
+                              POST::Pattern::Value.new,
+                              POST::Pattern::Constant.new(:type($non_pmc)),
+                              POST::Pattern::Constant.new(:type($non_pmc)));
     my %op_funcs := hash(:add(sub ($l, $r) { pir::add__PPP($l, $r); }));
 
     my &fold := sub ($/) {
-	my $op := $/.orig.pirop;
+        my $op := $/.orig.pirop;
         my $val := %op_funcs{$op}($/[1].orig.value, $/[2].orig.value);
-	my $result_type := 
-	    ($/[1].orig.type eq 'nc' || $/[2].orig.type eq 'nc'
-	     ?? 'nc'
-	     !! 'ic');
+        my $result_type := 
+            ($/[1].orig.type eq 'nc' || $/[2].orig.type eq 'nc'
+             ?? 'nc'
+             !! 'ic');
         POST::Op.new(:pirop<set>,
-		     $/[0].orig,
-		     POST::Constant.new(:value($val),
-					:type($result_type)));
+                     $/[0].orig,
+                     POST::Constant.new(:value($val),
+                                        :type($result_type)));
     }
     $pattern.transform($post, &fold);
 }
