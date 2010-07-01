@@ -173,7 +173,7 @@ CODE
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
             <main> => 1
-            <name> => \fold_arithmetic
+            <name> => "main"
             <symtable> => Hash {
                 "$I0" => PMC 'POST;Register'  {
                     <name> => "$I0"
@@ -205,7 +205,7 @@ CODE
 RESULT
 test_post("sub_n_nc_ic", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
 .sub main :main
-    $N0 = 2.0 + 1
+    $N0 = 2.0 - 1
     say $N0
 .end
 CODE
