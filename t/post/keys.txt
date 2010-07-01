@@ -3,32 +3,35 @@ test_post( "Key.type == kic", <<'CODE', <<'RESULT');
     $P0[42] = 42
 .end
 CODE
-"post" => PMC 'POST;Node'  {
+"post" => PMC 'POST;File'  {
     <main_sub> => "main"
-    [0] => PMC 'POST;Sub'  {
-        <name> => \post
-        <symtable> => Hash {
-            "$P0" => PMC 'POST;Register'  {
-                <name> => "$P0"
-                <type> => "p"
+    <subs> => Hash {
+        "main" => PMC 'POST;Sub'  {
+            <name> => \post
+            <symtable> => Hash {
+                "$P0" => PMC 'POST;Register'  {
+                    <name> => "$P0"
+                    <type> => "p"
+                }
             }
-        }
-        [0] => PMC 'POST;Op'  {
-            <pirop> => "set"
-            [0] => PMC 'POST;Value'  {
-                <name> => \post["$P0"]
-                <type> => \post["$P0"]
-            }
-            [1] => PMC 'POST;Constant'  {
-                <type> => "kic"
-                <value> => "42"
-            }
-            [2] => PMC 'POST;Constant'  {
-                <type> => "ic"
-                <value> => "42"
+            [0] => PMC 'POST;Op'  {
+                <pirop> => "set"
+                [0] => PMC 'POST;Value'  {
+                    <name> => \post["main"]["$P0"]
+                    <type> => \post["main"]["$P0"]
+                }
+                [1] => PMC 'POST;Constant'  {
+                    <type> => "kic"
+                    <value> => "42"
+                }
+                [2] => PMC 'POST;Constant'  {
+                    <type> => "ic"
+                    <value> => "42"
+                }
             }
         }
     }
+    [0] => \post["main"]
 }
 RESULT
 
@@ -38,47 +41,50 @@ test_post( "Key.type == ki", <<'CODE', <<'RESULT');
     $P0[$I0] = 42
 .end
 CODE
-"post" => PMC 'POST;Node'  {
+"post" => PMC 'POST;File'  {
     <main_sub> => "main"
-    [0] => PMC 'POST;Sub'  {
-        <name> => "main"
-        <symtable> => Hash {
-            "$I0" => PMC 'POST;Register'  {
-                <name> => "$I0"
-                <type> => "i"
-            },
-            "$P0" => PMC 'POST;Register'  {
-                <name> => "$P0"
-                <type> => "p"
+    <subs> => Hash {
+        "main" => PMC 'POST;Sub'  {
+            <name> => "main"
+            <symtable> => Hash {
+                "$I0" => PMC 'POST;Register'  {
+                    <name> => "$I0"
+                    <type> => "i"
+                },
+                "$P0" => PMC 'POST;Register'  {
+                    <name> => "$P0"
+                    <type> => "p"
+                }
             }
-        }
-        [0] => PMC 'POST;Op'  {
-            <pirop> => "set"
-            [0] => PMC 'POST;Value'  {
-                <name> => "$I0"
-                <type> => "i"
+            [0] => PMC 'POST;Op'  {
+                <pirop> => "set"
+                [0] => PMC 'POST;Value'  {
+                    <name> => "$I0"
+                    <type> => "i"
+                }
+                [1] => PMC 'POST;Constant'  {
+                    <type> => "ic"
+                    <value> => "42"
+                }
             }
-            [1] => PMC 'POST;Constant'  {
-                <type> => "ic"
-                <value> => "42"
-            }
-        }
-        [1] => PMC 'POST;Op'  {
-            <pirop> => "set"
-            [0] => PMC 'POST;Value'  {
-                <name> => \post["$P0"]
-                <type> => \post["$P0"]
-            }
-            [1] => PMC 'POST;Value'  {
-                <name> => \post["$I0"]
-                <type> => "ki"
-            }
-            [2] => PMC 'POST;Constant'  {
-                <type> => "ic"
-                <value> => "42"
+            [1] => PMC 'POST;Op'  {
+                <pirop> => "set"
+                [0] => PMC 'POST;Value'  {
+                    <name> => \post["main"]["$P0"]
+                    <type> => \post["main"]["$P0"]
+                }
+                [1] => PMC 'POST;Value'  {
+                    <name> => \post["main"]["$I0"]
+                    <type> => "ki"
+                }
+                [2] => PMC 'POST;Constant'  {
+                    <type> => "ic"
+                    <value> => "42"
+                }
             }
         }
     }
+    [0] => \post["main"]
 }
 RESULT
 
@@ -87,39 +93,42 @@ test_post( "Key.type == pc", <<'CODE', <<'RESULT');
     $P0 = new ['POST';'Node']
 .end
 CODE
-"post" => PMC 'POST;Node'  {
+"post" => PMC 'POST;File'  {
     <main_sub> => "main"
-    [0] => PMC 'POST;Sub'  {
-        <name> => "main"
-        <symtable> => Hash {
-            "$P0" => PMC 'POST;Register'  {
-                <name> => "$P0"
-                <type> => "p"
-            }
-        }
-        [0] => PMC 'POST;Op'  {
-            <pirop> => "new"
-            [0] => PMC 'POST;Value'  {
-                <name> => \post["$P0"]
-                <type> => \post["$P0"]
-            }
-            [1] => PMC 'POST;Key'  {
-                <type> => "pc"
-                [0] => PMC 'POST;String'  {
-                    <charset> => "ascii"
-                    <encoding> => "fixed_8"
-                    <type> => "sc"
-                    <value> => "POST"
+    <subs> => Hash {
+        "main" => PMC 'POST;Sub'  {
+            <name> => "main"
+            <symtable> => Hash {
+                "$P0" => PMC 'POST;Register'  {
+                    <name> => "$P0"
+                    <type> => "p"
                 }
-                [1] => PMC 'POST;String'  {
-                    <charset> => "ascii"
-                    <encoding> => "fixed_8"
-                    <type> => "sc"
-                    <value> => "Node"
+            }
+            [0] => PMC 'POST;Op'  {
+                <pirop> => "new"
+                [0] => PMC 'POST;Value'  {
+                    <name> => \post["main"]["$P0"]
+                    <type> => \post["main"]["$P0"]
+                }
+                [1] => PMC 'POST;Key'  {
+                    <type> => "pc"
+                    [0] => PMC 'POST;String'  {
+                        <charset> => "ascii"
+                        <encoding> => "fixed_8"
+                        <type> => "sc"
+                        <value> => "POST"
+                    }
+                    [1] => PMC 'POST;String'  {
+                        <charset> => "ascii"
+                        <encoding> => "fixed_8"
+                        <type> => "sc"
+                        <value> => "Node"
+                    }
                 }
             }
         }
     }
+    [0] => \post["main"]
 }
 RESULT
 

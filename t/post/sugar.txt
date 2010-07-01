@@ -3,30 +3,33 @@ test_post( "sym<assign>", <<'CODE', <<'RESULT');
     $S0 = "hello"
 .end
 CODE
-"post" => PMC 'POST;Node'  {
+"post" => PMC 'POST;File'  {
     <main_sub> => "main"
-    [0] => PMC 'POST;Sub'  {
-        <name> => \post
-        <symtable> => Hash {
-            "$S0" => PMC 'POST;Register'  {
-                <name> => "$S0"
-                <type> => "s"
+    <subs> => Hash {
+        "main" => PMC 'POST;Sub'  {
+            <name> => \post
+            <symtable> => Hash {
+                "$S0" => PMC 'POST;Register'  {
+                    <name> => "$S0"
+                    <type> => "s"
+                }
             }
-        }
-        [0] => PMC 'POST;Op'  {
-            <pirop> => "set"
-            [0] => PMC 'POST;Value'  {
-                <name> => \post["$S0"]
-                <type> => \post["$S0"]
-            }
-            [1] => PMC 'POST;String'  {
-                <charset> => "ascii"
-                <encoding> => "fixed_8"
-                <type> => "sc"
-                <value> => "hello"
+            [0] => PMC 'POST;Op'  {
+                <pirop> => "set"
+                [0] => PMC 'POST;Value'  {
+                    <name> => \post["main"]["$S0"]
+                    <type> => \post["main"]["$S0"]
+                }
+                [1] => PMC 'POST;String'  {
+                    <charset> => "ascii"
+                    <encoding> => "fixed_8"
+                    <type> => "sc"
+                    <value> => "hello"
+                }
             }
         }
     }
+    [0] => \post["main"]
 }
 RESULT
 
@@ -35,24 +38,27 @@ test_post( "sym<assign> as op", <<'CODE', <<'RESULT');
     $I0 = err
 .end
 CODE
-"post" => PMC 'POST;Node'  {
+"post" => PMC 'POST;File'  {
     <main_sub> => "main"
-    [0] => PMC 'POST;Sub'  {
-        <name> => "main"
-        <symtable> => Hash {
-            "$I0" => PMC 'POST;Register'  {
-                <name> => "$I0"
-                <type> => "i"
+    <subs> => Hash {
+        "main" => PMC 'POST;Sub'  {
+            <name> => "main"
+            <symtable> => Hash {
+                "$I0" => PMC 'POST;Register'  {
+                    <name> => "$I0"
+                    <type> => "i"
+                }
             }
-        }
-        [0] => PMC 'POST;Op'  {
-            <pirop> => "err"
-            [0] => PMC 'POST;Value'  {
-                <name> => \post["$I0"]
-                <type> => \post["$I0"]
+            [0] => PMC 'POST;Op'  {
+                <pirop> => "err"
+                [0] => PMC 'POST;Value'  {
+                    <name> => \post["main"]["$I0"]
+                    <type> => \post["main"]["$I0"]
+                }
             }
         }
     }
+    [0] => \post["main"]
 }
 RESULT
 
@@ -63,32 +69,35 @@ test_post( "sym<assign> hiding op", <<'CODE', <<'RESULT');
     $I0 = err
 .end
 CODE
-"post" => PMC 'POST;Node'  {
+"post" => PMC 'POST;File'  {
     <main_sub> => "main"
-    [0] => PMC 'POST;Sub'  {
-        <name> => "main"
-        <symtable> => Hash {
-            "$I0" => PMC 'POST;Register'  {
-                <name> => "$I0"
-                <type> => "i"
-            },
-            "err" => PMC 'POST;Register'  {
-                <declared> => 1
-                <name> => "err"
-                <type> => "i"
+    <subs> => Hash {
+        "main" => PMC 'POST;Sub'  {
+            <name> => "main"
+            <symtable> => Hash {
+                "$I0" => PMC 'POST;Register'  {
+                    <name> => "$I0"
+                    <type> => "i"
+                },
+                "err" => PMC 'POST;Register'  {
+                    <declared> => 1
+                    <name> => "err"
+                    <type> => "i"
+                }
             }
-        }
-        [0] => PMC 'POST;Op'  {
-            <pirop> => "set"
-            [0] => PMC 'POST;Value'  {
-                <name> => \post["$I0"]
-                <type> => \post["$I0"]
-            }
-            [1] => PMC 'POST;Value'  {
-                <name> => "err"
+            [0] => PMC 'POST;Op'  {
+                <pirop> => "set"
+                [0] => PMC 'POST;Value'  {
+                    <name> => \post["main"]["$I0"]
+                    <type> => \post["main"]["$I0"]
+                }
+                [1] => PMC 'POST;Value'  {
+                    <name> => "err"
+                }
             }
         }
     }
+    [0] => \post["main"]
 }
 RESULT
 
@@ -106,30 +115,33 @@ test_post( "sym<assign> for POST::Value", <<'CODE', <<'RESULT');
     h = "hello"
 .end
 CODE
-"post" => PMC 'POST;Node'  {
+"post" => PMC 'POST;File'  {
     <main_sub> => "main"
-    [0] => PMC 'POST;Sub'  {
-        <name> => "main"
-        <symtable> => Hash {
-            "h" => PMC 'POST;Register'  {
-                <declared> => 1
-                <name> => "h"
-                <type> => "s"
+    <subs> => Hash {
+        "main" => PMC 'POST;Sub'  {
+            <name> => "main"
+            <symtable> => Hash {
+                "h" => PMC 'POST;Register'  {
+                    <declared> => 1
+                    <name> => "h"
+                    <type> => "s"
+                }
             }
-        }
-        [0] => PMC 'POST;Op'  {
-            <pirop> => "set"
-            [0] => PMC 'POST;Value'  {
-                <name> => "h"
-            }
-            [1] => PMC 'POST;String'  {
-                <charset> => "ascii"
-                <encoding> => "fixed_8"
-                <type> => "sc"
-                <value> => "hello"
+            [0] => PMC 'POST;Op'  {
+                <pirop> => "set"
+                [0] => PMC 'POST;Value'  {
+                    <name> => "h"
+                }
+                [1] => PMC 'POST;String'  {
+                    <charset> => "ascii"
+                    <encoding> => "fixed_8"
+                    <type> => "sc"
+                    <value> => "hello"
+                }
             }
         }
     }
+    [0] => \post["main"]
 }
 RESULT
 # vim: ft=perl

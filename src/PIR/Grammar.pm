@@ -16,6 +16,7 @@ method TOP() {
 }
 
 rule top {
+    {*} #= begin
     [ <compilation_unit> <.terminator> ]*
     [ $ || <.panic: "Confused"> ]
 }

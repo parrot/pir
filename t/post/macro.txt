@@ -4,20 +4,23 @@ test_post( ".macro_const", <<'CODE', <<'RESULT');
     say .answer
 .end
 CODE
-"post" => PMC 'POST;Node'  {
+"post" => PMC 'POST;File'  {
     <main_sub> => "foo"
-    [0] => PMC 'POST;Sub'  {
-        <name> => \post
-        [0] => PMC 'POST;Op'  {
-            <pirop> => "say"
-            [0] => PMC 'POST;String'  {
-                <charset> => "ascii"
-                <encoding> => "fixed_8"
-                <type> => "sc"
-                <value> => "42"
+    <subs> => Hash {
+        "foo" => PMC 'POST;Sub'  {
+            <name> => \post
+            [0] => PMC 'POST;Op'  {
+                <pirop> => "say"
+                [0] => PMC 'POST;String'  {
+                    <charset> => "ascii"
+                    <encoding> => "fixed_8"
+                    <type> => "sc"
+                    <value> => "42"
+                }
             }
         }
     }
+    [0] => \post["foo"]
 }
 RESULT
 

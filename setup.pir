@@ -34,6 +34,7 @@ No Configure step, no Makefile generated.
     $P1['src/PIR/Patterns.pir'] = 'src/PIR/Patterns.pm'
 
     $P1['src/POST/Compiler.pir'] = 'src/POST/Compiler.pm'
+    $P1['src/POST/File.pir']     = 'src/POST/File.pm'
     $P1['src/POST/Call.pir']     = 'src/POST/Call.pm'
     $P1['src/POST/Sub.pir']      = 'src/POST/Sub.pm'
     $P1['src/POST/Value.pir']    = 'src/POST/Value.pm'
@@ -62,6 +63,7 @@ src/PIR/Compiler.pir
 src/PIR/Patterns.pir
 
 src/POST/Compiler.pir
+src/POST/File.pir
 src/POST/Call.pir
 src/POST/Sub.pir
 

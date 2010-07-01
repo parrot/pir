@@ -4,34 +4,37 @@ test_post( "if cond, label", <<'CODE', <<'RESULT');
   done:
 .end
 CODE
-"post" => PMC 'POST;Node'  {
+"post" => PMC 'POST;File'  {
     <main_sub> => "main"
-    [0] => PMC 'POST;Sub'  {
-        <labels> => Hash {
-            "done" => PMC 'POST;Label'  {
-                <declared> => 1
-                <name> => "done"
+    <subs> => Hash {
+        "main" => PMC 'POST;Sub'  {
+            <labels> => Hash {
+                "done" => PMC 'POST;Label'  {
+                    <declared> => 1
+                    <name> => "done"
+                }
             }
+            <name> => \post
+            <symtable> => Hash {
+                "$I0" => PMC 'POST;Register'  {
+                    <name> => "$I0"
+                    <type> => "i"
+                }
+            }
+            [0] => PMC 'POST;Op'  {
+                <pirop> => "if"
+                [0] => PMC 'POST;Value'  {
+                    <name> => \post["main"]["$I0"]
+                    <type> => \post["main"]["$I0"]
+                }
+                [1] => PMC 'POST;Label'  {
+                    <name> => "done"
+                }
+            }
+            [1] => \post["main"]["done"]
         }
-        <name> => \post
-        <symtable> => Hash {
-            "$I0" => PMC 'POST;Register'  {
-                <name> => "$I0"
-                <type> => "i"
-            }
-        }
-        [0] => PMC 'POST;Op'  {
-            <pirop> => "if"
-            [0] => PMC 'POST;Value'  {
-                <name> => \post["$I0"]
-                <type> => \post["$I0"]
-            }
-            [1] => PMC 'POST;Label'  {
-                <name> => "done"
-            }
-        }
-        [1] => \post["done"]
     }
+    [0] => \post["main"]
 }
 RESULT
 

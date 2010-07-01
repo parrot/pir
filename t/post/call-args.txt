@@ -3,22 +3,25 @@ test_post( ":slurpy", <<'CODE', <<'RESULT');
     .param pmc args :slurpy
 .end
 CODE
-"post" => PMC 'POST;Node'  {
+"post" => PMC 'POST;File'  {
     <main_sub> => "main"
-    [0] => PMC 'POST;Sub'  {
-        <name> => \post
-        <params> => ResizablePMCArray (size:1) [
-            PMC 'POST;Register'  {
-                <declared> => 1
-                <modifier> => "slurpy"
-                <name> => "args"
-                <type> => "p"
+    <subs> => Hash {
+        "main" => PMC 'POST;Sub'  {
+            <name> => \post
+            <params> => ResizablePMCArray (size:1) [
+                PMC 'POST;Register'  {
+                    <declared> => 1
+                    <modifier> => "slurpy"
+                    <name> => "args"
+                    <type> => "p"
+                }
+            ]
+            <symtable> => Hash {
+                "args" => \post["main"][0]
             }
-        ]
-        <symtable> => Hash {
-            "args" => \post[0]
         }
     }
+    [0] => \post["main"]
 }
 RESULT
 
@@ -54,31 +57,34 @@ test_post( ":flat", <<'CODE', <<'RESULT');
     $P0($P0 :flat)
 .end
 CODE
-"post" => PMC 'POST;Node'  {
+"post" => PMC 'POST;File'  {
     <main_sub> => "main"
-    [0] => PMC 'POST;Sub'  {
-        <name> => "main"
-        <symtable> => Hash {
-            "$P0" => PMC 'POST;Register'  {
-                <name> => "$P0"
-                <type> => "p"
-            }
-        }
-        [0] => PMC 'POST;Call'  {
-            <calltype> => "call"
-            <name> => PMC 'POST;Value'  {
-                <name> => "$P0"
-                <type> => "p"
-            }
-            <params> => ResizablePMCArray (size:1) [
-                PMC 'POST;Value'  {
-                    <modifier> => "flat"
-                    <name> => \post["$P0"]
-                    <type> => \post["$P0"]
+    <subs> => Hash {
+        "main" => PMC 'POST;Sub'  {
+            <name> => "main"
+            <symtable> => Hash {
+                "$P0" => PMC 'POST;Register'  {
+                    <name> => "$P0"
+                    <type> => "p"
                 }
-            ]
+            }
+            [0] => PMC 'POST;Call'  {
+                <calltype> => "call"
+                <name> => PMC 'POST;Value'  {
+                    <name> => "$P0"
+                    <type> => "p"
+                }
+                <params> => ResizablePMCArray (size:1) [
+                    PMC 'POST;Value'  {
+                        <modifier> => "flat"
+                        <name> => \post["main"]["$P0"]
+                        <type> => \post["main"]["$P0"]
+                    }
+                ]
+            }
         }
     }
+    [0] => \post["main"]
 }
 RESULT
 
@@ -87,35 +93,38 @@ test_post( "fatarrow", <<'CODE', <<'RESULT');
     $P0("parent" => "Class")
 .end
 CODE
-"post" => PMC 'POST;Node'  {
+"post" => PMC 'POST;File'  {
     <main_sub> => "main"
-    [0] => PMC 'POST;Sub'  {
-        <name> => "main"
-        <symtable> => Hash {
-            "$P0" => PMC 'POST;Register'  {
-                <name> => "$P0"
-                <type> => "p"
-            }
-        }
-        [0] => PMC 'POST;Call'  {
-            <calltype> => "call"
-            <name> => PMC 'POST;Value'  {
-                <name> => \post["$P0"]
-                <type> => \post["$P0"]
-            }
-            <params> => ResizablePMCArray (size:1) [
-                PMC 'POST;String'  {
-                    <charset> => "ascii"
-                    <encoding> => "fixed_8"
-                    <modifier> => Hash {
-                        "named" => "parent"
-                    }
-                    <type> => "sc"
-                    <value> => "Class"
+    <subs> => Hash {
+        "main" => PMC 'POST;Sub'  {
+            <name> => "main"
+            <symtable> => Hash {
+                "$P0" => PMC 'POST;Register'  {
+                    <name> => "$P0"
+                    <type> => "p"
                 }
-            ]
+            }
+            [0] => PMC 'POST;Call'  {
+                <calltype> => "call"
+                <name> => PMC 'POST;Value'  {
+                    <name> => \post["main"]["$P0"]
+                    <type> => \post["main"]["$P0"]
+                }
+                <params> => ResizablePMCArray (size:1) [
+                    PMC 'POST;String'  {
+                        <charset> => "ascii"
+                        <encoding> => "fixed_8"
+                        <modifier> => Hash {
+                            "named" => "parent"
+                        }
+                        <type> => "sc"
+                        <value> => "Class"
+                    }
+                ]
+            }
         }
     }
+    [0] => \post["main"]
 }
 RESULT
 

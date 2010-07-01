@@ -4,22 +4,25 @@ test_post( ":slurpy", <<'CODE', <<'RESULT');
     .param pmc argv :slurpy         # slurpy array
 .end
 CODE
-"post" => PMC 'POST;Node'  {
+"post" => PMC 'POST;File'  {
     <main_sub> => "main"
-    [0] => PMC 'POST;Sub'  {
-        <name> => "foo"
-        <params> => ResizablePMCArray (size:1) [
-            PMC 'POST;Register'  {
-                <declared> => 1
-                <modifier> => "slurpy"
-                <name> => "argv"
-                <type> => "p"
+    <subs> => Hash {
+        "foo" => PMC 'POST;Sub'  {
+            <name> => "foo"
+            <params> => ResizablePMCArray (size:1) [
+                PMC 'POST;Register'  {
+                    <declared> => 1
+                    <modifier> => "slurpy"
+                    <name> => "argv"
+                    <type> => "p"
+                }
+            ]
+            <symtable> => Hash {
+                "argv" => \post["foo"][0]
             }
-        ]
-        <symtable> => Hash {
-            "argv" => \post[0]
         }
     }
+    [0] => \post["foo"]
 }
 RESULT
 
@@ -28,22 +31,25 @@ test_post( ":optional", <<'CODE', <<'RESULT');
     .param pmc argv :optional
 .end
 CODE
-"post" => PMC 'POST;Node'  {
+"post" => PMC 'POST;File'  {
     <main_sub> => "main"
-    [0] => PMC 'POST;Sub'  {
-        <name> => "foo"
-        <params> => ResizablePMCArray (size:1) [
-            PMC 'POST;Register'  {
-                <declared> => 1
-                <modifier> => "optional"
-                <name> => "argv"
-                <type> => "p"
+    <subs> => Hash {
+        "foo" => PMC 'POST;Sub'  {
+            <name> => "foo"
+            <params> => ResizablePMCArray (size:1) [
+                PMC 'POST;Register'  {
+                    <declared> => 1
+                    <modifier> => "optional"
+                    <name> => "argv"
+                    <type> => "p"
+                }
+            ]
+            <symtable> => Hash {
+                "argv" => \post["foo"][0]
             }
-        ]
-        <symtable> => Hash {
-            "argv" => \post[0]
         }
     }
+    [0] => \post["foo"]
 }
 RESULT
 
@@ -52,24 +58,27 @@ test_post( ":named", <<'CODE', <<'RESULT');
     .param pmc argv :named
 .end
 CODE
-"post" => PMC 'POST;Node'  {
+"post" => PMC 'POST;File'  {
     <main_sub> => "main"
-    [0] => PMC 'POST;Sub'  {
-        <name> => "foo"
-        <params> => ResizablePMCArray (size:1) [
-            PMC 'POST;Register'  {
-                <declared> => 1
-                <modifier> => Hash {
-                    "named" => null
+    <subs> => Hash {
+        "foo" => PMC 'POST;Sub'  {
+            <name> => "foo"
+            <params> => ResizablePMCArray (size:1) [
+                PMC 'POST;Register'  {
+                    <declared> => 1
+                    <modifier> => Hash {
+                        "named" => null
+                    }
+                    <name> => "argv"
+                    <type> => "p"
                 }
-                <name> => "argv"
-                <type> => "p"
+            ]
+            <symtable> => Hash {
+                "argv" => \post["foo"][0]
             }
-        ]
-        <symtable> => Hash {
-            "argv" => \post[0]
         }
     }
+    [0] => \post["foo"]
 }
 RESULT
 
@@ -78,24 +87,27 @@ test_post( ":named(bar)", <<'CODE', <<'RESULT');
     .param pmc argv :named("bar")
 .end
 CODE
-"post" => PMC 'POST;Node'  {
+"post" => PMC 'POST;File'  {
     <main_sub> => "main"
-    [0] => PMC 'POST;Sub'  {
-        <name> => "foo"
-        <params> => ResizablePMCArray (size:1) [
-            PMC 'POST;Register'  {
-                <declared> => 1
-                <modifier> => Hash {
-                    "named" => "bar"
+    <subs> => Hash {
+        "foo" => PMC 'POST;Sub'  {
+            <name> => "foo"
+            <params> => ResizablePMCArray (size:1) [
+                PMC 'POST;Register'  {
+                    <declared> => 1
+                    <modifier> => Hash {
+                        "named" => "bar"
+                    }
+                    <name> => "argv"
+                    <type> => "p"
                 }
-                <name> => "argv"
-                <type> => "p"
+            ]
+            <symtable> => Hash {
+                "argv" => \post["foo"][0]
             }
-        ]
-        <symtable> => Hash {
-            "argv" => \post[0]
         }
     }
+    [0] => \post["foo"]
 }
 RESULT
 

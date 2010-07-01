@@ -6,6 +6,7 @@
 
 class PIR::Actions is HLL::Actions;
 
+has $!FILE;
 has $!BLOCK;
 has $!MAIN;
 
@@ -20,17 +21,22 @@ method TOP($/) {
     make $<top>.ast;
 }
 
-method top($/) {
-    my $past := POST::Node.new;
-    for $<compilation_unit> {
-        my $child := $_.ast;
-        $past.push($child) if $child;
+method top($/, $key?) {
+    if $key eq 'begin' {
+        $!FILE := POST::File.new;
     }
+    else {
+        my $past := $!FILE;
+        for $<compilation_unit> {
+            my $child := $_.ast;
+            $past.push($child) if $child;
+        }
 
-    # Remember :main sub.
-    $past<main_sub> := $!MAIN;
+        # Remember :main sub.
+        $past<main_sub> := $!MAIN;
 
-    make $past;
+        make $past;
+    }
 }
 
 method compilation_unit:sym<.HLL> ($/) {
@@ -41,13 +47,25 @@ method compilation_unit:sym<.namespace> ($/) {
     our $*NAMESPACE := $<namespace_key>[0] ?? $<namespace_key>[0].ast !! undef;
 }
 
-method newpad($/) { $!BLOCK := POST::Sub.new; }
+method newpad($/) {
+    $!BLOCK := POST::Sub.new;
+    $!BLOCK.hll($*HLL) if $*HLL;
+    $!BLOCK.namespace($*NAMESPACE) if $*NAMESPACE;
+}
 
 method compilation_unit:sym<sub> ($/) {
     my $name := $<subname>.ast;
     $!BLOCK.name( $name );
 
-    # TODO Handle modifiers.
+    # Handle modifiers.
+    if $<sub_modifier> {
+        for $<sub_modifier> {
+            my $name := $_<sym>;
+            $!BLOCK."$name"($_.ast // 1);
+        }
+    }
+
+
 
     # TODO Handle :main modifier
     $!MAIN := $name unless $!MAIN;
@@ -60,6 +78,9 @@ method compilation_unit:sym<sub> ($/) {
     }
 
     self.validate_labels($/, $!BLOCK);
+
+    # Store self in POST::File constants to be used during PBC emiting.
+    $!FILE.sub($name, $!BLOCK);
 
     make $!BLOCK;
 }
