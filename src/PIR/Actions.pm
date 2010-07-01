@@ -42,11 +42,11 @@ method top($/, $key?) {
 }
 
 method compilation_unit:sym<.HLL> ($/) {
-    our $*HLL := $<quote>.ast<value>;
+    $*HLL := $<quote>.ast<value>;
 }
 
 method compilation_unit:sym<.namespace> ($/) {
-    our $*NAMESPACE := $<namespace_key>[0] ?? $<namespace_key>[0].ast !! undef;
+    $*NAMESPACE := $<namespace_key>.ast;
 }
 
 method newpad($/) {
