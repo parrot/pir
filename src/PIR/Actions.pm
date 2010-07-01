@@ -85,6 +85,14 @@ method compilation_unit:sym<sub> ($/) {
     make $!BLOCK;
 }
 
+# Parametrized modifiers
+method sub_modifier:sym<nsentry>($/)    { $<string_constant>.ast }
+# TODO validate vtable name for existence
+method sub_modifier:sym<vtable>($/)     { $<string_constant>.ast }
+method sub_modifier:sym<outer>($/)      { $<subname>.ast }
+method sub_modifier:sym<subid>($/)      { $<string_constant>.ast }
+#token sub_modifier:sym<multi>      { ':' <sym> '(' [ [<.ws><multi_type><.ws>] ** ',' ]? ')' }
+
 method compilation_unit:sym<.include>($/) {
     my $past := POST::Node.new;
     for $<quote><compilation_unit> {
