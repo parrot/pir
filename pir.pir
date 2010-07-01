@@ -43,9 +43,10 @@
 
     .local pmc stages
     # We actually create POST tree from Parse.
-    stages = split ' ', 'parse post eliminate_constant_conditional pbc'
+    stages = split ' ', 'parse post pbc'
     $P0 = compreg 'PIRATE'
     $P0.'stages'(stages)
+    $P0.'addstage'('eliminate_constant_conditional', 'before'=>'pbc')
     $P0.'command_line'(args)
     exit 0
 .end
