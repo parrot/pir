@@ -112,6 +112,8 @@ our multi method nsentry($val) { self<nsentry> := $val }
 our multi method vtable()     { self<vtable>; }
 our multi method vtable($val) { self<vtable> := $val; $val }
 
+our method set_flag($name, $val) { self{$name} := $val; $val }
+
 =end
 
 our method full_name() {

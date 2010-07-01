@@ -63,7 +63,7 @@ method compilation_unit:sym<sub> ($/) {
     if $<sub_modifier> {
         for $<sub_modifier> {
             my $name := $_<sym>;
-            $!BLOCK."$name"($_.ast // 1);
+            $!BLOCK.set_flag($name, $_.ast // 1);
         }
     }
 
