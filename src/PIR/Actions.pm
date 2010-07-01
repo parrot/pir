@@ -33,7 +33,9 @@ method top($/, $key?) {
         }
 
         # Remember :main sub.
-        $past<main_sub> := $!MAIN;
+        # XXX I'm too lazy to fix _ALL_ post test on storing $!MAIN as $!BLOCK.
+        # XXX Sub.name isn't sufficient because of namespaces.
+        $past<main_sub> := $!MAIN.name if $!MAIN;
 
         make $past;
     }
@@ -65,10 +67,8 @@ method compilation_unit:sym<sub> ($/) {
         }
     }
 
-
-
-    # TODO Handle :main modifier
-    $!MAIN := $name unless $!MAIN;
+    # Handle :main modifier
+    $!MAIN := $!BLOCK unless $!MAIN && $!MAIN.main;
 
     if $<statement> {
         for $<statement> {
