@@ -516,7 +516,7 @@ CODE
                 }
                 [1] => PMC 'POST;Constant'  {
                     <type> => "ic"
-                    <value> => "1"
+                    <value> => 1
                 }
             }
             [1] => PMC 'POST;Op'  {
@@ -557,7 +557,7 @@ CODE
                 }
                 [1] => PMC 'POST;Constant'  {
                     <type> => "nc"
-                    <value> => "1.5"
+                    <value> => 1.5
                 }
             }
             [1] => PMC 'POST;Op'  {
@@ -598,7 +598,7 @@ CODE
                 }
                 [1] => PMC 'POST;Constant'  {
                     <type> => "nc"
-                    <value> => "1.5"
+                    <value> => 1.5
                 }
             }
             [1] => PMC 'POST;Op'  {
@@ -615,7 +615,7 @@ CODE
 RESULT
 test_post("mul_n_nc_nc", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
 .sub main :main
-    $N0 = 3.0 * 2.0
+    $N0 = 3.0 / 2.0
     say $N0
 .end
 CODE
@@ -639,7 +639,7 @@ CODE
                 }
                 [1] => PMC 'POST;Constant'  {
                     <type> => "nc"
-                    <value> => "1.5"
+                    <value> => 1.5
                 }
             }
             [1] => PMC 'POST;Op'  {

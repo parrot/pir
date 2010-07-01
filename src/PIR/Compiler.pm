@@ -100,7 +100,7 @@ our method eliminate_constant_conditional ($post, *%adverbs) {
 }
 
 method fold_arithmetic($post) {
-    my $foldable_ops := / add | sub | mul /;
+    my $foldable_ops := / add | sub | mul | div /;
     my $non_pmc := / ic | nc /;
     my $pattern :=
         POST::Pattern::Op.new(:pirop($foldable_ops),
@@ -115,6 +115,11 @@ method fold_arithmetic($post) {
                              }),
                          :mul(sub ($l, $r, $result_type) {
                                   pir::mul__PPP($l, $r);
+                             }),
+                         :div(sub ($l, $r, $result_type) {
+                                  $result_type eq 'nc' ??
+                                  pir::div__NNN($l, $r) !!
+                                  pir::div__III($l, $r);
                              }));
 
     my &fold := sub ($/) {
