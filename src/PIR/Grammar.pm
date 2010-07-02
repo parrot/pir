@@ -486,7 +486,7 @@ token typed_string{
 
 token encoding {
     [
-    | 'fixed_8' | 'ucs2' | 'utf8' | 'utf16'
+    | 'fixed_8' | 'ucs2' | 'ucs4' | 'utf8' | 'utf16'
     ]
 }
 
