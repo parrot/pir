@@ -117,6 +117,11 @@ our multi method to_pbc(POST::Sub $sub, %context) {
         :n_regs_used(@n_regs_used),
     );
 
+    if pir::defined__ip($sub.namespace) {
+        my $nskey := $sub.namespace.to_pmc(%context<constants>);
+        %sub<namespace_name>  := $nskey;
+    }
+
     # and store it in PackfileConstantTable
     # We can have pre-allocated constant for this sub already.
     # XXX Use .namespace for generating full name!
@@ -282,7 +287,10 @@ our multi method to_pbc(POST::Call $call, %context) {
             if $call.name.isa(POST::Constant) {
                 # Constant string. E.g. "foo"()
                 # Avoid find_sub_not_null when Sub is constant.
-                my $invocable_sub := %context<pir_file>.sub($call<name><value>);
+                my $full_name;
+                $full_name := %context<sub>.namespace.Str if %context<sub>.namespace;
+                $full_name := ~$full_name ~ ~$call<name><value>;
+                my $invocable_sub := %context<pir_file>.sub($full_name);
                 self.debug("invocable_sub $invocable_sub") if $DEBUG;
                 if $invocable_sub {
                     my $idx := $invocable_sub.constant_index;
@@ -478,7 +486,7 @@ our method create_context($past) {
 our method enumerate_subs(POST::File $post) {
     for @($post) -> $sub {
         # XXX Should we emit warning on duplicates?
-        $post.sub($sub.name, $sub);
+        $post.sub($sub.full_name, $sub);
     }
 }
 
