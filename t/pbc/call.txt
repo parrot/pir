@@ -223,6 +223,25 @@ CODE
 Answer is 42
 RESULT
 
+# Testing that constant sub handled properly.
+test_post( "Constan Sub from different namespace", <<'CODE', <<'RESULT');
+.namespace ['Foo']
+.sub "main"
+    "hello"()
+.end
+
+.sub "hello"
+    say "Answer is 42"
+.end
+
+.namespace ['Bar']
+.sub "hello"
+    say "You are doing it wrong"
+.end
+
+CODE
+Answer is 42
+RESULT
 
 
 # vim: ft=perl

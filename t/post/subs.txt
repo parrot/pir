@@ -23,7 +23,7 @@ CODE
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
-            <name> => "main"
+            <name> => \post
             [0] => PMC 'POST;Op'  {
                 <pirop> => "say"
                 [0] => PMC 'POST;String'  {
@@ -51,7 +51,7 @@ CODE
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
-            <name> => "main"
+            <name> => \post
             <params> => ResizablePMCArray (size:4) [
                 PMC 'POST;Register'  {
                     <declared> => 1
@@ -104,7 +104,7 @@ CODE
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
-            <name> => "main"
+            <name> => \post
             <params> => ResizablePMCArray (size:1) [
                 PMC 'POST;Register'  {
                     <declared> => 1
@@ -137,7 +137,7 @@ CODE
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
-            <name> => "main"
+            <name> => \post
             <symtable> => Hash {
                 "a" => PMC 'POST;Register'  {
                     <declared> => 1
@@ -166,6 +166,103 @@ test_post( "Redeclaration of variable", <<'CODE', <<'RESULT', "fail_like" => "Re
 .end
 CODE
 dummy
+RESULT
+
+
+test_post( "Choosing :main sub", <<'CODE', <<'RESULT');
+.sub "hello"
+    .param string greeting
+    say greeting
+.end
+
+.sub "main" :main
+    "hello"("Hello, World")
+.end
+CODE
+"post" => PMC 'POST;File'  {
+    <main_sub> => "main"
+    <subs> => Hash {
+        "hello" => PMC 'POST;Sub'  {
+            <name> => "hello"
+            <params> => ResizablePMCArray (size:1) [
+                PMC 'POST;Register'  {
+                    <declared> => 1
+                    <name> => "greeting"
+                    <type> => "s"
+                }
+            ]
+            <symtable> => Hash {
+                "greeting" => \post["hello"][0]
+            }
+            [0] => PMC 'POST;Op'  {
+                <pirop> => "say"
+                [0] => PMC 'POST;Value'  {
+                    <name> => "greeting"
+                }
+            }
+        },
+        "main" => PMC 'POST;Sub'  {
+            <main> => 1
+            <name> => \post
+            <symtable> => Hash {
+                "!SUB" => PMC 'POST;Register'  {
+                    <name> => "!SUB"
+                    <type> => "p"
+                }
+            }
+            [0] => PMC 'POST;Call'  {
+                <calltype> => "call"
+                <name> => PMC 'POST;String'  {
+                    <charset> => "ascii"
+                    <encoding> => "fixed_8"
+                    <type> => "sc"
+                    <value> => "hello"
+                }
+                <params> => ResizablePMCArray (size:1) [
+                    PMC 'POST;String'  {
+                        <charset> => "ascii"
+                        <encoding> => "fixed_8"
+                        <type> => "sc"
+                        <value> => "Hello, World"
+                    }
+                ]
+            }
+        }
+    }
+    [0] => \post["hello"]
+    [1] => \post["main"]
+}
+RESULT
+
+test_post( ".namespace handling", <<'CODE', <<'RESULT');
+.namespace ['Foo';'Bar']
+.sub "main"
+.end
+CODE
+"post" => PMC 'POST;File'  {
+    <main_sub> => "main"
+    <subs> => Hash {
+        "main" => PMC 'POST;Sub'  {
+            <name> => "main"
+            <namespace> => PMC 'POST;Key'  {
+                <type> => "pc"
+                [0] => PMC 'POST;String'  {
+                    <charset> => "ascii"
+                    <encoding> => "fixed_8"
+                    <type> => "sc"
+                    <value> => "Foo"
+                }
+                [1] => PMC 'POST;String'  {
+                    <charset> => "ascii"
+                    <encoding> => "fixed_8"
+                    <type> => "sc"
+                    <value> => "Bar"
+                }
+            }
+        }
+    }
+    [0] => \post["main"]
+}
 RESULT
 
 

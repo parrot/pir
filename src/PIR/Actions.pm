@@ -33,18 +33,20 @@ method top($/, $key?) {
         }
 
         # Remember :main sub.
-        $past<main_sub> := $!MAIN;
+        # XXX I'm too lazy to fix _ALL_ post test on storing $!MAIN as $!BLOCK.
+        # XXX Sub.name isn't sufficient because of namespaces.
+        $past<main_sub> := $!MAIN.name if $!MAIN;
 
         make $past;
     }
 }
 
 method compilation_unit:sym<.HLL> ($/) {
-    our $*HLL := $<quote>.ast<value>;
+    $*HLL := $<quote>.ast<value>;
 }
 
 method compilation_unit:sym<.namespace> ($/) {
-    our $*NAMESPACE := $<namespace_key>[0] ?? $<namespace_key>[0].ast !! undef;
+    $*NAMESPACE := $<namespace_key>.ast;
 }
 
 method newpad($/) {
@@ -61,14 +63,12 @@ method compilation_unit:sym<sub> ($/) {
     if $<sub_modifier> {
         for $<sub_modifier> {
             my $name := $_<sym>;
-            $!BLOCK."$name"($_.ast // 1);
+            $!BLOCK.set_flag($name, $_.ast // 1);
         }
     }
 
-
-
-    # TODO Handle :main modifier
-    $!MAIN := $name unless $!MAIN;
+    # Handle :main modifier
+    $!MAIN := $!BLOCK unless $!MAIN && $!MAIN.main;
 
     if $<statement> {
         for $<statement> {
@@ -84,6 +84,14 @@ method compilation_unit:sym<sub> ($/) {
 
     make $!BLOCK;
 }
+
+# Parametrized modifiers
+method sub_modifier:sym<nsentry>($/)    { $<string_constant>.ast }
+# TODO validate vtable name for existence
+method sub_modifier:sym<vtable>($/)     { $<string_constant>.ast }
+method sub_modifier:sym<outer>($/)      { $<subname>.ast }
+method sub_modifier:sym<subid>($/)      { $<string_constant>.ast }
+#token sub_modifier:sym<multi>      { ':' <sym> '(' [ [<.ws><multi_type><.ws>] ** ',' ]? ')' }
 
 method compilation_unit:sym<.include>($/) {
     my $past := POST::Node.new;

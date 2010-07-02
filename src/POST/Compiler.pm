@@ -117,6 +117,11 @@ our multi method to_pbc(POST::Sub $sub, %context) {
         :n_regs_used(@n_regs_used),
     );
 
+    if pir::defined__ip($sub.namespace) {
+        my $nskey := $sub.namespace.to_pmc(%context<constants>);
+        %sub<namespace_name>  := $nskey;
+    }
+
     # and store it in PackfileConstantTable
     # We can have pre-allocated constant for this sub already.
     # XXX Use .namespace for generating full name!
@@ -164,30 +169,7 @@ our multi method to_pbc(POST::Op $op, %context) {
 
 our multi method to_pbc(POST::Key $key, %context) {
 
-    my $key_pmc;
-
-    for @($key) {
-        my $k := pir::new__ps('Key');
-
-        if $_.type eq 'sc' {
-            $k.set_str(~$_.value);
-            %context<constants>.get_or_create_string($_.value);
-            self.debug("added {$_.value} to const table at idx $idx");
-        }
-        elsif $_.type eq 'ic' {
-            $k.set_int(+$_.value);
-        }
-        else {
-            pir::die("unknown key type: {$_.type}");
-        }
-
-        if !pir::defined__ip($key_pmc) {
-            $key_pmc := $k;
-        }
-        else {
-            $key_pmc.push($k);
-        }
-    }
+    my $key_pmc := $key.to_pmc(%context<constants>);
 
     # XXX PackfileConstantTable can't Keys equivalense it. So just push it.
     my $idx := %context<constants>.push($key_pmc);
@@ -305,7 +287,10 @@ our multi method to_pbc(POST::Call $call, %context) {
             if $call.name.isa(POST::Constant) {
                 # Constant string. E.g. "foo"()
                 # Avoid find_sub_not_null when Sub is constant.
-                my $invocable_sub := %context<pir_file>.sub($call<name><value>);
+                my $full_name;
+                $full_name := %context<sub>.namespace.Str if %context<sub>.namespace;
+                $full_name := ~$full_name ~ ~$call<name><value>;
+                my $invocable_sub := %context<pir_file>.sub($full_name);
                 self.debug("invocable_sub $invocable_sub") if $DEBUG;
                 if $invocable_sub {
                     my $idx := $invocable_sub.constant_index;
@@ -501,7 +486,7 @@ our method create_context($past) {
 our method enumerate_subs(POST::File $post) {
     for @($post) -> $sub {
         # XXX Should we emit warning on duplicates?
-        $post.sub($sub.name, $sub);
+        $post.sub($sub.full_name, $sub);
     }
 }
 
