@@ -106,7 +106,7 @@ our multi method lex()        { self<lex> // 0 }
 our multi method lex($val)    { self<lex> := ?$val }
 
 
-our multi method nsentry()     { self<nsentry> // 0 }
+our multi method nsentry()     { self<nsentry> }
 our multi method nsentry($val) { self<nsentry> := $val }
 
 our multi method vtable()     { self<vtable> // -1 }
