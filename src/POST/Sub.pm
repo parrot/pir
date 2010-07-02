@@ -81,35 +81,35 @@ Various sub modifiers.
 =item C<subid>
 Declared in "old" POST.
 
-our multi method main()     { self<main>; }
+our multi method main()     { self<main> // 0 }
 our multi method main($val) { self<main> := ?$val }
 
-our multi method init()     { self<init>; }
+our multi method init()     { self<init> // 0 }
 our multi method init($val) { self<init> := ?$val }
 
-our multi method load()     { self<load>; }
+our multi method load()     { self<load> // 0 }
 our multi method load($val) { self<load> := ?$val }
 
-our multi method immediate()     { self<immediate>; }
+our multi method immediate()     { self<immediate> // 0 }
 our multi method immediate($val) { self<immediate> := ?$val }
 
-our multi method postcomp()     { self<postcomp>; }
+our multi method postcomp()     { self<postcomp> // 0 }
 our multi method postcomp($val) { self<postcomp> := ?$val }
 
-our multi method anon()     { self<anon>; }
+our multi method anon()     { self<anon> // 0 }
 our multi method anon($val) { self<anon> := ?$val }
 
-our multi method method()     { self<method>; }
+our multi method method()     { self<method> // 0 }
 our multi method method($val) { self<method> := ?$val }
 
-our multi method lex()        { self<lex>; }
+our multi method lex()        { self<lex> // 0 }
 our multi method lex($val)    { self<lex> := ?$val }
 
 
-our multi method nsentry()     { self<nsentry>; }
+our multi method nsentry()     { self<nsentry> // 0 }
 our multi method nsentry($val) { self<nsentry> := $val }
 
-our multi method vtable()     { self<vtable>; }
+our multi method vtable()     { self<vtable> // -1 }
 our multi method vtable($val) { self<vtable> := $val; $val }
 
 our method set_flag($name, $val) { self{$name} := $val; $val }
