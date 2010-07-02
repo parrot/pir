@@ -721,7 +721,7 @@ CODE
                 }
                 [1] => PMC 'POST;Constant'  {
                     <type> => "nc"
-                    <value> => 1.5
+                    <value> => 1
                 }
             }
             [1] => PMC 'POST;Op'  {
@@ -762,7 +762,7 @@ CODE
                 }
                 [1] => PMC 'POST;Constant'  {
                     <type> => "nc"
-                    <value> => 1.5
+                    <value> => 1
                 }
             }
             [1] => PMC 'POST;Op'  {
@@ -803,7 +803,7 @@ CODE
                 }
                 [1] => PMC 'POST;Constant'  {
                     <type> => "nc"
-                    <value> => 1.5
+                    <value> => 1
                 }
             }
             [1] => PMC 'POST;Op'  {
