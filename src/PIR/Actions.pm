@@ -35,7 +35,7 @@ method top($/, $key?) {
         # Remember :main sub.
         # XXX I'm too lazy to fix _ALL_ post test on storing $!MAIN as $!BLOCK.
         # XXX Sub.name isn't sufficient because of namespaces.
-        $past<main_sub> := $!MAIN.full_name if $!MAIN;
+        $past<main_sub> := $!MAIN.name if $!MAIN;
 
         make $past;
     }
