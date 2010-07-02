@@ -164,30 +164,7 @@ our multi method to_pbc(POST::Op $op, %context) {
 
 our multi method to_pbc(POST::Key $key, %context) {
 
-    my $key_pmc;
-
-    for @($key) {
-        my $k := pir::new__ps('Key');
-
-        if $_.type eq 'sc' {
-            $k.set_str(~$_.value);
-            %context<constants>.get_or_create_string($_.value);
-            self.debug("added {$_.value} to const table at idx $idx");
-        }
-        elsif $_.type eq 'ic' {
-            $k.set_int(+$_.value);
-        }
-        else {
-            pir::die("unknown key type: {$_.type}");
-        }
-
-        if !pir::defined__ip($key_pmc) {
-            $key_pmc := $k;
-        }
-        else {
-            $key_pmc.push($k);
-        }
-    }
+    my $key_pmc := $key.to_pmc(%context<constants>);
 
     # XXX PackfileConstantTable can't Keys equivalense it. So just push it.
     my $idx := %context<constants>.push($key_pmc);
