@@ -49,6 +49,15 @@ method compilation_unit:sym<.namespace> ($/) {
     $*NAMESPACE := $<namespace_key>.ast;
 }
 
+method compilation_unit:sym<.loadlib>($/) {
+    # We have to load it right now because of dynops semantic.
+    my $name    := $<quote>.ast<value>;
+    my $library := pir::loadlib__ps($name);
+    pir::die("Can't load $name") unless $library;
+
+    # XXX We have to call Parrot_register_HLL_lib here. Maybe create dynop for it.
+}
+
 method newpad($/) {
     $!BLOCK := POST::Sub.new;
     $!BLOCK.hll($*HLL) if $*HLL;
