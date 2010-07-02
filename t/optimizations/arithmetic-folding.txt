@@ -531,7 +531,7 @@ CODE
     [0] => \fold_arithmetic["main"]
 }
 RESULT
-test_post("mul_n_nc_ic", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("div_n_nc_ic", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
 .sub main :main
     $N0 = 3.0 / 2
     say $N0
@@ -572,7 +572,7 @@ CODE
     [0] => \fold_arithmetic["main"]
 }
 RESULT
-test_post("mul_n_ic_nc", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("div_n_ic_nc", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
 .sub main :main
     $N0 = 3 / 2.0
     say $N0
@@ -613,7 +613,7 @@ CODE
     [0] => \fold_arithmetic["main"]
 }
 RESULT
-test_post("mul_n_nc_nc", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("div_n_nc_nc", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
 .sub main :main
     $N0 = 3.0 / 2.0
     say $N0
