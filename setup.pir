@@ -52,6 +52,11 @@ No Configure step, no Makefile generated.
 
     $P0['pir_nqp'] = $P1
 
+    # Dynops
+    $P1 = new 'Hash'
+    $P1['pirate_ops'] = 'src/dynops/pirate.ops'
+    $P0['dynops'] = $P1
+
     $P3 = new 'Hash'
     $P4 = split "\n", <<'SOURCES'
 pir.pir

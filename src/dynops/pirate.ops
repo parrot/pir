@@ -1,0 +1,4 @@
+# Required for registering .loadlib "some_ops"
+op register_hll_lib(in STR) {
+    Parrot_register_HLL_lib(interp, $1);
+}

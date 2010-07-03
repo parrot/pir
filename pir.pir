@@ -5,6 +5,8 @@
 
 .namespace []
 
+.loadlib 'pirate_ops'
+
 .sub '' :anon :load :init
     load_bytecode 'HLL.pbc'
     load_bytecode 'nqp-setting.pbc'
