@@ -77,7 +77,7 @@ method compilation_unit:sym<sub> ($/) {
     }
 
     # Handle :main modifier
-    $!MAIN := $!BLOCK unless $!MAIN && $!MAIN.main;
+    $!MAIN := $!BLOCK if !$!MAIN || ($!BLOCK.main && !$!MAIN.main);
 
     if $<statement> {
         for $<statement> {
