@@ -64,7 +64,7 @@ our multi method to_pbc(POST::Sub $sub, %context) {
     # Allocate registers.
     my @n_regs_used := $REGALLOC.process($sub);
     self.debug('n_regs_used ' ~ @n_regs_used.join('-')) if $DEBUG;
-    self.dumper($sub.symtable, "regs") if $DEBUG;
+    self.dumper($sub, "sub") if $DEBUG;
 
     my $bc := %context<bytecode>;
 
@@ -116,6 +116,9 @@ our multi method to_pbc(POST::Sub $sub, %context) {
         :method( $sub.method ),
 
         :n_regs_used(@n_regs_used),
+
+        :pf_flags(self.create_sub_pf_flags($sub)),
+        :comp_flags(self.create_sub_comp_flags($sub)),
     );
 
     if pir::defined__ip($sub.namespace) {
@@ -496,6 +499,44 @@ our method enumerate_subs(POST::File $post) {
         # XXX Should we emit warning on duplicates?
         $post.sub($sub.full_name, $sub);
     }
+}
+
+# Declare as multi to get "static" typecheck.
+our multi method create_sub_pf_flags(POST::Sub $sub) {
+    # This constants aren't exposed. So keep reference here.
+    # SUB_FLAG_IS_OUTER     = PObj_private1_FLAG == 0x01
+    # SUB_FLAG_PF_ANON      = PObj_private3_FLAG == 0x08
+    # SUB_FLAG_PF_MAIN      = PObj_private4_FLAG == 0x10
+    # SUB_FLAG_PF_LOAD      = PObj_private5_FLAG == 0x20
+    # SUB_FLAG_PF_IMMEDIATE = PObj_private6_FLAG == 0x40
+    # SUB_FLAG_PF_POSTCOMP  = PObj_private7_FLAG == 0x80
+    my $res := 0;
+    $res := $res + 0x01 * $sub.outer;
+    $res := $res + 0x08 * $sub.anon;
+    $res := $res + 0x10 * $sub.main;
+    $res := $res + 0x20 * $sub.load;
+    $res := $res + 0x40 * $sub.immediate;
+    $res := $res + 0x80 * $sub.postcomp;
+
+    self.debug("pf_flags $res") if $DEBUG;
+
+    $res;
+}
+
+our multi method create_sub_comp_flags(POST::Sub $sub) {
+    #    SUB_COMP_FLAG_VTABLE    = SUB_COMP_FLAG_BIT_1   == 0x01
+    #    SUB_COMP_FLAG_METHOD    = SUB_COMP_FLAG_BIT_2   == 0x02
+    #    SUB_COMP_FLAG_PF_INIT   = SUB_COMP_FLAG_BIT_10  == 0x400
+    #    SUB_COMP_FLAG_NSENTRY   = SUB_COMP_FLAG_BIT_11  == 0x800
+    my $res := 0;
+    $res := $res + 0x001 if $sub.vtable;
+    $res := $res + 0x002 if $sub.method;
+    $res := $res + 0x400 if $sub.is_init;
+    $res := $res + 0x800 if $sub.nsentry;  # XXX Check when to set ns_entry_name in .to_pbc!
+
+    self.debug("comp_flags $res") if $DEBUG;
+
+    $res;
 }
 
 our method fixup_labels($sub, $labels_todo, $bc) {

@@ -1,10 +1,13 @@
 # It's not real "perl"! It just looks like it.
-test_post( ":init", <<'CODE', <<'RESULT');
+
+# Basically, PIRATE can't handle :init... We have no ability to create Sub in
+# runtime and attach it to current interp.
+test_post( ":init :load", <<'CODE', <<'RESULT');
 .sub "main"
     say "main"
 .end
 
-.sub "hello" :init
+.sub "hello" :init :load
     say "hello :init"
 .end
 CODE
