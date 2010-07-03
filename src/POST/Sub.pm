@@ -84,8 +84,9 @@ Declared in "old" POST.
 our multi method main()     { self<main> // 0 }
 our multi method main($val) { self<main> := ?$val }
 
-our multi method init()     { self<init> // 0 }
-our multi method init($val) { self<init> := ?$val }
+# XXX Conflict with PCT::Node.init.
+our multi method is_init()     { self<init> // 0 }
+our multi method is_init($val) { self<init> := ?$val }
 
 our multi method load()     { self<load> // 0 }
 our multi method load($val) { self<load> := ?$val }
