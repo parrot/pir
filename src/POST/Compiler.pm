@@ -50,7 +50,7 @@ method pbc($post, %adverbs) {
 # Emiting pbc
 
 our multi method to_pbc($what, %context) {
-    pir::die($what.WHAT);
+    self.panic($what.WHAT);
 }
 
 our multi method to_pbc(Undef $what, %context) {
@@ -187,7 +187,7 @@ our multi method to_pbc(POST::Constant $op, %context) {
         $idx := %context<constants>.get_or_create_number($op.value);
     }
     else {
-        pir::die("NYI");
+        self.panic("NYI");
     }
 
     self.debug("Index $idx") if $DEBUG;
@@ -198,7 +198,7 @@ our multi method to_pbc(POST::String $str, %context) {
     my $idx;
     my $type := $str.type;
     if $type ne 'sc' {
-        pir::die("attempt to pass a non-sc value off as a string");
+        self.panic("attempt to pass a non-sc value off as a string");
     }
     if $str.encoding eq 'fixed_8' && $str.charset eq 'ascii' {
         $idx := %context<constants>.get_or_create_string($str.value);
@@ -269,6 +269,7 @@ our multi method to_pbc(POST::Call $call, %context) {
 
     if $calltype eq 'call' || $calltype eq 'tailcall' {
         if $call.invocant {
+            $call<params> := list() unless $call<params>;
             $call<params>.unshift($call.invocant);
         }
 
@@ -283,7 +284,7 @@ our multi method to_pbc(POST::Call $call, %context) {
                 self.to_pbc($call.name, %context);
             }
             else {
-                pir::die('NYI $P0.$S0()');
+                self.panic('NYI $P0.$S0()');
             }
         }
         else {
@@ -341,7 +342,7 @@ our multi method to_pbc(POST::Call $call, %context) {
         $bc.push($OPLIB<returncc>);
     }
     else {
-        pir::die("NYI { $calltype }");
+        self.panic("NYI { $calltype }");
     }
 }
 
@@ -422,7 +423,7 @@ our method build_single_arg($arg, %context) {
     elsif $type eq 'sc' { $res := 1 + 0x10 }
     elsif $type eq 'pc' { $res := 2 + 0x10 }
     elsif $type eq 'nc' { $res := 3 + 0x10 }
-    else  { pir::die("Unknown arg type '$type'") }
+    else  { self.panic("Unknown arg type '$type'") }
 
     my $mod := $arg.modifier;
     if $mod {
@@ -436,7 +437,7 @@ our method build_single_arg($arg, %context) {
         elsif $mod eq 'optional'        { $res := $res + 0x80 }  # 7
         elsif $mod eq 'opt_flag'        { $res := $res + 0x100 } # 8
         elsif $mod eq 'slurpy named'    { $res := $res + 0x20 + 0x200 } # 5 + 9
-        else { pir::die("Unsupported modifier $mod"); }
+        else { self.panic("Unsupported modifier $mod"); }
     }
 
     $res;
