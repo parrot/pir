@@ -1,0 +1,15 @@
+# It's not real "perl"! It just looks like it.
+test_post( ":init", <<'CODE', <<'RESULT');
+.sub "main"
+    say "main"
+.end
+
+.sub "hello" :init
+    say "hello :init"
+.end
+CODE
+hello :init
+main
+RESULT
+
+# vim: ft=perl
