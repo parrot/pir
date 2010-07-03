@@ -23,7 +23,7 @@ CODE
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
-            <name> => \post
+            <name> => "main"
             [0] => PMC 'POST;Op'  {
                 <pirop> => "say"
                 [0] => PMC 'POST;String'  {
@@ -51,7 +51,7 @@ CODE
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
-            <name> => \post
+            <name> => "main"
             <params> => ResizablePMCArray (size:4) [
                 PMC 'POST;Register'  {
                     <declared> => 1
@@ -104,7 +104,7 @@ CODE
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
-            <name> => \post
+            <name> => "main"
             <params> => ResizablePMCArray (size:1) [
                 PMC 'POST;Register'  {
                     <declared> => 1
@@ -137,7 +137,7 @@ CODE
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
-            <name> => \post
+            <name> => "main"
             <symtable> => Hash {
                 "a" => PMC 'POST;Register'  {
                     <declared> => 1

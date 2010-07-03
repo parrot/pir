@@ -42,7 +42,7 @@ CODE
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
-            <name> => \post
+            <name> => "main"
             <symtable> => Hash {
                 "$I0" => PMC 'POST;Register'  {
                     <name> => "$I0"
@@ -73,7 +73,7 @@ CODE
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
-            <name> => \post
+            <name> => "main"
             <symtable> => Hash {
                 "$I0" => PMC 'POST;Register'  {
                     <name> => "$I0"
@@ -119,7 +119,7 @@ CODE
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
-            <name> => \post
+            <name> => "main"
             <symtable> => Hash {
                 "h" => PMC 'POST;Register'  {
                     <declared> => 1

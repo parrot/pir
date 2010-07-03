@@ -38,7 +38,7 @@ CODE
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
-            <name> => \post
+            <name> => "main"
             <symtable> => Hash {
                 "!SUB" => PMC 'POST;Register'  {
                     <name> => "!SUB"
@@ -89,7 +89,7 @@ CODE
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
-            <name> => \post
+            <name> => "main"
             <symtable> => Hash {
                 "!SUB" => PMC 'POST;Register'  {
                     <name> => "!SUB"
@@ -139,7 +139,7 @@ CODE
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
-            <name> => \post
+            <name> => "main"
             <symtable> => Hash {
                 "!SUB" => PMC 'POST;Register'  {
                     <name> => "!SUB"
@@ -196,7 +196,7 @@ CODE
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
-            <name> => \post
+            <name> => "main"
             <symtable> => Hash {
                 "$P0" => PMC 'POST;Register'  {
                     <name> => "$P0"
@@ -232,7 +232,7 @@ CODE
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
-            <name> => \post
+            <name> => "main"
             <symtable> => Hash {
                 "$P0" => PMC 'POST;Register'  {
                     <name> => "$P0"
@@ -267,7 +267,7 @@ CODE
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
-            <name> => \post
+            <name> => "main"
             <symtable> => Hash {
                 "$P0" => PMC 'POST;Register'  {
                     <name> => "$P0"
@@ -300,7 +300,7 @@ CODE
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
-            <name> => \post
+            <name> => "main"
             <symtable> => Hash {
                 "!SUB" => PMC 'POST;Register'  {
                     <name> => "!SUB"
@@ -332,7 +332,7 @@ CODE
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
-            <name> => \post
+            <name> => "main"
             [0] => PMC 'POST;Call'  {
                 <calltype> => "return"
                 <params> => ResizablePMCArray (size:2) [
@@ -364,7 +364,7 @@ CODE
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
-            <name> => \post
+            <name> => "main"
             [0] => PMC 'POST;Call'  {
                 <calltype> => "yield"
                 <params> => ResizablePMCArray (size:2) [
