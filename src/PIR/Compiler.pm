@@ -147,7 +147,7 @@ method fold_arithmetic($post) {
     
     $post := $binary_pattern.transform($post, &binary_fold);
 
-    my $foldable_unary := / abs | neg /;
+    my $foldable_unary := / abs | neg | sqrt /;
     my $unary_pattern :=
         POST::Pattern::Op.new(:pirop($foldable_unary),
                               POST::Pattern::Value.new,
@@ -159,10 +159,15 @@ method fold_arithmetic($post) {
                  }),
              :neg(sub ($n) {
                       pir::abs__NN($n);
-                 }));
+                 }),
+             :sqrt(sub ($n) {
+                      pir::sqrt__NN($n);
+                  }));
 
     my &unary_fold := sub ($/) {
        my $op := $/.orig.pirop;
+       return $/.orig if $op eq 'sqrt' && $/[1].orig.type eq 'ic';
+
        my $val := %unary_funcs{$/.orig.pirop}($/[1].orig.value);
        POST::Op.new(:pirop<set>,
                     $/[0].orig,
