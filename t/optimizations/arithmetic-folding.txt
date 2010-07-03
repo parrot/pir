@@ -1310,7 +1310,7 @@ CODE
     [0] => \fold_arithmetic["main"]
 }
 RESULT
-test_post("neg_n_ic", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("ceil_n_ic", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
 .sub main :main
     $N0 = ceil 2
     say $N0
@@ -1351,7 +1351,7 @@ CODE
     [0] => \fold_arithmetic["main"]
 }
 RESULT
-test_post("neg_n_nc", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("ceil_n_nc", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
 .sub main :main
     $N0 = ceil 1.5
     say $N0
