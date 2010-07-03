@@ -997,14 +997,14 @@ CODE
             <symtable> => Hash {
                 "$I0" => PMC 'POST;Register'  {
                     <name> => "$I0"
-                    <type> => "I"
+                    <type> => "i"
                 }
             }
             [0] => PMC 'POST;Op'  {
                 <pirop> => "set"
                 [0] => PMC 'POST;Value'  {
                     <name> => "$I0"
-                    <type> => "I"
+                    <type> => "i"
                 }
                 [1] => PMC 'POST;Constant'  {
                     <type> => "ic"

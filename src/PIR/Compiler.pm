@@ -143,9 +143,31 @@ method fold_arithmetic($post) {
                      $/[0].orig,
                      POST::Constant.new(:value($val),
                                         :type($result_type)));
-    }
+    };
     
-    $binary_pattern.transform($post, &binary_fold);
+    $post := $binary_pattern.transform($post, &binary_fold);
+
+    my $foldable_unary := / abs /;
+    my $unary_pattern :=
+        POST::Pattern::Op.new(:pirop($foldable_unary),
+                              POST::Pattern::Value.new,
+                              POST::Pattern::Constant.new(:type($non_pmc)));
+
+    my %unary_funcs :=
+        hash(:abs(sub ($n) {
+                      pir::abs__NN($n);
+                 }));
+
+    my &unary_fold := sub ($/) {
+       my $op := $/.orig.pirop;
+       my $val := %unary_funcs{$/.orig.pirop}($/[1].orig.value);
+       POST::Op.new(:pirop<set>,
+                    $/[0].orig,
+                    POST::Constant.new(:type($/[1].orig.type),
+                                       :value($val)));
+    };
+
+    $unary_pattern.transform($post, &unary_fold);
 }
 
 # vim: filetype=perl6:
