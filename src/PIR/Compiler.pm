@@ -100,49 +100,52 @@ our method eliminate_constant_conditional ($post, *%adverbs) {
 }
 
 method fold_arithmetic($post) {
-    my $foldable_ops := / add | sub | mul | div | fdiv | mod /;
+    my $foldable_binary := / add | sub | mul | div | fdiv | mod /;
     my $non_pmc := / ic | nc /;
-    my $pattern :=
-        POST::Pattern::Op.new(:pirop($foldable_ops),
+    my $binary_pattern :=
+        POST::Pattern::Op.new(:pirop($foldable_binary),
                               POST::Pattern::Value.new,
                               POST::Pattern::Constant.new(:type($non_pmc)),
                               POST::Pattern::Constant.new(:type($non_pmc)));
-    my %op_funcs := hash(:add(sub ($l, $r, $result_type) {
-                                  pir::add__PPP($l, $r);
-                              }),
-                         :sub(sub ($l, $r, $result_type) {
-                                  pir::sub__PPP($l, $r);
-                             }),
-                         :mul(sub ($l, $r, $result_type) {
-                                  pir::mul__PPP($l, $r);
-                             }),
-                         :div(sub ($l, $r, $result_type) {
-                                  $result_type eq 'nc' ??
-                                  pir::div__NNN($l, $r) !!
-                                  pir::div__III($l, $r);
-                             }),
-                         :fdiv(sub ($l, $r, $result_type) {
-                                  $result_type eq 'ic' ??
-                                  pir::fdiv__III($l, $r) !!
-                                  pir::fdiv__NNN($l, $r);
-                              }),
-                         :mod(sub ($l, $r, $result_type) {
-                                  pir::mod__NNN($l, $r);
-                             }));
-    my &fold := sub ($/) {
+    my %binary_funcs := 
+        hash(:add(sub ($l, $r, $result_type) {
+                    pir::add__PPP($l, $r);
+                  }),
+             :sub(sub ($l, $r, $result_type) {
+                    pir::sub__PPP($l, $r);
+                  }),
+             :mul(sub ($l, $r, $result_type) {
+                    pir::mul__PPP($l, $r);
+                  }),
+             :div(sub ($l, $r, $result_type) {
+                    $result_type eq 'nc' ??
+                    pir::div__NNN($l, $r) !!
+                    pir::div__III($l, $r);
+                  }),
+             :fdiv(sub ($l, $r, $result_type) {
+                    $result_type eq 'ic' ??
+                    pir::fdiv__III($l, $r) !!
+                    pir::fdiv__NNN($l, $r);
+                  }),
+             :mod(sub ($l, $r, $result_type) {
+                    pir::mod__NNN($l, $r);
+                  }));
+    my &binary_fold := sub ($/) {
         my $op := $/.orig.pirop;
         my $result_type := 
             ($/[1].orig.type eq 'nc' || $/[2].orig.type eq 'nc'
              ?? 'nc'
              !! 'ic');
-        my $val := %op_funcs{$op}($/[1].orig.value, $/[2].orig.value,
-                                  $result_type);
+        my $val := %binary_funcs{$op}($/[1].orig.value,
+                                      $/[2].orig.value,
+                                      $result_type);
         POST::Op.new(:pirop<set>,
                      $/[0].orig,
                      POST::Constant.new(:value($val),
                                         :type($result_type)));
     }
-    $pattern.transform($post, &fold);
+    
+    $binary_pattern.transform($post, &binary_fold);
 }
 
 # vim: filetype=perl6:
