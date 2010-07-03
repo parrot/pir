@@ -263,9 +263,11 @@ our multi method to_pbc(POST::Label $l, %context) {
 }
 
 our multi method to_pbc(POST::Call $call, %context) {
-    my $bc := %context<bytecode>;
+    my $bc       := %context<bytecode>;
+    my $calltype := $call.calltype;
+    my $is_tailcall := $calltype eq 'tailcall';
 
-    if $call.calltype eq 'call' {
+    if $calltype eq 'call' || $calltype eq 'tailcall' {
         if $call.invocant {
             $call<params>.unshift($call.invocant);
         }
@@ -274,12 +276,14 @@ our multi method to_pbc(POST::Call $call, %context) {
 
         if $call.invocant {
             if $call.name.isa(POST::Constant) {
-                $bc.push($OPLIB<callmethodcc_p_sc>);
+                $bc.push($is_tailcall
+                            ?? $OPLIB<tailcallmethod_p_sc>
+                            !! $OPLIB<callmethodcc_p_sc>);
                 self.to_pbc($call.invocant, %context);
                 self.to_pbc($call.name, %context);
             }
             else {
-                pir::die("NYI");
+                pir::die('NYI $P0.$S0()');
             }
         }
         else {
@@ -323,19 +327,21 @@ our multi method to_pbc(POST::Call $call, %context) {
                 }
             }
 
-            self.debug("invokecc_p") if $DEBUG;
-            $bc.push($OPLIB<invokecc_p>);
+            my $o := $is_tailcall ?? "tailcall_p" !! "invokecc_p";
+
+            self.debug($o) if $DEBUG;
+            $bc.push($OPLIB{ $o });
             self.to_pbc($SUB, %context);
         }
 
         self.build_pcc_call("get_results_pc", $call<results>, %context);
     }
-    elsif $call.calltype eq 'return' {
+    elsif $calltype eq 'return' {
         self.build_pcc_call("set_returns_pc", $call<params>, %context);
         $bc.push($OPLIB<returncc>);
     }
     else {
-        pir::die("NYI { $call.calltype }");
+        pir::die("NYI { $calltype }");
     }
 }
 

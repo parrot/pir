@@ -24,6 +24,19 @@ CODE
 Hello, World
 RESULT
 
+test_post( "Hello, World (.tailcall)", <<'CODE', <<'RESULT');
+.sub "main"
+    .tailcall "hello"()
+    say "YOU SHOULDN'T BE THERE"
+.end
+
+.sub "hello"
+    say "Hello, World"
+.end
+CODE
+Hello, World
+RESULT
+
 test_post( "Hello, World (arg)", <<'CODE', <<'RESULT');
 .sub "main"
     "hello"("Hello, World")
