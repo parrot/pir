@@ -147,7 +147,7 @@ method fold_arithmetic($post) {
     
     $post := $binary_pattern.transform($post, &binary_fold);
 
-    my $foldable_unary := / abs /;
+    my $foldable_unary := / abs | neg /;
     my $unary_pattern :=
         POST::Pattern::Op.new(:pirop($foldable_unary),
                               POST::Pattern::Value.new,
@@ -155,6 +155,9 @@ method fold_arithmetic($post) {
 
     my %unary_funcs :=
         hash(:abs(sub ($n) {
+                      pir::abs__NN($n);
+                 }),
+             :neg(sub ($n) {
                       pir::abs__NN($n);
                  }));
 
