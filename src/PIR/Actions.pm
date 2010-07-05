@@ -64,32 +64,42 @@ method newpad($/) {
     $!BLOCK.namespace($*NAMESPACE) if $*NAMESPACE;
 }
 
-method compilation_unit:sym<sub> ($/) {
+method compilation_unit:sym<sub>($/, $key?) {
     my $name := $<subname>.ast;
     $!BLOCK.name( $name );
 
-    # Handle modifiers.
-    if $<sub_modifier> {
-        for $<sub_modifier> {
-            my $name := $_<sym>;
-            $!BLOCK.set_flag($name, $_.ast // 1);
+    if ($key eq 'maybe_method') {
+        # Handle modifiers.
+        if $<sub_modifier> {
+            for $<sub_modifier> {
+                my $name := $_<sym>;
+                $!BLOCK.set_flag($name, $_.ast // 1);
+
+                # Create self for :method
+                if $name eq 'method' {
+                    $!BLOCK.symbol('self', POST::Register.new(:name<self>, :type<p>, :declared<1>));
+                }
+            }
         }
     }
+    else {
+        # Sub body processing.
 
-    # Handle :main modifier
-    $!MAIN := $!BLOCK if !$!MAIN || ($!BLOCK.main && !$!MAIN.main);
+        # Handle :main modifier
+        $!MAIN := $!BLOCK if !$!MAIN || ($!BLOCK.main && !$!MAIN.main);
 
-    if $<statement> {
-        for $<statement> {
-            my $past := $_.ast;
-            $!BLOCK.push( $past ) if $past;
+        if $<statement> {
+            for $<statement> {
+                my $past := $_.ast;
+                $!BLOCK.push( $past ) if $past;
+            }
         }
+
+        self.validate_labels($/, $!BLOCK);
+
+        # Store self in POST::File constants to be used during PBC emiting.
+        $!FILE.sub($name, $!BLOCK);
     }
-
-    self.validate_labels($/, $!BLOCK);
-
-    # Store self in POST::File constants to be used during PBC emiting.
-    $!FILE.sub($name, $!BLOCK);
 
     make $!BLOCK;
 }
@@ -97,7 +107,7 @@ method compilation_unit:sym<sub> ($/) {
 # Parametrized modifiers
 method sub_modifier:sym<nsentry>($/)    { $<string_constant>.ast }
 # TODO validate vtable name for existence
-method sub_modifier:sym<vtable>($/)     { $<string_constant>.ast }
+method sub_modifier:sym<vtable>($/)     { $<string_constant> ?? $<string_constant>.ast !! '' }
 method sub_modifier:sym<outer>($/)      { $<subname>.ast }
 method sub_modifier:sym<subid>($/)      { $<string_constant>.ast }
 #token sub_modifier:sym<multi>      { ':' <sym> '(' [ [<.ws><multi_type><.ws>] ** ',' ]? ')' }

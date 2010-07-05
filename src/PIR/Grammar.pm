@@ -33,6 +33,9 @@ rule compilation_unit:sym<sub> {
     ]
     <ws> <.nl>
 
+    # We have to process :method to create "self"
+    <?> {*} #= maybe_method
+
     <param_decl>*
 
     [

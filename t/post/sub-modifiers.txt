@@ -1,5 +1,5 @@
-test_post( "Boolean modifers", <<'CODE', <<'RESULT');
-.sub "main" :main :init :load :immediate :postcomp :anon :method :lex
+test_post( "Boolean modifers (without :method)", <<'CODE', <<'RESULT');
+.sub "main" :main :init :load :immediate :postcomp :anon :lex
 .end
 CODE
 "post" => PMC 'POST;File'  {
@@ -12,7 +12,6 @@ CODE
             <lex> => 1
             <load> => 1
             <main> => 1
-            <method> => 1
             <name> => "main"
             <postcomp> => 1
         }
@@ -20,6 +19,40 @@ CODE
     [0] => \post["main"]
 }
 RESULT
+
+test_post( ":method", <<'CODE', <<'RESULT');
+.namespace ['Foo']
+.sub "main" :method
+.end
+CODE
+"post" => PMC 'POST;File'  {
+    <main_sub> => "main"
+    <subs> => Hash {
+        "main" => PMC 'POST;Sub'  {
+            <method> => 1
+            <name> => "main"
+            <namespace> => PMC 'POST;Key'  {
+                <type> => "pc"
+                [0] => PMC 'POST;String'  {
+                    <charset> => "ascii"
+                    <encoding> => "fixed_8"
+                    <type> => "sc"
+                    <value> => "Foo"
+                }
+            }
+            <symtable> => Hash {
+                "self" => PMC 'POST;Register'  {
+                    <declared> => "1"
+                    <name> => "self"
+                    <type> => "p"
+                }
+            }
+        }
+    }
+    [0] => \post["main"]
+}
+RESULT
+
 
 
 # vim: ft=perl6
