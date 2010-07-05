@@ -28,4 +28,28 @@ CODE
 Hello, World
 RESULT
 
+test_post( "Undeclared variable", <<'CODE', <<'RESULT', "fail_like" => "Register 'foo' not predeclared");
+.sub "main"
+    say foo
+.end
+CODE
+dummy
+RESULT
+
+test_post( "Undeclared param", <<'CODE', <<'RESULT', "fail_like" => "Register 'foo' not predeclared");
+.sub "main"
+    say(foo)
+.end
+CODE
+dummy
+RESULT
+
+test_post( "Undeclared returns", <<'CODE', <<'RESULT', "fail_like" => "Register 'foo' not predeclared");
+.sub "main"
+    foo = "foo"()
+.end
+CODE
+dummy
+RESULT
+
 # vim: ft=perl

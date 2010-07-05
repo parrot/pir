@@ -72,14 +72,6 @@ CODE
 }
 RESULT
 
-test_post( "Undeclared parameter", <<'CODE', <<'RESULT', "fail_like" => "Register 'foo' not predeclared");
-.sub "main"
-    "say"(foo)
-.end
-CODE
-dummy
-RESULT
-
 test_post( "Simple returns", <<'CODE', <<'RESULT');
 .sub "main"
     $P0 = "foo"()
@@ -119,14 +111,6 @@ CODE
     }
     [0] => \post["main"]
 }
-RESULT
-
-test_post( "Undeclared simple returns", <<'CODE', <<'RESULT', "fail_like" => "Register 'foo' not predeclared");
-.sub "main"
-    foo = "say"()
-.end
-CODE
-dummy
 RESULT
 
 
@@ -177,14 +161,6 @@ CODE
     }
     [0] => \post["main"]
 }
-RESULT
-
-test_post( "Undeclared many returns", <<'CODE', <<'RESULT', "fail_like" => "Register 'foo' not predeclared");
-.sub "main"
-    (foo) = "say"()
-.end
-CODE
-dummy
 RESULT
 
 test_post( "Register call", <<'CODE', <<'RESULT');

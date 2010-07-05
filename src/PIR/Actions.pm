@@ -178,8 +178,6 @@ method op($/) {
         }
     }
 
-    self.validate_registers($/, @($past));
-
     make $past;
 }
 
@@ -609,7 +607,6 @@ method pir_instruction:sym<call_assign>($/) {
     # Store params (if any)
     my $results := list();
     $results.push( $<variable>.ast );
-    self.validate_registers($/, $results);
     $past.results($results);
 
     make $past;
@@ -624,7 +621,6 @@ method pir_instruction:sym<call_assign_many>($/) {
         for $<results>[0]<result> {
             $results.push( $_.ast );
         }
-        self.validate_registers($/, $results);
         $past.results($results);
     }
 
@@ -701,7 +697,6 @@ method handle_pcc_args($/, $past) {
         for $<args>[0]<arg> {
             $params.push( $_.ast );
         }
-        self.validate_registers($/, $params);
 
         $past.params($params);
     }
@@ -917,24 +912,6 @@ method quote:sym<dblq>($/) {
         :charset<ascii>,
     );
 }
-
-###################################################################
-
-method validate_registers($/, @regs) {
-    for @regs {
-        self.validate_register($/, $_);
-    }
-}
-
-our multi method validate_register($/, POST::Value $reg) {
-    my $name := $reg.name;
-    if $name && !$!BLOCK.symbol($name) {
-        $/.CURSOR.panic("Register '" ~ $name ~ "' not predeclared");
-    }
-}
-
-# POST::Label, POST::Constant
-our multi method validate_register($/, $arg) { }
 
 ###################################################################
 

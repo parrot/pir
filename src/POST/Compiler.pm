@@ -156,7 +156,7 @@ our multi method to_pbc(POST::Op $op, %context) {
     self.debug("Short name $fullname") if $DEBUG;
 
     for @($op) {
-        my $type := $_.type || %context<sub>.symbol($_.name).type;
+        my $type := $_.type || self.get_register($_.name, %context).type;
         $fullname := ~$fullname ~ '_' ~ ~$type;
     }
 
@@ -229,7 +229,7 @@ our multi method to_pbc(POST::String $str, %context) {
 
 our multi method to_pbc(POST::Value $val, %context) {
     # Redirect to real value. POST::Value is just reference.
-    my $orig := %context<sub>.symbol($val.name);
+    my $orig := self.get_register($val.name, %context);
     self.to_pbc($orig, %context);
 }
 
@@ -413,7 +413,8 @@ our method build_args_signature(@args, %context) {
 our method build_single_arg($arg, %context) {
     # Build call signature arg according to PDD03
     # POST::Value doesn't have .type. Lookup in symbols.
-    my $type := $arg.type // %context<sub>.symbol($arg.name).type;
+    my $type := $arg.type // self.get_register($arg.name, %context).type;
+
     my $res;
 
     # Register types.
@@ -548,6 +549,15 @@ our method fixup_labels($sub, $labels_todo, $bc) {
         my $delta  := $sub.label(@pair[0]).position - @pair[1];
         $bc[$offset] := $delta;
     }
+}
+
+# Get register from symbol table with validation
+our method get_register($name, %context) {
+    my $reg := %context<sub>.symbol($name);
+    if !$reg {
+        self.panic("Register '{ $name }' not predeclared in '{ %context<sub>.name }'");
+    }
+    $reg;
 }
 
 method debug(*@args) {
