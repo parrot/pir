@@ -3,9 +3,9 @@
 
 #.HLL 'PIRATE'
 
-.namespace []
-
 .loadlib 'pirate_ops'
+
+.namespace []
 
 .sub '' :anon :load :init
     load_bytecode 'HLL.pbc'
@@ -131,6 +131,16 @@
     .param pmc p
     push self, p
     .return()
+.end
+
+
+# We can't use NQP for dynamically loaded stuff... It's broken somehow.
+.namespace []
+
+
+.sub "register_hll_lib"
+    .param string lib
+    register_hll_lib lib
 .end
 
 =head1 LICENSE

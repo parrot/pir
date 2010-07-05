@@ -55,14 +55,7 @@ method compilation_unit:sym<.loadlib>($/) {
     my $library := pir::loadlib__ps($name);
     pir::die("Can't load $name") unless $library;
 
-    # XXX We have to call Parrot_register_HLL_lib here. Maybe create dynop for it.
-    Q:PIR {
-        .local pmc pname
-        .local string sname
-        pname = find_lex "$name"
-        sname = pname
-        register_hll_lib sname
-    }
+    register_hll_lib($name);
 }
 
 method newpad($/) {
