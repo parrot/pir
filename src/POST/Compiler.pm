@@ -113,7 +113,7 @@ our multi method to_pbc(POST::Sub $sub, %context) {
         :ns_entry_name( $sub.nsentry // $subname ),
         :vtable_index( -1 ), # It must be -1!!!
         :HLL_id<0>,
-        :method( $sub.method ),
+        :method( $sub.is_method ?? $subname !! ''),
 
         :n_regs_used(@n_regs_used),
 
@@ -531,7 +531,7 @@ our multi method create_sub_comp_flags(POST::Sub $sub) {
     #    SUB_COMP_FLAG_NSENTRY   = SUB_COMP_FLAG_BIT_11  == 0x800
     my $res := 0;
     $res := $res + 0x001 if $sub.vtable;
-    $res := $res + 0x002 if $sub.method;
+    $res := $res + 0x002 if $sub.is_method;
     $res := $res + 0x400 if $sub.is_init;
     $res := $res + 0x800 if $sub.nsentry;  # XXX Check when to set ns_entry_name in .to_pbc!
 

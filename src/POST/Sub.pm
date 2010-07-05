@@ -100,8 +100,8 @@ our multi method postcomp($val) { self<postcomp> := ?$val }
 our multi method anon()     { self<anon> // 0 }
 our multi method anon($val) { self<anon> := ?$val }
 
-our multi method method()     { self<method> // 0 }
-our multi method method($val) { self<method> := ?$val }
+our multi method is_method()     { self<method> // 0 }
+our multi method is_method($val) { self<method> := ?$val }
 
 our multi method lex()        { self<lex> // 0 }
 our multi method lex($val)    { self<lex> := ?$val }
