@@ -83,9 +83,9 @@ our multi method to_pbc(POST::Sub $sub, %context) {
     self.debug("From $start_offset") if $DEBUG;
 
     # Handle params
-    if $sub<params> {
-        self.build_pcc_call("get_params_pc", $sub<params>, %context);
-    }
+    $sub<params> := list() unless $sub<params>;
+    $sub<params>.unshift(POST::Value.new(:name<self>)) if $sub.is_method;
+    self.build_pcc_call("get_params_pc", $sub<params>, %context);
 
     # Emit ops.
     for @($sub) {
