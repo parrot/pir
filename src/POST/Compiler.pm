@@ -113,7 +113,7 @@ our multi method to_pbc(POST::Sub $sub, %context) {
         :ns_entry_name( $sub.nsentry // $subname ),
         :vtable_index( -1 ), # It must be -1!!!
         :HLL_id<0>,
-        :method( $sub.is_method ?? $subname !! ''),
+        :method_name( $sub.is_method ?? $subname !! ''),
 
         :n_regs_used(@n_regs_used),
 
