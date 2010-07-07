@@ -15,4 +15,19 @@ hello :init
 main
 RESULT
 
+test_post( ":method", <<'CODE', <<'RESULT');
+.sub "main"
+    $P0 = newclass ['Foo';'Bar']
+    $P1 = new $P0
+    $P1."hello"()
+.end
+
+.namespace ['Foo';'Bar']
+.sub "hello" :method
+    say "Hello, World"
+.end
+CODE
+Hello, World
+RESULT
+
 # vim: ft=perl
