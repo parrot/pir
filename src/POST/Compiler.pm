@@ -528,13 +528,13 @@ our multi method create_sub_pf_flags(POST::Sub $sub) {
 }
 
 our multi method create_sub_comp_flags(POST::Sub $sub) {
-    #    SUB_COMP_FLAG_VTABLE    = SUB_COMP_FLAG_BIT_1   == 0x01
-    #    SUB_COMP_FLAG_METHOD    = SUB_COMP_FLAG_BIT_2   == 0x02
+    #    SUB_COMP_FLAG_VTABLE    = SUB_COMP_FLAG_BIT_1   == 0x02
+    #    SUB_COMP_FLAG_METHOD    = SUB_COMP_FLAG_BIT_2   == 0x04
     #    SUB_COMP_FLAG_PF_INIT   = SUB_COMP_FLAG_BIT_10  == 0x400
     #    SUB_COMP_FLAG_NSENTRY   = SUB_COMP_FLAG_BIT_11  == 0x800
     my $res := 0;
-    $res := $res + 0x001 if $sub.vtable;
-    $res := $res + 0x002 if $sub.is_method;
+    $res := $res + 0x002 if $sub.vtable;
+    $res := $res + 0x004 if $sub.is_method;
     $res := $res + 0x400 if $sub.is_init;
     $res := $res + 0x800 if $sub.nsentry;  # XXX Check when to set ns_entry_name in .to_pbc!
 
