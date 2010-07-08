@@ -95,7 +95,7 @@ method compilation_unit:sym<sub>($/, $key?) {
             }
         }
 
-        #self.validate_labels($/, $!BLOCK);
+        self.validate_labels($/, $!BLOCK);
 
         # Store self in POST::File constants to be used during PBC emiting.
         $!FILE.sub($name, $!BLOCK);
