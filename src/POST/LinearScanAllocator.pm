@@ -23,31 +23,52 @@ our method process(POST::Sub $sub) {
     my %liveness;
     %liveness<start> := ();
     %liveness<end>   := ();
+    pir::say("# starting linear scan");
 
     for @($sub) -> $op {
         my @starts := ();
 
         #catch POST::Call and POST::Op
-        my @reg_list := $op<params> ??
-            $op<params> !!
-            @($op);
-        for @reg_list -> $arg {
+        my $op_type := pir::typeof__sp($op);
+        my @arg_list;
+        pir::say("# op is of type $op_type");
+        if $op_type eq 'POST;Op' {
+            @arg_list := @($op);
+        } elsif $op_type eq 'POST;Call' {
+            @arg_list := $op<params>;
+        } elsif $op_type eq 'POST;Label' {
+            next;
+        } else {
+            pir::die("don't know how to get args from $op_type");
+        }
+
+        for @arg_list -> $arg {
 
             my $sym;
-            if ?$arg<type> {
-                $sym := $arg;
-            }
-            else {
+            my $sym_type := pir::typeof__sp($arg);
+
+            if $sym_type eq 'POST;Label'
+            || $sym_type eq 'POST;String'
+            || $sym_type eq 'POST;Constant' {
+                next;
+            } elsif $sym_type eq 'POST;Register' {
                 $sym := $sub.symtable{ $arg<name> };
-                #pir::say("looked up {$arg<name>} in the symtable");
+                pir::say("# looked up {$arg<name>} in the symtable");
+            } elsif $sym_type eq 'POST;Value' {
+                $sym := $arg;
+            } else {
+                pir::die("# don't know what to do with $sym_type");
             }
 
-            #pir::say("found a thing with type { $sym<type>} named { $sym<name> }");
+            #_dumper($arg);
+
+            pir::say("# found a thing with type { $sym<type>} named { $sym<name> }");
             next unless self._is_insp_reg($sym);
-            #pir::say("looks like it's a register");
+            pir::say("# looks like it's a register");
 
             unless pir::defined($sub.symtable{ $sym<name> }<start>) {
                 $sub.symtable{ $sym<name> }<start>:= +$op_num;
+                pir::say("# {$sym<name>} starts at $op_num");
                 @starts.push( $sym<name> );
             }
             $sub.symtable{ $sym<name> }<end> := +$op_num;
@@ -64,18 +85,18 @@ our method process(POST::Sub $sub) {
     #}
     my $n := 0;
     while ($n < +%liveness<start>) {
-        pir::say("liveness analysis: n = $n");        
+        pir::say("# liveness analysis: n = $n");        
         for %liveness<start>[$n] -> $sym_name {
             my $sym := $sub.symtable{ $sym_name };
-            pir::say("found a live symbol: {$sym<name>}");
-            pir::say("symbol {$sym<name>} will become dead at {$sym<end>}");
+            pir::say("# found a live symbol: {$sym<name>}");
+            pir::say("# symbol {$sym<name>} will become dead at {$sym<end>}");
             $sym.regno( $recycler.get_register( $sym<type> ));
             %liveness<end>[ $sym<end> ].push($sym_name);
         }
         for %liveness<end>[$n] -> $sym_name {
             #give that number back to the recycler
             my $sym := $sub.symtable{ $sym_name };
-            pir::say("found a dead symbol {$sym<name>}: will return regno {$sym.regno}");
+            pir::say("# found a dead symbol {$sym<name>}: will return regno {$sym.regno}");
             $recycler.free_register( $sym<type>, $sym.regno );
         }
         $n++;
@@ -128,7 +149,7 @@ our method get_register($type) {
     my $reg_num := 0;
 
     if %free_reg_count{$type} == 0 {
-        $reg_num := %free_reg_count{$type};
+        $reg_num := +%reg_usage_list{$type};
     }
     else {
         for %reg_usage_list{$type} {
