@@ -72,7 +72,7 @@ method compilation_unit:sym<sub>($/, $key?) {
         # Handle modifiers.
         if $<sub_modifier> {
             for $<sub_modifier> {
-                my $name := $_<sym>;
+                my $name  := ~$_<sym>;
                 $!BLOCK.set_flag($name, $_.ast // 1);
 
                 # Create self for :method
@@ -95,7 +95,7 @@ method compilation_unit:sym<sub>($/, $key?) {
             }
         }
 
-        self.validate_labels($/, $!BLOCK);
+        #self.validate_labels($/, $!BLOCK);
 
         # Store self in POST::File constants to be used during PBC emiting.
         $!FILE.sub($name, $!BLOCK);
@@ -172,12 +172,13 @@ method op($/) {
     if $<op_params>[0] {
         my $labels := pir::iter__PP($pirop.labels);
         for $<op_params>[0]<op_param> {
+            my $param := $_.ast;
             my $label;
             # See TODO
             try {
                 $label := pir::shift__IP($labels);
             };
-            if $label {
+            if $label && $param.type ne 'p' {
                 my $name  := ~$_;
                 my $label := self.create_label($name);
                 $past.push($label);
@@ -237,8 +238,9 @@ method pir_directive:sym<.local>($/) {
     my $type := pir::substr__SSII(~$<pir_type>, 0, 1);
     for $<ident> {
         my $name := ~$_;
-        if $!BLOCK.symbol($name) {
-            $/.CURSOR.panic("Redeclaration of varaible '$name'");
+        my $old  := $!BLOCK.symbol($name);
+        if $old && $old.type ne $type {
+            $/.CURSOR.panic("Redeclaration of variable '$name' with different type");
         }
 
         my $past := POST::Register.new(
@@ -642,9 +644,10 @@ method pir_instruction:sym<call_assign_many>($/) {
 #proto regex call { <...> }
 method call:sym<pmc>($/) {
     my $variable := $<variable>.ast;
-    if $variable.type ne 'p' {
-        $/.CURSOR.panic("Sub '{ $variable.name }' isn't a PMC");
-    }
+    # TODO Introduce same check in POST::Compiler
+    #if $variable.type ne 'p' {
+    #    $/.CURSOR.panic("Sub '{ $variable.name }' isn't a PMC");
+    #}
 
     my $past := POST::Call.new(
         :calltype('call'),
@@ -862,7 +865,7 @@ method string_constant($/) {
         );
     }
     elsif $<heredoc> {
-        pir::die("NYI");
+        $/.CURSOR.panic("NYI");
     }
     else {
         $/.CURSOR.panic("unknown string constant type");
