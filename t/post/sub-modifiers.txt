@@ -53,6 +53,38 @@ CODE
 }
 RESULT
 
+test_post( ":subid", <<'CODE', <<'RESULT');
+.sub "main" :subid("the_main")
+.end
+CODE
+"post" => PMC 'POST;File'  {
+    <main_sub> => "main"
+    <subs> => Hash {
+        "main" => PMC 'POST;Sub'  {
+            <method> => 1
+            <name> => "main"
+            <namespace> => PMC 'POST;Key'  {
+                <type> => "pc"
+                [0] => PMC 'POST;String'  {
+                    <charset> => "ascii"
+                    <encoding> => "fixed_8"
+                    <type> => "sc"
+                    <value> => "Foo"
+                }
+            }
+            <symtable> => Hash {
+                "self" => PMC 'POST;Register'  {
+                    <declared> => "1"
+                    <name> => "self"
+                    <type> => "p"
+                }
+            }
+        }
+    }
+    [0] => \post["main"]
+}
+RESULT
+
 
 
 # vim: ft=perl6
