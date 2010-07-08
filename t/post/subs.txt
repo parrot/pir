@@ -154,7 +154,7 @@ RESULT
 test_post( "Redeclaration of variable", <<'CODE', <<'RESULT', "fail_like" => "Redeclaration of");
 .sub "main"
     .local pmc foo
-    .local pmc foo
+    .local int foo
     say foo
 .end
 CODE
