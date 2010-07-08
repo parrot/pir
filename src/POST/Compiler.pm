@@ -501,7 +501,7 @@ our method create_context($past) {
 our method enumerate_subs(POST::File $post) {
     for @($post) -> $sub {
         # XXX Should we emit warning on duplicates?
-        $post.sub($sub.full_name, $sub);
+        $post.sub($sub.full_name, $sub) if $sub.isa(POST::Sub);
     }
 }
 
