@@ -61,23 +61,12 @@ CODE
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
-            <method> => 1
             <name> => "main"
-            <namespace> => PMC 'POST;Key'  {
-                <type> => "pc"
-                [0] => PMC 'POST;String'  {
-                    <charset> => "ascii"
-                    <encoding> => "fixed_8"
-                    <type> => "sc"
-                    <value> => "Foo"
-                }
-            }
-            <symtable> => Hash {
-                "self" => PMC 'POST;Register'  {
-                    <declared> => "1"
-                    <name> => "self"
-                    <type> => "p"
-                }
+            <subid> => PMC 'POST;String'  {
+                <charset> => "ascii"
+                <encoding> => "fixed_8"
+                <type> => "sc"
+                <value> => "the_main"
             }
         }
     }
