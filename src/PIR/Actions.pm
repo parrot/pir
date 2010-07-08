@@ -645,9 +645,9 @@ method pir_instruction:sym<call_assign_many>($/) {
 method call:sym<pmc>($/) {
     my $variable := $<variable>.ast;
     # TODO Introduce same check in POST::Compiler
-    #if $variable.type ne 'p' {
-    #    $/.CURSOR.panic("Sub '{ $variable.name }' isn't a PMC");
-    #}
+    if $variable.type ne 'p' {
+        $/.CURSOR.panic("Sub '{ $variable.name }' isn't a PMC");
+    }
 
     my $past := POST::Call.new(
         :calltype('call'),
@@ -688,8 +688,15 @@ method call:sym<ident>($/) {
 
 
 method call:sym<dynamic>($/) {
-    my $past := self.call:sym<pmc>($/);
+    my $variable := $<variable>.ast;
+
+    my $past := POST::Call.new(
+        :calltype('call'),
+        :name($variable),
+    );
     $past.invocant($<invocant>.ast);
+
+    self.handle_pcc_args($/, $past);
     make $past;
 }
 
