@@ -12,6 +12,8 @@ method TOP() {
 
     my $*NAMESPACE;
     my $*HLL;
+
+    my %*INCLUDES;
     self.top;
 }
 
@@ -54,13 +56,16 @@ rule compilation_unit:sym<.line>        { <sym> \d+ ',' <quote> }
 rule compilation_unit:sym<.include>     {
     <sym> <quote>
     {
-        my $include     := load_include_file($<quote>);
-        my $compiler    := pir::compreg__ps('PIRATE');
-        my $grammar := $compiler.parsegrammar();
-        my $actions := $compiler.parseactions();
-        $<include>  := $grammar.parse($include, :p<0>, :actions($actions), :rule<top>);
-        #_dumper($<include>);
-        $<quote><compilation_unit> := $<include><compilation_unit>;
+        my $filename    := ~$<quote>;
+        unless %*INCLUDES.exists($filename) {
+            my $include     := load_include_file($filename);
+            my $compiler    := pir::compreg__ps('PIRATE');
+            my $grammar := $compiler.parsegrammar();
+            my $actions := $compiler.parseactions();
+            %*INCLUDES{$filename} := $grammar.parse($include, :p<0>, :actions($actions), :rule<top>);
+            #_dumper($<include>);
+        }
+        $<quote><compilation_unit> := %*INCLUDES{$filename}<compilation_unit>;
     }
 }
 
@@ -118,7 +123,7 @@ rule statement {
     || <pir_directive>
     ||
         <labeled_instruction> <.nl>
-        <process_heredoc>?
+        #<process_heredoc>?
 }
 
 token process_heredoc {
