@@ -32,12 +32,17 @@ our method process(POST::Sub $sub) {
         my $op_type := pir::typeof__sp($op);
         my @arg_list;
         pir::say("# op is of type $op_type");
+
+        if $op_type eq 'POST;Label' {
+            next unless +@($op);
+            $op := $op[0];
+            $op_type := pir::typeof__sp($op);
+        }
+
         if $op_type eq 'POST;Op' {
             @arg_list := @($op);
         } elsif $op_type eq 'POST;Call' {
             @arg_list := $op<params>;
-        } elsif $op_type eq 'POST;Label' {
-            next;
         } else {
             pir::die("don't know how to get args from $op_type");
         }
@@ -47,8 +52,8 @@ our method process(POST::Sub $sub) {
             my $sym;
             my $sym_type := pir::typeof__sp($arg);
 
-            if $sym_type eq 'POST;Label'
-            || $sym_type eq 'POST;String'
+            if $sym_type eq 'POST;String'
+            || $sym_type eq 'POST;Label'
             || $sym_type eq 'POST;Constant' {
                 next;
             } elsif $sym_type eq 'POST;Register' {
