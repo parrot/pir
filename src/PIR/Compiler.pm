@@ -144,7 +144,7 @@ method fold_arithmetic($post) {
                      POST::Constant.new(:value($val),
                                         :type($result_type)));
     };
-    
+
     $post := $binary_pattern.transform($post, &binary_fold);
 
     my $foldable_unary := / abs | neg | sqrt | ceil | floor /;
@@ -184,4 +184,30 @@ method fold_arithmetic($post) {
     $unary_pattern.transform($post, &unary_fold);
 }
 
+# Swapping "gt" and "ge" with "lt" and "le"
+# There is no gt_i_i_ic, so we have to swap it with lt
+method swap_gtge($post) {
+    my $gtge    := / gt | ge /;
+    my $pattern := POST::Pattern::Op.new(
+                        :pirop($gtge),
+                        # It's totally wrong. We need "POST::Pattern::Value(:type($non_pmc))"
+                        # or something similar.
+                        POST::Pattern.new(),
+                        POST::Pattern.new(),
+                        POST::Pattern.new()
+                   );
+
+    my &swap := sub ($/) {
+        my $op     := $/.orig.pirop;
+        my $new_op := $op eq 'gt' ?? 'lt' !! 'le';
+        POST::Op.new(:pirop($new_op),
+            $/[1].orig,
+            $/[0].orig,
+            $/[2].orig,
+        );
+    };
+
+    $post := $pattern.transform($post, &swap);
+
+}
 # vim: filetype=perl6:
