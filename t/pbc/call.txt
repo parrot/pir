@@ -256,5 +256,25 @@ CODE
 Answer is 42
 RESULT
 
+test_post( ".get_results()", <<'CODE', <<'RESULT');
+.sub "main"
+    push_eh caught
+    $P1 = new ['Exception']
+    $P1['message'] = 'Answer is 42'
+    throw $P1
+    say "Wrong answer"
+    .return()
+
+  caught:
+    pop_eh
+    .get_results($P0)
+    $S0 = $P0['message']
+    say $S0
+.end
+CODE
+Answer is 42
+RESULT
+
+
 
 # vim: ft=perl

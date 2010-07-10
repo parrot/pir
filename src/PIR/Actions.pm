@@ -290,6 +290,14 @@ method pir_directive:sym<.include>($/) {
 #rule pir_directive:sym<.set_yield>  { <sym> <value> <arg_flag>* }
 #rule pir_directive:sym<.get_result> { <sym> <value> <result_flag>* }
 
+method pir_directive:sym<.get_results>($/) {
+    my $past := POST::Call.new(
+        :calltype('results'),
+    );
+    self.handle_pcc_args($/, $past);
+    make $past;
+}
+
 method pir_directive:sym<.return>($/) {
     my $past := POST::Call.new(
         :calltype('return'),
@@ -652,9 +660,9 @@ method pir_instruction:sym<call_assign_many>($/) {
 method call:sym<pmc>($/) {
     my $variable := $<variable>.ast;
     # TODO Introduce same check in POST::Compiler
-    if $variable.type && $variable.type ne 'p' {
-        $/.CURSOR.panic("Sub '{ $variable.name }' isn't a PMC");
-    }
+    #if $variable.type && $variable.type ne 'p' {
+        #    $/.CURSOR.panic("Sub '{ $variable.name }' isn't a PMC");
+        #}
 
     my $past := POST::Call.new(
         :calltype('call'),

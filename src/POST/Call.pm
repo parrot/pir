@@ -19,7 +19,7 @@ our multi method invocant($param)   { self.attr('invocant', $param, 1); }
 our multi method invocant()         { self.attr('invocant', undef,  0); }
 
 =item C<calltype>
-Type of call. One of C<call>, C<tailcall>, C<return>, C<yield>.
+Type of call. One of C<call>, C<tailcall>, C<return>, C<yield>, C<results>.
 
 our multi method calltype($param)   { self.attr('calltype', $param, 1); }
 our multi method calltype()         { self.attr('calltype', undef,  0); }

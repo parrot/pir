@@ -347,6 +347,10 @@ our multi method to_pbc(POST::Call $call, %context) {
         self.build_pcc_call("set_returns_pc", $call<params>, %context);
         $bc.push($OPLIB<returncc>);
     }
+    elsif $calltype eq 'results' {
+        # This is generated in eceptions handling
+        self.build_pcc_call("get_results_pc", $call<params>, %context);
+    }
     else {
         self.panic("NYI { $calltype }");
     }

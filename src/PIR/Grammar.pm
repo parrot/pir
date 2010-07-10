@@ -182,6 +182,8 @@ rule pir_directive:sym<.set_arg>    { <sym> <value> <arg_flag>? }
 rule pir_directive:sym<.set_return> { <sym> <value> <arg_flag>? }
 rule pir_directive:sym<.set_yield>  { <sym> <value> <arg_flag>? }
 rule pir_directive:sym<.get_result> { <sym> <value> <result_flag>? }
+# Exceptions handling
+rule pir_directive:sym<.get_results> { <sym> '(' <args>? ')' }
 
 rule pir_directive:sym<.return>     { <sym> '(' <args>? ')' }
 rule pir_directive:sym<.yield>      { <sym> '(' <args>? ')' }
