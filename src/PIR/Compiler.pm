@@ -187,8 +187,8 @@ method fold_arithmetic($post) {
 # Swapping "gt" and "ge" with "lt" and "le"
 # There is no gt_i_i_ic, so we have to swap it with lt
 method swap_gtge($post) {
-    my $gtge    := / gt | ge /;
-    my $non_pmc := / i | ic | n | nc | s | sc /;
+    my $gtge    := /^[ gt | ge ]$/;
+    my $non_pmc := /^[ i | ic | n | nc | s | sc ]$/;
     my $pattern := POST::Pattern::Op.new(
                         :pirop($gtge),
                         POST::Pattern::Value.new(:type($non_pmc)),
@@ -198,6 +198,7 @@ method swap_gtge($post) {
 
     my &swap := sub ($/) {
         my $op     := $/.orig.pirop;
+        #pir::say("GOT $op");
         my $new_op := $op eq 'gt' ?? 'lt' !! 'le';
         POST::Op.new(:pirop($new_op),
             $/[1].orig,
