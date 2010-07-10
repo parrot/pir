@@ -42,7 +42,7 @@
     .get_results (exception)
 
     $S0 = adverbs['fail_like']
-    if null $S0 goto check_fail
+    if null $S0 goto check_todo
     $S1 = exception
     $I0 = index $S1, $S0
     $I1 = $I0 != -1
@@ -50,6 +50,11 @@
     diag(exception)
     diag($S0)
     .return()
+
+  check_todo:
+    $S0 = adverbs['todo']
+    if null $S0 goto check_fail
+    todo($S0)
 
   check_fail:
     $I0 = adverbs['fail']
