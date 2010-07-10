@@ -178,7 +178,7 @@ method op($/) {
             try {
                 $label := pir::shift__IP($labels);
             };
-            if $label && $param.type ne 'p' {
+            if $label && $param.type ne 'p' && $param.type ne 'i' {
                 my $name  := ~$_;
                 my $label := self.create_label($name);
                 $past.push($label);
@@ -652,7 +652,7 @@ method pir_instruction:sym<call_assign_many>($/) {
 method call:sym<pmc>($/) {
     my $variable := $<variable>.ast;
     # TODO Introduce same check in POST::Compiler
-    if $variable.type ne 'p' {
+    if $variable.type && $variable.type ne 'p' {
         $/.CURSOR.panic("Sub '{ $variable.name }' isn't a PMC");
     }
 
