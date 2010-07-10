@@ -162,10 +162,10 @@ SOURCES
     if $I0 goto L1
     .local string cmd
     cmd = get_parrot()
-    cmd .= " pir.pbc "
-    cmd .= pir
-    cmd .= " > "
+    cmd .= " pir.pbc --target=pbc --output="
     cmd .= pbc
+    cmd .= " "
+    cmd .= pir
     system(cmd, 1 :named('verbose'))
     goto L1
   L2:
