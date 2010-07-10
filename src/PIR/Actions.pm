@@ -210,13 +210,20 @@ method pir_key($/) {
     # Optimize for ki and kic type keys.
     if +$<value> == 1 {
         my $elt := $<value>[0].ast;
+        # $P0[42]
         if $elt.type eq 'ic' {
             $past := $elt;
             $past.type('kic');
         }
+        # $P0[$I0]
         elsif $elt.type eq 'i' {
             $past := $elt;
             $past.type('ki');
+        }
+        # $P0[$P1]
+        elsif $elt.type eq 'p' {
+            $past := $elt;
+            $past.type('k');
         }
         else {
             $past := POST::Key.new(

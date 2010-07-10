@@ -88,6 +88,23 @@ set
 get: 42
 RESULT
 
+test_post( "Simple PMC keys", <<'CODE', <<'RESULT');
+.sub "main"
+    $P0 = new 'Hash'
+    $P1 = new 'String'
+    $P1 = "foo"
+    $P0[$P1] = 42
+    say "set"
+    $I0 = $P0[$P1]
+    print "get: "
+    say $I0
+.end
+CODE
+set
+get: 42
+RESULT
+
+
 
 # vim: ft=perl
 
