@@ -31,7 +31,16 @@ No Configure step, no Makefile generated.
     $P0 = new 'Hash'
     $P0['name'] = 'pir'
     $P0['abstract'] = 'the pir compiler'
-    $P0['description'] = 'the pir for Parrot VM.'
+    $P0['description'] = 'PIR compiler implemented in NQP/PCT'
+    $P6 = split ' ', 'pir hll compiler'
+    $P0['keywords'] = $P6
+    $P0['authority'] = 'http://github.com/bacek'
+    $P0['license_type'] = 'Artistic License 2.0'
+    $P0['license_uri'] = 'http://www.perlfoundation.org/artistic_license_2_0'
+    $P0['copyright_holder'] = 'Parrot Foundation'
+    $P0['checkout_uri'] = 'git://github.com/bacek/pir.git'
+    $P0['browser_uri'] = 'http://github.com/bacek/pir'
+    $P0['project_uri'] = 'http://github.com/bacek/pir'
 
     # build
     $P1 = new 'Hash'
