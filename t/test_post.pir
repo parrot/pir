@@ -6,6 +6,22 @@
     .param string code
     .param string expected
     .param pmc    adverbs
+    .local string stages, target
+
+    $I0 = exists adverbs['stages']
+    unless $I0 goto default_stages
+    stages = adverbs['stages']
+    goto stages_done
+default_stages:
+    stages = 'parse post pbc'
+stages_done:
+    $I0 = exists adverbs['target']
+    unless $I0 goto default_target
+    target = adverbs['target']
+    goto target_done
+default_target:
+    target = 'post'
+target_done:
 
     .include "test_more.pir"
     load_bytecode "pir.pbc"
@@ -15,12 +31,12 @@
     #pir::trace(4);
     .local pmc c
     c = compreg 'PIRATE'
-    $P0 = split ' ', 'parse post pbc'
+    $P0 = split ' ', stages
     c.'stages'($P0)
 
     .local pmc post
     push_eh fail
-    post = c.'compile'(code, "target" => 'post')
+    post = c.'compile'(code, "target" => target)
 
     # XXX dumper always dump to stdout...
     .local pmc o, n
@@ -28,7 +44,7 @@
     n = new ['StringHandle']
     n.'open'('foo', "w")
     setstdout n
-    c.'dumper'(post, "post")
+    c.'dumper'(post, target)
     setstdout o
 
     $S0 = n.'readall'()
