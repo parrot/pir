@@ -188,11 +188,10 @@ method fold_arithmetic($post) {
 # There is no gt_i_i_ic, so we have to swap it with lt
 method swap_gtge($post) {
     my $gtge    := / gt | ge /;
+    my $non_pmc := / i | ic | n | nc | s | sc /;
     my $pattern := POST::Pattern::Op.new(
                         :pirop($gtge),
-                        # It's totally wrong. We need "POST::Pattern::Value(:type($non_pmc))"
-                        # or something similar.
-                        POST::Pattern.new(),
+                        POST::Pattern::Value.new(:type($non_pmc)),
                         POST::Pattern.new(),
                         POST::Pattern.new()
                    );
