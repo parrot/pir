@@ -25,22 +25,13 @@ No Configure step, no Makefile generated.
     .const 'Sub' pirate_build = 'pirate_build'
     register_step('pirate_build', pirate_build)
     .const 'Sub' pirate_clean = 'pirate_clean'
-    register_step_after('pirate_build', pirate_clean)
+    register_step('pirate_clean', pirate_clean)
 
 
     $P0 = new 'Hash'
     $P0['name'] = 'pir'
     $P0['abstract'] = 'the pir compiler'
-    $P0['description'] = 'PIR compiler implemented in NQP/PCT'
-    $P6 = split ' ', 'pir hll compiler'
-    $P0['keywords'] = $P6
-    $P0['authority'] = 'http://github.com/bacek'
-    $P0['license_type'] = 'Artistic License 2.0'
-    $P0['license_uri'] = 'http://www.perlfoundation.org/artistic_license_2_0'
-    $P0['copyright_holder'] = 'Parrot Foundation'
-    $P0['checkout_uri'] = 'git://git://github.com/bacek/pir.git'
-    $P0['browser_uri'] = 'http://github.com/bacek/pir'
-    $P0['project_uri'] = 'http://github.com/bacek/pir'
+    $P0['description'] = 'the pir for Parrot VM.'
 
     # build
     $P1 = new 'Hash'
@@ -125,13 +116,7 @@ SOURCES
     $P0['test_files'] = 't/*/*.t'
 
     # Build self-hosted version
-    $P9 = new ['Hash']
-    $P9['pirate.pbc'] = 'pirate.pir'
-
-    $P9['src/PIR/Actions.pbc'] = 'src/PIR/Actions.pir'
-    $P9['src/PIR/Grammar.pbc'] = 'src/PIR/Grammar.pir'
-    $P9['src/PIR/Compiler.pbc'] = 'src/PIR/Compiler.pir'
-    $P9['src/PIR/Patterns.pbc'] = 'src/PIR/Patterns.pir'
+    $P9 = new ['OrderedHash']
 
     $P9['src/POST/Compiler.pbc'] = 'src/POST/Compiler.pir'
     $P9['src/POST/File.pbc'] = 'src/POST/File.pir'
@@ -147,6 +132,14 @@ SOURCES
     $P9['src/POST/Label.pbc'] = 'src/POST/Label.pir'
 
     $P9['src/POST/VanillaAllocator.pbc'] = 'src/POST/VanillaAllocator.pir'
+
+    $P9['src/PIR/Actions.pbc'] = 'src/PIR/Actions.pir'
+    $P9['src/PIR/Compiler.pbc'] = 'src/PIR/Compiler.pir'
+    $P9['src/PIR/Patterns.pbc'] = 'src/PIR/Patterns.pir'
+    $P9['src/PIR/Grammar.pbc'] = 'src/PIR/Grammar.pir'
+
+    $P9['pirate.pbc'] = 'pirate.pir'
+
     $P0['pirate__pbc_pir'] = $P9
 
     .tailcall setup(args :flat, $P0 :flat :named)
@@ -171,7 +164,7 @@ SOURCES
     if $I0 goto L1
     .local string cmd
     cmd = get_parrot()
-    cmd .= " pir.pbc --target=pbc --output="
+    cmd .= " pir.pbc --stagestats --target=pbc --output="
     cmd .= pbc
     cmd .= " "
     cmd .= pir
