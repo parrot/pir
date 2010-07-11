@@ -104,6 +104,18 @@ set
 get: 42
 RESULT
 
+test_post( "Register string keys", <<'CODE', <<'RESULT');
+.sub "main"
+    $P0 = new 'Hash'
+    $S0 = 'bar'
+    $P0[$S0] = "foo"
+    $S1 = $P0['bar']
+    say $S1
+.end
+CODE
+foo
+RESULT
+
 
 
 # vim: ft=perl

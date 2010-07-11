@@ -125,7 +125,7 @@ our multi method to_pbc(POST::Sub $sub, %context) {
     );
 
     if pir::defined__ip($sub.namespace) {
-        my $nskey := $sub.namespace.to_pmc(%context);
+        my $nskey := $sub.namespace.to_pmc(%context)[0];
         %sub<namespace_name>  := $nskey;
     }
 
@@ -176,10 +176,27 @@ our multi method to_pbc(POST::Op $op, %context) {
 
 our multi method to_pbc(POST::Key $key, %context) {
 
-    my $key_pmc := $key.to_pmc(%context);
+    self.debug("Want key") if $DEBUG;
+    my $key_pmc := $key.to_pmc(%context)[0];
+    self.debug("Got key") if $DEBUG;
 
     # XXX PackfileConstantTable can't Keys equivalense it. So just push it.
-    my $idx := %context<constants>.push($key_pmc);
+    # XXX PCC clone_key...
+    #my $idx := %context<constants>.push($key_pmc);
+    my $constants := %context<constants>;
+    my $idx;
+    Q:PIR {
+        .local pmc key_pmc, constants, idx
+        .local int i0
+        find_lex constants, "$constants"
+        find_lex key_pmc, "$key_pmc"
+        i0 = elements constants
+        constants[i0] = key_pmc
+
+        find_lex idx, "$idx"
+        idx = i0
+        store_lex "$idx", idx
+    };
     %context<bytecode>.push($idx);
 }
 
@@ -341,7 +358,9 @@ our multi method to_pbc(POST::Call $call, %context) {
             self.to_pbc($SUB, %context);
         }
 
-        self.build_pcc_call("get_results_pc", $call<results>, %context);
+        unless $is_tailcall {
+            self.build_pcc_call("get_results_pc", $call<results>, %context);
+        }
     }
     elsif $calltype eq 'return' {
         self.build_pcc_call("set_returns_pc", $call<params>, %context);
