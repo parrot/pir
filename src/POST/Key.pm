@@ -62,26 +62,27 @@ our method to_pmc(%context) {
 
     # XXX PCC will try to .clone fresh key. Which is totally wrong-wrong-wrong.
     my $key_pmc;
-    Q:PIR {
-        .local pmc keys, key_pmc
-        find_lex keys, "@keys"
-        find_lex key_pmc, "$key_pmc"
-        key_pmc = shift keys
-        store_lex "$key_pmc", key_pmc
-    };
-
-    while +@keys {
-        # PCC...
-        # $key_pmc.push(@keys.shift);
+    if +@keys {
         Q:PIR {
-            .local pmc keys, key_pmc, k
+            .local pmc keys, key_pmc
             find_lex keys, "@keys"
             find_lex key_pmc, "$key_pmc"
-            k = shift keys
-            push key_pmc, k
+            key_pmc = shift keys
+            store_lex "$key_pmc", key_pmc
         };
-    }
 
+        while +@keys {
+            # PCC...
+            # $key_pmc.push(@keys.shift);
+            Q:PIR {
+                .local pmc keys, key_pmc, k
+                find_lex keys, "@keys"
+                find_lex key_pmc, "$key_pmc"
+                k = shift keys
+                push key_pmc, k
+            };
+        }
+    }
 
     my @res;
     Q:PIR {
