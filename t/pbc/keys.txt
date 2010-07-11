@@ -116,6 +116,19 @@ CODE
 foo
 RESULT
 
+test_post( "Register integer keys", <<'CODE', <<'RESULT');
+.sub "main"
+    .local int idx
+    $P0 = new 'ResizableIntegerArray'
+    idx = 1
+    $P0[idx] = 42
+    $S1 = $P0[1]
+    say $S1
+.end
+CODE
+42
+RESULT
+
 test_post( "Named register works", <<'CODE', <<'RESULT');
 .sub "main"
     .local string key

@@ -36,6 +36,8 @@ our method to_pmc(%context) {
             $type := %context<sub>.symbol($part.name).type;
         }
 
+        pir::die("Can't find type for { $part.name }") unless $type;
+
         if $type eq 'sc' {
             my $k := pir::new__ps('Key');
             $k.set_str(~$part.value);
@@ -60,8 +62,21 @@ our method to_pmc(%context) {
                 push keys, k
             };
         }
+        elsif $type eq 'i' {
+            my $k := pir::new__ps('Key');
+            my $regno := %context<sub>.symbol($part.name).regno;
+            $k.set_register($regno, 0x01);
+            # PCC...
+            #@keys.push($k);
+            Q:PIR {
+                .local pmc keys, k
+                find_lex keys, "@keys"
+                find_lex k, "$k"
+                push keys, k
+            };
+        }
         else {
-            pir::die("unknown key type: { $part.type }");
+            pir::die("unknown key type: { $type }");
         }
     }
 
