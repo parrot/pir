@@ -126,7 +126,9 @@ our multi method to_pbc(POST::Sub $sub, %context) {
 
     if pir::defined__ip($sub.namespace) {
         my $nskey := $sub.namespace.to_pmc(%context)[0];
-        %sub<namespace_name>  := $nskey;
+        if pir::typeof__sp($nskey) eq 'Key' {
+            %sub<namespace_name>  := $nskey;
+        }
     }
 
     # and store it in PackfileConstantTable
