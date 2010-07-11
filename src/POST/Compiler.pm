@@ -125,7 +125,7 @@ our multi method to_pbc(POST::Sub $sub, %context) {
     );
 
     if pir::defined__ip($sub.namespace) {
-        my $nskey := $sub.namespace.to_pmc(%context<constants>);
+        my $nskey := $sub.namespace.to_pmc(%context);
         %sub<namespace_name>  := $nskey;
     }
 
@@ -176,7 +176,7 @@ our multi method to_pbc(POST::Op $op, %context) {
 
 our multi method to_pbc(POST::Key $key, %context) {
 
-    my $key_pmc := $key.to_pmc(%context<constants>);
+    my $key_pmc := $key.to_pmc(%context);
 
     # XXX PackfileConstantTable can't Keys equivalense it. So just push it.
     my $idx := %context<constants>.push($key_pmc);
