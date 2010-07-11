@@ -31,6 +31,11 @@ our method to_pmc(%context) {
     for @(self) -> $part {
         my $type := $part.type;
 
+        # If there is not type - lookup for symbol.
+        unless $type {
+            $type := %context<sub>.symbol($part.name).type;
+        }
+
         if $type eq 'sc' {
             my $k := pir::new__ps('Key');
             $k.set_str(~$part.value);

@@ -116,6 +116,20 @@ CODE
 foo
 RESULT
 
+test_post( "Named register works", <<'CODE', <<'RESULT');
+.sub "main"
+    .local string key
+    $P0 = new 'Hash'
+    key = 'bar'
+    $P0[key] = "foo"
+    $S1 = $P0['bar']
+    say $S1
+.end
+CODE
+foo
+RESULT
+
+
 
 
 # vim: ft=perl
