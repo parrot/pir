@@ -514,7 +514,7 @@ token heredoc_start {
 
 proto token quote { <...> }
 token quote:sym<apos> { <?[\']> <quote_EXPR: ':q'>  }
-token quote:sym<dblq> { <?[\"]> <quote_EXPR: ':q'> }
+token quote:sym<dblq> { <?[\"]> <quote_EXPR: ':qq'> }
 
 token nl { \v+ }
 
