@@ -47,6 +47,7 @@ No Configure step, no Makefile generated.
     $P1['src/PIR/Actions.pir']  = 'src/PIR/Actions.pm'
     $P1['src/PIR/Grammar.pir']  = 'src/PIR/Grammar.pm'
     $P1['src/PIR/Compiler.pir'] = 'src/PIR/Compiler.pm'
+    $P1['src/PIR/Optimizer.pir']= 'src/PIR/Optimizer.pm'
     $P1['src/PIR/Patterns.pir'] = 'src/PIR/Patterns.pm'
 
     $P1['src/POST/Compiler.pir'] = 'src/POST/Compiler.pm'
@@ -81,6 +82,7 @@ pir.pir
 src/PIR/Actions.pir
 src/PIR/Grammar.pir
 src/PIR/Compiler.pir
+src/PIR/Optimizer.pir
 src/PIR/Patterns.pir
 
 src/POST/Compiler.pir
@@ -144,6 +146,7 @@ SOURCES
 
     $P9['src/PIR/Actions.pbc'] = 'src/PIR/Actions.pir'
     $P9['src/PIR/Compiler.pbc'] = 'src/PIR/Compiler.pir'
+    $P9['src/PIR/Optimizer.pbc'] = 'src/PIR/Optimizer.pir'
     $P9['src/PIR/Patterns.pbc'] = 'src/PIR/Patterns.pir'
     $P9['src/PIR/Grammar.pbc'] = 'src/PIR/Grammar.pir'
 

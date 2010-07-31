@@ -22,6 +22,7 @@
 .include 'src/PIR/Actions.pir'
 .include 'src/PIR/Grammar.pir'
 .include 'src/PIR/Compiler.pir'
+.include 'src/PIR/Optimizer.pir'
 .include 'src/PIR/Patterns.pir'
 
 #.HLL 'parrot'
@@ -45,12 +46,9 @@
 
     .local pmc stages
     # We actually create POST tree from Parse.
-    stages = split ' ', 'parse post pbc'
+    stages = split ' ', 'parse post optimizepost pbc'
     $P0 = compreg 'PIRATE'
     $P0.'stages'(stages)
-    $P0.'addstage'('eliminate_constant_conditional', 'before'=>'pbc')
-    $P0.'addstage'('fold_arithmetic', 'before'=>'pbc')
-    $P0.'addstage'('swap_gtge', 'before'=>'pbc')
     $P0.'command_line'(args)
     exit 0
 .end

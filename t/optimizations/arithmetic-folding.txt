@@ -1,15 +1,15 @@
-test_post("add_i_ic_ic", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("add_i_ic_ic", <<'CODE', <<'RESULT', "stages" => "parse post optimizepost pbc", "target" => "optimizepost");
 .sub main :main
     $I0 = 1 + 1
     say $I0
 .end
 CODE
-"fold_arithmetic" => PMC 'POST;File'  {
+"optimizepost" => PMC 'POST;File'  {
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
             <main> => 1
-            <name> => \fold_arithmetic
+            <name> => \optimizepost
             <symtable> => Hash {
                 "$I0" => PMC 'POST;Register'  {
                     <name> => "$I0"
@@ -30,22 +30,22 @@ CODE
             [1] => PMC 'POST;Op'  {
                 <pirop> => "say"
                 [0] => PMC 'POST;Value'  {
-                    <name> => \fold_arithmetic["main"]["$I0"]
-                    <type> => \fold_arithmetic["main"]["$I0"]
+                    <name> => \optimizepost["main"]["$I0"]
+                    <type> => \optimizepost["main"]["$I0"]
                 }
             }
         }
     }
-    [0] => \fold_arithmetic["main"]
+    [0] => \optimizepost["main"]
 }
 RESULT
-test_post("add_n_nc_ic", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("add_n_nc_ic", <<'CODE', <<'RESULT', "stages" => "parse post optimizepost pbc", "target" => "optimizepost");
 .sub main :main
     $N0 = 1.0 + 1
     say $N0
 .end
 CODE
-"fold_arithmetic" => PMC 'POST;File'  {
+"optimizepost" => PMC 'POST;File'  {
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
@@ -71,22 +71,22 @@ CODE
             [1] => PMC 'POST;Op'  {
                 <pirop> => "say"
                 [0] => PMC 'POST;Value'  {
-                    <name> => \fold_arithmetic["main"]["$N0"]
-                    <type> => \fold_arithmetic["main"]["$N0"]
+                    <name> => \optimizepost["main"]["$N0"]
+                    <type> => \optimizepost["main"]["$N0"]
                 }
             }
         }
     }
-    [0] => \fold_arithmetic["main"]
+    [0] => \optimizepost["main"]
 }
 RESULT
-test_post("add_n_ic_nc", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("add_n_ic_nc", <<'CODE', <<'RESULT', "stages" => "parse post optimizepost pbc", "target" => "optimizepost");
 .sub main :main
     $N0 = 1 + 1.0
     say $N0
 .end
 CODE
-"fold_arithmetic" => PMC 'POST;File'  {
+"optimizepost" => PMC 'POST;File'  {
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
@@ -112,22 +112,22 @@ CODE
             [1] => PMC 'POST;Op'  {
                 <pirop> => "say"
                 [0] => PMC 'POST;Value'  {
-                    <name> => \fold_arithmetic["main"]["$N0"]
-                    <type> => \fold_arithmetic["main"]["$N0"]
+                    <name> => \optimizepost["main"]["$N0"]
+                    <type> => \optimizepost["main"]["$N0"]
                 }
             }
         }
     }
-    [0] => \fold_arithmetic["main"]
+    [0] => \optimizepost["main"]
 }
 RESULT
-test_post("add_n_nc_nc", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("add_n_nc_nc", <<'CODE', <<'RESULT', "stages" => "parse post optimizepost pbc", "target" => "optimizepost");
 .sub main :main
     $N0 = 1.0 + 1.0
     say $N0
 .end
 CODE
-"fold_arithmetic" => PMC 'POST;File'  {
+"optimizepost" => PMC 'POST;File'  {
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
@@ -153,22 +153,22 @@ CODE
             [1] => PMC 'POST;Op'  {
                 <pirop> => "say"
                 [0] => PMC 'POST;Value'  {
-                    <name> => \fold_arithmetic["main"]["$N0"]
-                    <type> => \fold_arithmetic["main"]["$N0"]
+                    <name> => \optimizepost["main"]["$N0"]
+                    <type> => \optimizepost["main"]["$N0"]
                 }
             }
         }
     }
-    [0] => \fold_arithmetic["main"]
+    [0] => \optimizepost["main"]
 }
 RESULT
-test_post("sub_i_ic_ic", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("sub_i_ic_ic", <<'CODE', <<'RESULT', "stages" => "parse post optimizepost pbc", "target" => "optimizepost");
 .sub main :main
     $I0 = 2 - 1
     say $I0
 .end
 CODE
-"fold_arithmetic" => PMC 'POST;File'  {
+"optimizepost" => PMC 'POST;File'  {
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
@@ -194,22 +194,22 @@ CODE
             [1] => PMC 'POST;Op'  {
                 <pirop> => "say"
                 [0] => PMC 'POST;Value'  {
-                    <name> => \fold_arithmetic["main"]["$I0"]
-                    <type> => \fold_arithmetic["main"]["$I0"]
+                    <name> => \optimizepost["main"]["$I0"]
+                    <type> => \optimizepost["main"]["$I0"]
                 }
             }
         }
     }
-    [0] => \fold_arithmetic["main"]
+    [0] => \optimizepost["main"]
 }
 RESULT
-test_post("sub_n_nc_ic", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("sub_n_nc_ic", <<'CODE', <<'RESULT', "stages" => "parse post optimizepost pbc", "target" => "optimizepost");
 .sub main :main
     $N0 = 2.0 - 1
     say $N0
 .end
 CODE
-"fold_arithmetic" => PMC 'POST;File'  {
+"optimizepost" => PMC 'POST;File'  {
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
@@ -235,22 +235,22 @@ CODE
             [1] => PMC 'POST;Op'  {
                 <pirop> => "say"
                 [0] => PMC 'POST;Value'  {
-                    <name> => \fold_arithmetic["main"]["$N0"]
-                    <type> => \fold_arithmetic["main"]["$N0"]
+                    <name> => \optimizepost["main"]["$N0"]
+                    <type> => \optimizepost["main"]["$N0"]
                 }
             }
         }
     }
-    [0] => \fold_arithmetic["main"]
+    [0] => \optimizepost["main"]
 }
 RESULT
-test_post("sub_n_ic_nc", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("sub_n_ic_nc", <<'CODE', <<'RESULT', "stages" => "parse post optimizepost pbc", "target" => "optimizepost");
 .sub main :main
     $N0 = 2 - 1.0
     say $N0
 .end
 CODE
-"fold_arithmetic" => PMC 'POST;File'  {
+"optimizepost" => PMC 'POST;File'  {
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
@@ -276,22 +276,22 @@ CODE
             [1] => PMC 'POST;Op'  {
                 <pirop> => "say"
                 [0] => PMC 'POST;Value'  {
-                    <name> => \fold_arithmetic["main"]["$N0"]
-                    <type> => \fold_arithmetic["main"]["$N0"]
+                    <name> => \optimizepost["main"]["$N0"]
+                    <type> => \optimizepost["main"]["$N0"]
                 }
             }
         }
     }
-    [0] => \fold_arithmetic["main"]
+    [0] => \optimizepost["main"]
 }
 RESULT
-test_post("sub_n_nc_nc", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("sub_n_nc_nc", <<'CODE', <<'RESULT', "stages" => "parse post optimizepost pbc", "target" => "optimizepost");
 .sub main :main
     $N0 = 2.0 - 1.0
     say $N0
 .end
 CODE
-"fold_arithmetic" => PMC 'POST;File'  {
+"optimizepost" => PMC 'POST;File'  {
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
@@ -317,22 +317,22 @@ CODE
             [1] => PMC 'POST;Op'  {
                 <pirop> => "say"
                 [0] => PMC 'POST;Value'  {
-                    <name> => \fold_arithmetic["main"]["$N0"]
-                    <type> => \fold_arithmetic["main"]["$N0"]
+                    <name> => \optimizepost["main"]["$N0"]
+                    <type> => \optimizepost["main"]["$N0"]
                 }
             }
         }
     }
-    [0] => \fold_arithmetic["main"]
+    [0] => \optimizepost["main"]
 }
 RESULT
-test_post("mul_i_ic_ic", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("mul_i_ic_ic", <<'CODE', <<'RESULT', "stages" => "parse post optimizepost pbc", "target" => "optimizepost");
 .sub main :main
     $I0 = 2 * 1
     say $I0
 .end
 CODE
-"fold_arithmetic" => PMC 'POST;File'  {
+"optimizepost" => PMC 'POST;File'  {
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
@@ -358,22 +358,22 @@ CODE
             [1] => PMC 'POST;Op'  {
                 <pirop> => "say"
                 [0] => PMC 'POST;Value'  {
-                    <name> => \fold_arithmetic["main"]["$I0"]
-                    <type> => \fold_arithmetic["main"]["$I0"]
+                    <name> => \optimizepost["main"]["$I0"]
+                    <type> => \optimizepost["main"]["$I0"]
                 }
             }
         }
     }
-    [0] => \fold_arithmetic["main"]
+    [0] => \optimizepost["main"]
 }
 RESULT
-test_post("mul_n_nc_ic", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("mul_n_nc_ic", <<'CODE', <<'RESULT', "stages" => "parse post optimizepost pbc", "target" => "optimizepost");
 .sub main :main
     $N0 = 2.0 * 1
     say $N0
 .end
 CODE
-"fold_arithmetic" => PMC 'POST;File'  {
+"optimizepost" => PMC 'POST;File'  {
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
@@ -399,22 +399,22 @@ CODE
             [1] => PMC 'POST;Op'  {
                 <pirop> => "say"
                 [0] => PMC 'POST;Value'  {
-                    <name> => \fold_arithmetic["main"]["$N0"]
-                    <type> => \fold_arithmetic["main"]["$N0"]
+                    <name> => \optimizepost["main"]["$N0"]
+                    <type> => \optimizepost["main"]["$N0"]
                 }
             }
         }
     }
-    [0] => \fold_arithmetic["main"]
+    [0] => \optimizepost["main"]
 }
 RESULT
-test_post("mul_n_ic_nc", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("mul_n_ic_nc", <<'CODE', <<'RESULT', "stages" => "parse post optimizepost pbc", "target" => "optimizepost");
 .sub main :main
     $N0 = 2 * 1.0
     say $N0
 .end
 CODE
-"fold_arithmetic" => PMC 'POST;File'  {
+"optimizepost" => PMC 'POST;File'  {
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
@@ -440,22 +440,22 @@ CODE
             [1] => PMC 'POST;Op'  {
                 <pirop> => "say"
                 [0] => PMC 'POST;Value'  {
-                    <name> => \fold_arithmetic["main"]["$N0"]
-                    <type> => \fold_arithmetic["main"]["$N0"]
+                    <name> => \optimizepost["main"]["$N0"]
+                    <type> => \optimizepost["main"]["$N0"]
                 }
             }
         }
     }
-    [0] => \fold_arithmetic["main"]
+    [0] => \optimizepost["main"]
 }
 RESULT
-test_post("mul_n_nc_nc", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("mul_n_nc_nc", <<'CODE', <<'RESULT', "stages" => "parse post optimizepost pbc", "target" => "optimizepost");
 .sub main :main
     $N0 = 2.0 * 1.0
     say $N0
 .end
 CODE
-"fold_arithmetic" => PMC 'POST;File'  {
+"optimizepost" => PMC 'POST;File'  {
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
@@ -481,22 +481,22 @@ CODE
             [1] => PMC 'POST;Op'  {
                 <pirop> => "say"
                 [0] => PMC 'POST;Value'  {
-                    <name> => \fold_arithmetic["main"]["$N0"]
-                    <type> => \fold_arithmetic["main"]["$N0"]
+                    <name> => \optimizepost["main"]["$N0"]
+                    <type> => \optimizepost["main"]["$N0"]
                 }
             }
         }
     }
-    [0] => \fold_arithmetic["main"]
+    [0] => \optimizepost["main"]
 }
 RESULT
-test_post("div_i_ic_ic", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("div_i_ic_ic", <<'CODE', <<'RESULT', "stages" => "parse post optimizepost pbc", "target" => "optimizepost");
 .sub main :main
     $I0 = 3 / 2
     say $I0
 .end
 CODE
-"fold_arithmetic" => PMC 'POST;File'  {
+"optimizepost" => PMC 'POST;File'  {
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
@@ -522,22 +522,22 @@ CODE
             [1] => PMC 'POST;Op'  {
                 <pirop> => "say"
                 [0] => PMC 'POST;Value'  {
-                    <name> => \fold_arithmetic["main"]["$I0"]
-                    <type> => \fold_arithmetic["main"]["$I0"]
+                    <name> => \optimizepost["main"]["$I0"]
+                    <type> => \optimizepost["main"]["$I0"]
                 }
             }
         }
     }
-    [0] => \fold_arithmetic["main"]
+    [0] => \optimizepost["main"]
 }
 RESULT
-test_post("div_n_nc_ic", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("div_n_nc_ic", <<'CODE', <<'RESULT', "stages" => "parse post optimizepost pbc", "target" => "optimizepost");
 .sub main :main
     $N0 = 3.0 / 2
     say $N0
 .end
 CODE
-"fold_arithmetic" => PMC 'POST;File'  {
+"optimizepost" => PMC 'POST;File'  {
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
@@ -563,22 +563,22 @@ CODE
             [1] => PMC 'POST;Op'  {
                 <pirop> => "say"
                 [0] => PMC 'POST;Value'  {
-                    <name> => \fold_arithmetic["main"]["$N0"]
-                    <type> => \fold_arithmetic["main"]["$N0"]
+                    <name> => \optimizepost["main"]["$N0"]
+                    <type> => \optimizepost["main"]["$N0"]
                 }
             }
         }
     }
-    [0] => \fold_arithmetic["main"]
+    [0] => \optimizepost["main"]
 }
 RESULT
-test_post("div_n_ic_nc", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("div_n_ic_nc", <<'CODE', <<'RESULT', "stages" => "parse post optimizepost pbc", "target" => "optimizepost");
 .sub main :main
     $N0 = 3 / 2.0
     say $N0
 .end
 CODE
-"fold_arithmetic" => PMC 'POST;File'  {
+"optimizepost" => PMC 'POST;File'  {
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
@@ -604,22 +604,22 @@ CODE
             [1] => PMC 'POST;Op'  {
                 <pirop> => "say"
                 [0] => PMC 'POST;Value'  {
-                    <name> => \fold_arithmetic["main"]["$N0"]
-                    <type> => \fold_arithmetic["main"]["$N0"]
+                    <name> => \optimizepost["main"]["$N0"]
+                    <type> => \optimizepost["main"]["$N0"]
                 }
             }
         }
     }
-    [0] => \fold_arithmetic["main"]
+    [0] => \optimizepost["main"]
 }
 RESULT
-test_post("div_n_nc_nc", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("div_n_nc_nc", <<'CODE', <<'RESULT', "stages" => "parse post optimizepost pbc", "target" => "optimizepost");
 .sub main :main
     $N0 = 3.0 / 2.0
     say $N0
 .end
 CODE
-"fold_arithmetic" => PMC 'POST;File'  {
+"optimizepost" => PMC 'POST;File'  {
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
@@ -645,22 +645,22 @@ CODE
             [1] => PMC 'POST;Op'  {
                 <pirop> => "say"
                 [0] => PMC 'POST;Value'  {
-                    <name> => \fold_arithmetic["main"]["$N0"]
-                    <type> => \fold_arithmetic["main"]["$N0"]
+                    <name> => \optimizepost["main"]["$N0"]
+                    <type> => \optimizepost["main"]["$N0"]
                 }
             }
         }
     }
-    [0] => \fold_arithmetic["main"]
+    [0] => \optimizepost["main"]
 }
 RESULT
-test_post("fdiv_i_ic_ic", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("fdiv_i_ic_ic", <<'CODE', <<'RESULT', "stages" => "parse post optimizepost pbc", "target" => "optimizepost");
 .sub main :main
     $I0 = fdiv 3, 2
     say $I0
 .end
 CODE
-"fold_arithmetic" => PMC 'POST;File'  {
+"optimizepost" => PMC 'POST;File'  {
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
@@ -686,22 +686,22 @@ CODE
             [1] => PMC 'POST;Op'  {
                 <pirop> => "say"
                 [0] => PMC 'POST;Value'  {
-                    <name> => \fold_arithmetic["main"]["$I0"]
-                    <type> => \fold_arithmetic["main"]["$I0"]
+                    <name> => \optimizepost["main"]["$I0"]
+                    <type> => \optimizepost["main"]["$I0"]
                 }
             }
         }
     }
-    [0] => \fold_arithmetic["main"]
+    [0] => \optimizepost["main"]
 }
 RESULT
-test_post("fdiv_n_nc_ic", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("fdiv_n_nc_ic", <<'CODE', <<'RESULT', "stages" => "parse post optimizepost pbc", "target" => "optimizepost");
 .sub main :main
     $N0 = fdiv 3.0, 2
     say $N0
 .end
 CODE
-"fold_arithmetic" => PMC 'POST;File'  {
+"optimizepost" => PMC 'POST;File'  {
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
@@ -727,22 +727,22 @@ CODE
             [1] => PMC 'POST;Op'  {
                 <pirop> => "say"
                 [0] => PMC 'POST;Value'  {
-                    <name> => \fold_arithmetic["main"]["$N0"]
-                    <type> => \fold_arithmetic["main"]["$N0"]
+                    <name> => \optimizepost["main"]["$N0"]
+                    <type> => \optimizepost["main"]["$N0"]
                 }
             }
         }
     }
-    [0] => \fold_arithmetic["main"]
+    [0] => \optimizepost["main"]
 }
 RESULT
-test_post("fdiv_n_ic_nc", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("fdiv_n_ic_nc", <<'CODE', <<'RESULT', "stages" => "parse post optimizepost pbc", "target" => "optimizepost");
 .sub main :main
     $N0 = fdiv 3, 2.0
     say $N0
 .end
 CODE
-"fold_arithmetic" => PMC 'POST;File'  {
+"optimizepost" => PMC 'POST;File'  {
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
@@ -768,22 +768,22 @@ CODE
             [1] => PMC 'POST;Op'  {
                 <pirop> => "say"
                 [0] => PMC 'POST;Value'  {
-                    <name> => \fold_arithmetic["main"]["$N0"]
-                    <type> => \fold_arithmetic["main"]["$N0"]
+                    <name> => \optimizepost["main"]["$N0"]
+                    <type> => \optimizepost["main"]["$N0"]
                 }
             }
         }
     }
-    [0] => \fold_arithmetic["main"]
+    [0] => \optimizepost["main"]
 }
 RESULT
-test_post("fdiv_n_nc_nc", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("fdiv_n_nc_nc", <<'CODE', <<'RESULT', "stages" => "parse post optimizepost pbc", "target" => "optimizepost");
 .sub main :main
     $N0 = fdiv 3.0, 2.0
     say $N0
 .end
 CODE
-"fold_arithmetic" => PMC 'POST;File'  {
+"optimizepost" => PMC 'POST;File'  {
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
@@ -809,22 +809,22 @@ CODE
             [1] => PMC 'POST;Op'  {
                 <pirop> => "say"
                 [0] => PMC 'POST;Value'  {
-                    <name> => \fold_arithmetic["main"]["$N0"]
-                    <type> => \fold_arithmetic["main"]["$N0"]
+                    <name> => \optimizepost["main"]["$N0"]
+                    <type> => \optimizepost["main"]["$N0"]
                 }
             }
         }
     }
-    [0] => \fold_arithmetic["main"]
+    [0] => \optimizepost["main"]
 }
 RESULT
-test_post("mod_i_ic_ic", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("mod_i_ic_ic", <<'CODE', <<'RESULT', "stages" => "parse post optimizepost pbc", "target" => "optimizepost");
 .sub main :main
     $I0 = mod 3, 2
     say $I0
 .end
 CODE
-"fold_arithmetic" => PMC 'POST;File'  {
+"optimizepost" => PMC 'POST;File'  {
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
@@ -850,22 +850,22 @@ CODE
             [1] => PMC 'POST;Op'  {
                 <pirop> => "say"
                 [0] => PMC 'POST;Value'  {
-                    <name> => \fold_arithmetic["main"]["$I0"]
-                    <type> => \fold_arithmetic["main"]["$I0"]
+                    <name> => \optimizepost["main"]["$I0"]
+                    <type> => \optimizepost["main"]["$I0"]
                 }
             }
         }
     }
-    [0] => \fold_arithmetic["main"]
+    [0] => \optimizepost["main"]
 }
 RESULT
-test_post("mod_n_nc_ic", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("mod_n_nc_ic", <<'CODE', <<'RESULT', "stages" => "parse post optimizepost pbc", "target" => "optimizepost");
 .sub main :main
     $N0 = mod 3.0, 2
     say $N0
 .end
 CODE
-"fold_arithmetic" => PMC 'POST;File'  {
+"optimizepost" => PMC 'POST;File'  {
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
@@ -891,22 +891,22 @@ CODE
             [1] => PMC 'POST;Op'  {
                 <pirop> => "say"
                 [0] => PMC 'POST;Value'  {
-                    <name> => \fold_arithmetic["main"]["$N0"]
-                    <type> => \fold_arithmetic["main"]["$N0"]
+                    <name> => \optimizepost["main"]["$N0"]
+                    <type> => \optimizepost["main"]["$N0"]
                 }
             }
         }
     }
-    [0] => \fold_arithmetic["main"]
+    [0] => \optimizepost["main"]
 }
 RESULT
-test_post("mod_n_ic_nc", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("mod_n_ic_nc", <<'CODE', <<'RESULT', "stages" => "parse post optimizepost pbc", "target" => "optimizepost");
 .sub main :main
     $N0 = mod 3, 2.0
     say $N0
 .end
 CODE
-"fold_arithmetic" => PMC 'POST;File'  {
+"optimizepost" => PMC 'POST;File'  {
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
@@ -932,22 +932,22 @@ CODE
             [1] => PMC 'POST;Op'  {
                 <pirop> => "say"
                 [0] => PMC 'POST;Value'  {
-                    <name> => \fold_arithmetic["main"]["$N0"]
-                    <type> => \fold_arithmetic["main"]["$N0"]
+                    <name> => \optimizepost["main"]["$N0"]
+                    <type> => \optimizepost["main"]["$N0"]
                 }
             }
         }
     }
-    [0] => \fold_arithmetic["main"]
+    [0] => \optimizepost["main"]
 }
 RESULT
-test_post("mod_n_nc_nc", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("mod_n_nc_nc", <<'CODE', <<'RESULT', "stages" => "parse post optimizepost pbc", "target" => "optimizepost");
 .sub main :main
     $N0 = mod 3.0, 2.0
     say $N0
 .end
 CODE
-"fold_arithmetic" => PMC 'POST;File'  {
+"optimizepost" => PMC 'POST;File'  {
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
@@ -973,22 +973,22 @@ CODE
             [1] => PMC 'POST;Op'  {
                 <pirop> => "say"
                 [0] => PMC 'POST;Value'  {
-                    <name> => \fold_arithmetic["main"]["$N0"]
-                    <type> => \fold_arithmetic["main"]["$N0"]
+                    <name> => \optimizepost["main"]["$N0"]
+                    <type> => \optimizepost["main"]["$N0"]
                 }
             }
         }
     }
-    [0] => \fold_arithmetic["main"]
+    [0] => \optimizepost["main"]
 }
 RESULT
-test_post("abs_i_ic", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("abs_i_ic", <<'CODE', <<'RESULT', "stages" => "parse post optimizepost pbc", "target" => "optimizepost");
 .sub main :main
     $I0 = abs -5
     say $I0
 .end
 CODE
-"fold_arithmetic" => PMC 'POST;File'  {
+"optimizepost" => PMC 'POST;File'  {
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
@@ -1014,22 +1014,22 @@ CODE
             [1] => PMC 'POST;Op'  {
                 <pirop> => "say"
                 [0] => PMC 'POST;Value'  {
-                    <name> => \fold_arithmetic["main"]["$I0"]
-                    <type> => \fold_arithmetic["main"]["$I0"]
+                    <name> => \optimizepost["main"]["$I0"]
+                    <type> => \optimizepost["main"]["$I0"]
                 }
             }
         }
     }
-    [0] => \fold_arithmetic["main"]
+    [0] => \optimizepost["main"]
 }
 RESULT
-test_post("abs_n_ic", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("abs_n_ic", <<'CODE', <<'RESULT', "stages" => "parse post optimizepost pbc", "target" => "optimizepost");
 .sub main :main
     $N0 = abs -5
     say $N0
 .end
 CODE
-"fold_arithmetic" => PMC 'POST;File'  {
+"optimizepost" => PMC 'POST;File'  {
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
@@ -1055,22 +1055,22 @@ CODE
             [1] => PMC 'POST;Op'  {
                 <pirop> => "say"
                 [0] => PMC 'POST;Value'  {
-                    <name> => \fold_arithmetic["main"]["$N0"]
-                    <type> => \fold_arithmetic["main"]["$N0"]
+                    <name> => \optimizepost["main"]["$N0"]
+                    <type> => \optimizepost["main"]["$N0"]
                 }
             }
         }
     }
-    [0] => \fold_arithmetic["main"]
+    [0] => \optimizepost["main"]
 }
 RESULT
-test_post("abs_n_nc", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("abs_n_nc", <<'CODE', <<'RESULT', "stages" => "parse post optimizepost pbc", "target" => "optimizepost");
 .sub main :main
     $N0 = abs -5.0
     say $N0
 .end
 CODE
-"fold_arithmetic" => PMC 'POST;File'  {
+"optimizepost" => PMC 'POST;File'  {
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
@@ -1096,22 +1096,22 @@ CODE
             [1] => PMC 'POST;Op'  {
                 <pirop> => "say"
                 [0] => PMC 'POST;Value'  {
-                    <name> => \fold_arithmetic["main"]["$N0"]
-                    <type> => \fold_arithmetic["main"]["$N0"]
+                    <name> => \optimizepost["main"]["$N0"]
+                    <type> => \optimizepost["main"]["$N0"]
                 }
             }
         }
     }
-    [0] => \fold_arithmetic["main"]
+    [0] => \optimizepost["main"]
 }
 RESULT
-test_post("neg_i_ic", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("neg_i_ic", <<'CODE', <<'RESULT', "stages" => "parse post optimizepost pbc", "target" => "optimizepost");
 .sub main :main
     $I0 = neg -5
     say $I0
 .end
 CODE
-"fold_arithmetic" => PMC 'POST;File'  {
+"optimizepost" => PMC 'POST;File'  {
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
@@ -1137,22 +1137,22 @@ CODE
             [1] => PMC 'POST;Op'  {
                 <pirop> => "say"
                 [0] => PMC 'POST;Value'  {
-                    <name> => \fold_arithmetic["main"]["$I0"]
-                    <type> => \fold_arithmetic["main"]["$I0"]
+                    <name> => \optimizepost["main"]["$I0"]
+                    <type> => \optimizepost["main"]["$I0"]
                 }
             }
         }
     }
-    [0] => \fold_arithmetic["main"]
+    [0] => \optimizepost["main"]
 }
 RESULT
-test_post("neg_n_ic", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("neg_n_ic", <<'CODE', <<'RESULT', "stages" => "parse post optimizepost pbc", "target" => "optimizepost");
 .sub main :main
     $N0 = neg -5
     say $N0
 .end
 CODE
-"fold_arithmetic" => PMC 'POST;File'  {
+"optimizepost" => PMC 'POST;File'  {
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
@@ -1178,22 +1178,22 @@ CODE
             [1] => PMC 'POST;Op'  {
                 <pirop> => "say"
                 [0] => PMC 'POST;Value'  {
-                    <name> => \fold_arithmetic["main"]["$N0"]
-                    <type> => \fold_arithmetic["main"]["$N0"]
+                    <name> => \optimizepost["main"]["$N0"]
+                    <type> => \optimizepost["main"]["$N0"]
                 }
             }
         }
     }
-    [0] => \fold_arithmetic["main"]
+    [0] => \optimizepost["main"]
 }
 RESULT
-test_post("neg_n_nc", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("neg_n_nc", <<'CODE', <<'RESULT', "stages" => "parse post optimizepost pbc", "target" => "optimizepost");
 .sub main :main
     $N0 = neg -5.0
     say $N0
 .end
 CODE
-"fold_arithmetic" => PMC 'POST;File'  {
+"optimizepost" => PMC 'POST;File'  {
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
@@ -1219,22 +1219,22 @@ CODE
             [1] => PMC 'POST;Op'  {
                 <pirop> => "say"
                 [0] => PMC 'POST;Value'  {
-                    <name> => \fold_arithmetic["main"]["$N0"]
-                    <type> => \fold_arithmetic["main"]["$N0"]
+                    <name> => \optimizepost["main"]["$N0"]
+                    <type> => \optimizepost["main"]["$N0"]
                 }
             }
         }
     }
-    [0] => \fold_arithmetic["main"]
+    [0] => \optimizepost["main"]
 }
 RESULT
-test_post("sqrt_n_nc", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("sqrt_n_nc", <<'CODE', <<'RESULT', "stages" => "parse post optimizepost pbc", "target" => "optimizepost");
 .sub main :main
     $N0 = sqrt 4.0
     say $N0
 .end
 CODE
-"fold_arithmetic" => PMC 'POST;File'  {
+"optimizepost" => PMC 'POST;File'  {
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
@@ -1260,22 +1260,22 @@ CODE
             [1] => PMC 'POST;Op'  {
                 <pirop> => "say"
                 [0] => PMC 'POST;Value'  {
-                    <name> => \fold_arithmetic["main"]["$N0"]
-                    <type> => \fold_arithmetic["main"]["$N0"]
+                    <name> => \optimizepost["main"]["$N0"]
+                    <type> => \optimizepost["main"]["$N0"]
                 }
             }
         }
     }
-    [0] => \fold_arithmetic["main"]
+    [0] => \optimizepost["main"]
 }
 RESULT
-test_post("ceil_i_ic", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("ceil_i_ic", <<'CODE', <<'RESULT', "stages" => "parse post optimizepost pbc", "target" => "optimizepost");
 .sub main :main
     $I0 = ceil 2
     say $I0
 .end
 CODE
-"fold_arithmetic" => PMC 'POST;File'  {
+"optimizepost" => PMC 'POST;File'  {
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
@@ -1301,22 +1301,22 @@ CODE
             [1] => PMC 'POST;Op'  {
                 <pirop> => "say"
                 [0] => PMC 'POST;Value'  {
-                    <name> => \fold_arithmetic["main"]["$I0"]
-                    <type> => \fold_arithmetic["main"]["$I0"]
+                    <name> => \optimizepost["main"]["$I0"]
+                    <type> => \optimizepost["main"]["$I0"]
                 }
             }
         }
     }
-    [0] => \fold_arithmetic["main"]
+    [0] => \optimizepost["main"]
 }
 RESULT
-test_post("ceil_n_ic", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("ceil_n_ic", <<'CODE', <<'RESULT', "stages" => "parse post optimizepost pbc", "target" => "optimizepost");
 .sub main :main
     $N0 = ceil 2
     say $N0
 .end
 CODE
-"fold_arithmetic" => PMC 'POST;File'  {
+"optimizepost" => PMC 'POST;File'  {
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
@@ -1342,22 +1342,22 @@ CODE
             [1] => PMC 'POST;Op'  {
                 <pirop> => "say"
                 [0] => PMC 'POST;Value'  {
-                    <name> => \fold_arithmetic["main"]["$N0"]
-                    <type> => \fold_arithmetic["main"]["$N0"]
+                    <name> => \optimizepost["main"]["$N0"]
+                    <type> => \optimizepost["main"]["$N0"]
                 }
             }
         }
     }
-    [0] => \fold_arithmetic["main"]
+    [0] => \optimizepost["main"]
 }
 RESULT
-test_post("ceil_n_nc", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("ceil_n_nc", <<'CODE', <<'RESULT', "stages" => "parse post optimizepost pbc", "target" => "optimizepost");
 .sub main :main
     $N0 = ceil 1.5
     say $N0
 .end
 CODE
-"fold_arithmetic" => PMC 'POST;File'  {
+"optimizepost" => PMC 'POST;File'  {
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
@@ -1383,22 +1383,22 @@ CODE
             [1] => PMC 'POST;Op'  {
                 <pirop> => "say"
                 [0] => PMC 'POST;Value'  {
-                    <name> => \fold_arithmetic["main"]["$N0"]
-                    <type> => \fold_arithmetic["main"]["$N0"]
+                    <name> => \optimizepost["main"]["$N0"]
+                    <type> => \optimizepost["main"]["$N0"]
                 }
             }
         }
     }
-    [0] => \fold_arithmetic["main"]
+    [0] => \optimizepost["main"]
 }
 RESULT
-test_post("floor_i_ic", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("floor_i_ic", <<'CODE', <<'RESULT', "stages" => "parse post optimizepost pbc", "target" => "optimizepost");
 .sub main :main
     $I0 = floor 2
     say $I0
 .end
 CODE
-"fold_arithmetic" => PMC 'POST;File'  {
+"optimizepost" => PMC 'POST;File'  {
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
@@ -1424,22 +1424,22 @@ CODE
             [1] => PMC 'POST;Op'  {
                 <pirop> => "say"
                 [0] => PMC 'POST;Value'  {
-                    <name> => \fold_arithmetic["main"]["$I0"]
-                    <type> => \fold_arithmetic["main"]["$I0"]
+                    <name> => \optimizepost["main"]["$I0"]
+                    <type> => \optimizepost["main"]["$I0"]
                 }
             }
         }
     }
-    [0] => \fold_arithmetic["main"]
+    [0] => \optimizepost["main"]
 }
 RESULT
-test_post("floor_n_ic", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("floor_n_ic", <<'CODE', <<'RESULT', "stages" => "parse post optimizepost pbc", "target" => "optimizepost");
 .sub main :main
     $N0 = floor 2
     say $N0
 .end
 CODE
-"fold_arithmetic" => PMC 'POST;File'  {
+"optimizepost" => PMC 'POST;File'  {
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
@@ -1465,22 +1465,22 @@ CODE
             [1] => PMC 'POST;Op'  {
                 <pirop> => "say"
                 [0] => PMC 'POST;Value'  {
-                    <name> => \fold_arithmetic["main"]["$N0"]
-                    <type> => \fold_arithmetic["main"]["$N0"]
+                    <name> => \optimizepost["main"]["$N0"]
+                    <type> => \optimizepost["main"]["$N0"]
                 }
             }
         }
     }
-    [0] => \fold_arithmetic["main"]
+    [0] => \optimizepost["main"]
 }
 RESULT
-test_post("floor_n_nc", <<'CODE', <<'RESULT', "stages" => "parse post fold_arithmetic pbc", "target" => "fold_arithmetic");
+test_post("floor_n_nc", <<'CODE', <<'RESULT', "stages" => "parse post optimizepost pbc", "target" => "optimizepost");
 .sub main :main
     $N0 = floor 2.5
     say $N0
 .end
 CODE
-"fold_arithmetic" => PMC 'POST;File'  {
+"optimizepost" => PMC 'POST;File'  {
     <main_sub> => "main"
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
@@ -1506,12 +1506,12 @@ CODE
             [1] => PMC 'POST;Op'  {
                 <pirop> => "say"
                 [0] => PMC 'POST;Value'  {
-                    <name> => \fold_arithmetic["main"]["$N0"]
-                    <type> => \fold_arithmetic["main"]["$N0"]
+                    <name> => \optimizepost["main"]["$N0"]
+                    <type> => \optimizepost["main"]["$N0"]
                 }
             }
         }
     }
-    [0] => \fold_arithmetic["main"]
+    [0] => \optimizepost["main"]
 }
 RESULT
