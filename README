@@ -6,6 +6,7 @@ README - this is README file for implementation of PIR parser in NQP.
 
 This is reimplementation of PIR parser in NQP from scratch.
 For old version look at README.alpha and checkout C<alpha> branch.
+PIRATE requires the tree-optimization module; it's available via plumage or on github at http://github.com/ekiru/tree-optimization
 
 =head1 STATUS
 
