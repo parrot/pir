@@ -75,6 +75,11 @@
     .return()
 .end
 
+.namespace ['Opcode']
+.sub 'length' :vtable('get_number') :method
+    $I0 = elements self
+    .return ($I0)
+.end
 
 # We can't use NQP for dynamically loaded stuff... It's broken somehow.
 .namespace []

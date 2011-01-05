@@ -27,7 +27,7 @@ INIT {
 method pbc($post, %adverbs) {
     #pir::trace(1);
     $OPLIB := pir::new__psp('OpLib', "core_ops");
-    $DEBUG := %adverbs<debug>;
+    $DEBUG := 1 || %adverbs<debug>;
 
     # Emitting context. Contains consts, etc.
     my %context := self.create_context($post);
@@ -174,7 +174,9 @@ our multi method to_pbc(POST::Op $op, %context) {
     self.debug("Fullname $fullname") if $DEBUG;
 
     # Store op offset. It will be needed for calculating labels.
-    %context<opcode_offset> := +%context<bytecode>;
+    %context<opcode_offset>     := +%context<bytecode>;
+    # Store fullname. It will be needed to calculate offset of label.
+    %context<opcode_fullname>   := $fullname;
 
     my @op := list($fullname);
     for @($op) {
@@ -398,7 +400,7 @@ our multi method to_op(POST::Label $l, %context) {
     my $pos := +$bc;
     # FIXME!!! We do need exact position for fixup labels.
     # $bc.push(0);
-    %context<labels_todo>{$pos} := list($l.name, %context<opcode_offset>);
+    %context<labels_todo>{$pos} := list($l.name, %context<opcode_offset>, %context<opcode_fullname>);
     self.debug("Todo label '{ $l.name }' at $pos, { %context<opcode_offset> }") if $DEBUG;
 
     0;
@@ -595,10 +597,15 @@ our method fixup_labels($sub, $labels_todo, $bc) {
     self.debug("Fixup labels") if $DEBUG;
     for $labels_todo -> $kv {
         my $offset := $kv.key;
-        my @pair   := $kv.value;
-        self.debug("Fixing '{ @pair[0] }' from op { @pair[1] } at { $offset }") if $DEBUG;
-        my $delta  := $sub.label(@pair[0]).position - @pair[1];
-        $bc[$offset] := $delta;
+        my @todo   := $kv.value;
+        self.debug("Fixing '{ @todo[0] }' from op { @todo[2] } at { $offset }") if $DEBUG;
+        # We need op to calc position of LABEL within it.
+        my $op  := $bc.opmap{~@todo[2]};
+        self.debug("Op length is { $op.length }") if $DEBUG;
+
+        my $delta  := $sub.label(@todo[0]).position + @todo[1] - $op.length * 2;
+        # Shortcut - all ops have "in LABEL" as lst argument.
+        $bc[$offset + $op.length] := $delta;
     }
 }
 
