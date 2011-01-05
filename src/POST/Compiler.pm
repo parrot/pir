@@ -499,7 +499,7 @@ our method create_context($past) {
     $pfdir<CONSTANTS_hello.pir> := %context<constants>;
 
     # Generate bytecode
-    %context<bytecode> := pir::new__PS('PackfileRawSegment');
+    %context<bytecode> := pir::new__PS('PackfileBytecodeSegment');
 
     # Store bytecode
     $pfdir<BYTECODE_hello.pir> := %context<bytecode>;
