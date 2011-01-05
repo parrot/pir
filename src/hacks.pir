@@ -3,9 +3,9 @@
 #.HLL 'parrot'
 .loadlib 'pirate_ops'
 
-.namespace ['PackfileRawSegment']
+.namespace ['PackfileBytecodeSegment']
 .sub 'push' :method
-    .param int value
+    .param pmc value
     push self, value
 .end
 
@@ -13,13 +13,6 @@
     .param int key
     $I0 = self[key]
     .return ($I0)
-.end
-
-.namespace ['PackfileFixupTable']
-.sub 'push' :method
-    .param pmc value
-    $I0 = elements self
-    self[$I0] = value
 .end
 
 .namespace ['PackfileConstantTable']
