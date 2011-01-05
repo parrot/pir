@@ -394,14 +394,14 @@ our method build_pcc_call($opname, @args, %context) {
     self.debug($opname) if $DEBUG;
     # Push signature and all args.
 
-    my @op := $opname, $sig_idx;
+    my @op := list($opname, $sig_idx);
 
     for @args -> $arg {
         # Handle :named params 
         if pir::isa__ips($arg.modifier, "Hash") {
             my $name := $arg.modifier<named> // $arg.name;
             @op.push(
-                    %context<constants>.get_or_create_string($name)
+                 %context<constants>.get_or_create_string($name)
             );
         }
         @op.push(self.to_op($arg, %context));
