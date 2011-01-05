@@ -29,7 +29,7 @@ method pbc($post, %adverbs) {
     $OPLIB := pir::new__psp('OpLib', "core_ops");
     $DEBUG := %adverbs<debug>;
 
-    # Emitting context. Contains fixups, consts, etc.
+    # Emitting context. Contains consts, etc.
     my %context := self.create_context($post);
 
     %context<pir_file> := $post;
@@ -145,14 +145,6 @@ our multi method to_pbc(POST::Sub $sub, %context) {
         $sub.constant_index($idx);
     }
 
-    self.debug("Fixup $subname") if $DEBUG;
-    my $P1 := pir::new__PSP('PackfileFixupEntry', hash(
-            :name( ~$subname ),
-            :type<1>,
-            :offset( $idx ), # Constant 
-        ));
-
-    %context<fixup>.push($P1);
 }
 
 our multi method to_pbc(POST::Op $op, %context) {
@@ -499,18 +491,6 @@ our method create_context($past) {
 
     # Store bytecode
     $pfdir<BYTECODE_hello.pir> := %context<bytecode>;
-
-    # Dark magik. Create Fixup for Sub.
-    %context<fixup> := pir::new__PS('PackfileFixupTable');
-
-    # Add it to Directory now because adding FixupEntries require Directory
-    $pfdir<FIXUP_hello.pir> := %context<fixup>;
-
-    # Interpreter.
-    %context<constants>[0] := pir::getinterp__P();
-
-    # Empty FIA for handling returns from "hello"
-    %context<constants>[1] := pir::new__PS('FixedIntegerArray');
 
     # TODO pbc_disassemble crashes without proper debug.
     # Add a debug segment.
