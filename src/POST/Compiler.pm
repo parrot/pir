@@ -27,7 +27,7 @@ INIT {
 method pbc($post, %adverbs) {
     #pir::trace(1);
     $OPLIB := pir::new__psp('OpLib', "core_ops");
-    $DEBUG := %adverbs<debug>;
+    $DEBUG := 1 || %adverbs<debug>;
 
     # Emitting context. Contains consts, etc.
     my %context := self.create_context($post);
@@ -96,9 +96,14 @@ our multi method to_pbc(POST::Sub $sub, %context) {
     }
 
     # Default .return(). XXX We don't need it (probably)
-    $bc.push($OPLIB<set_returns_pc>);
-    $bc.push(0x001);                      # id of FIA
-    $bc.push($OPLIB<returncc>);
+    $bc.push([
+        'set_returns',
+        0x000                      # id of FIA
+    ]);
+
+    $bc.push([
+        'returncc'
+    ]);
 
     my $end_offset := +$bc;
     self.debug("To $end_offset") if $DEBUG;
@@ -166,89 +171,6 @@ our multi method to_pbc(POST::Op $op, %context) {
     for @($op) {
         self.to_pbc($_, %context);
     }
-}
-
-our multi method to_pbc(POST::Key $key, %context) {
-
-    self.debug("Want key") if $DEBUG;
-    my $key_pmc := $key.to_pmc(%context)[0];
-    self.debug("Got key") if $DEBUG;
-
-    # XXX PackfileConstantTable can't Keys equivalense it. So just push it.
-    # XXX PCC clone_key...
-    #my $idx := %context<constants>.push($key_pmc);
-    my $constants := %context<constants>;
-    my $idx;
-    Q:PIR {
-        .local pmc key_pmc, constants, idx
-        .local int i0
-        find_lex constants, "$constants"
-        find_lex key_pmc, "$key_pmc"
-        i0 = elements constants
-        constants[i0] = key_pmc
-
-        find_lex idx, "$idx"
-        idx = i0
-        store_lex "$idx", idx
-    };
-    %context<bytecode>.push($idx);
-}
-
-our multi method to_pbc(POST::Constant $op, %context) {
-    my $idx;
-    my $type := $op.type;
-    if $type eq 'ic' || $type eq 'kic' {
-        $idx := $op.value;
-    }
-    elsif $type eq 'nc' {
-        $idx := %context<constants>.get_or_create_number($op.value);
-    }
-    else {
-        self.panic("NYI");
-    }
-
-    self.debug("Index $idx") if $DEBUG;
-    %context<bytecode>.push($idx);
-}
-
-our multi method to_pbc(POST::String $str, %context) {
-    my $idx;
-    my $type := $str.type;
-    if $type ne 'sc' {
-        self.panic("attempt to pass a non-sc value off as a string");
-    }
-    if $str.encoding eq 'fixed_8' && $str.charset eq 'ascii' {
-        $idx := %context<constants>.get_or_create_string($str.value);
-    }
-    else {
-        #create a ByteBuffer and convert it to a string with the given encoding/charset
-        my $bb := pir::new__ps('ByteBuffer');
-        my $str_val := $str.value;
-        Q:PIR{
-            .local pmc str_val, bb
-            .local string s
-            str_val = find_lex '$str_val'
-            bb      = find_lex '$bb'
-            s = str_val
-            bb = s
-        };
-        $idx := %context<constants>.get_or_create_string($bb.get_string(
-            $str.charset,
-            $str.encoding,
-        ));
-    }
-
-    %context<bytecode>.push($idx);
-}
-
-our multi method to_pbc(POST::Value $val, %context) {
-    # Redirect to real value. POST::Value is just reference.
-    my $orig := self.get_register($val.name, %context);
-    self.to_pbc($orig, %context);
-}
-
-our multi method to_pbc(POST::Register $reg, %context) {
-    %context<bytecode>.push($reg.regno);
 }
 
 # Some PIR sugar produces nested Nodes.
@@ -369,6 +291,93 @@ our multi method to_pbc(POST::Call $call, %context) {
     }
 }
 
+##########
+# Generating parts of Op
+
+our multi method to_op(POST::Key $key, %context) {
+
+    self.debug("Want key") if $DEBUG;
+    my $key_pmc := $key.to_pmc(%context)[0];
+    self.debug("Got key") if $DEBUG;
+
+    # XXX PackfileConstantTable can't Keys equivalense it. So just push it.
+    # XXX PCC clone_key...
+    #my $idx := %context<constants>.push($key_pmc);
+    my $constants := %context<constants>;
+    my $idx;
+    Q:PIR {
+        .local pmc key_pmc, constants, idx
+        .local int i0
+        find_lex constants, "$constants"
+        find_lex key_pmc, "$key_pmc"
+        i0 = elements constants
+        constants[i0] = key_pmc
+
+        find_lex idx, "$idx"
+        idx = i0
+        store_lex "$idx", idx
+    };
+
+    $idx;
+}
+
+our multi method to_op(POST::Constant $op, %context) {
+    my $idx;
+    my $type := $op.type;
+    if $type eq 'ic' || $type eq 'kic' {
+        $idx := $op.value;
+    }
+    elsif $type eq 'nc' {
+        $idx := %context<constants>.get_or_create_number($op.value);
+    }
+    else {
+        self.panic("NYI");
+    }
+
+    self.debug("Index $idx") if $DEBUG;
+    $idx;
+}
+
+our multi method to_op(POST::String $str, %context) {
+    my $idx;
+    my $type := $str.type;
+    if $type ne 'sc' {
+        self.panic("attempt to pass a non-sc value off as a string");
+    }
+    if $str.encoding eq 'fixed_8' && $str.charset eq 'ascii' {
+        $idx := %context<constants>.get_or_create_string($str.value);
+    }
+    else {
+        #create a ByteBuffer and convert it to a string with the given encoding/charset
+        my $bb := pir::new__ps('ByteBuffer');
+        my $str_val := $str.value;
+        Q:PIR{
+            .local pmc str_val, bb
+            .local string s
+            str_val = find_lex '$str_val'
+            bb      = find_lex '$bb'
+            s = str_val
+            bb = s
+        };
+        $idx := %context<constants>.get_or_create_string($bb.get_string(
+            $str.charset,
+            $str.encoding,
+        ));
+    }
+
+    $idx;
+}
+
+our multi method to_op(POST::Value $val, %context) {
+    # Redirect to real value. POST::Value is just reference.
+    my $orig := self.get_register($val.name, %context);
+    self.to_op($orig, %context);
+}
+
+our multi method to_op(POST::Register $reg, %context) {
+    $reg.regno;
+}
+
 # /Emiting pbc
 ##########################################
 
@@ -384,18 +393,21 @@ our method build_pcc_call($opname, @args, %context) {
 
     self.debug($opname) if $DEBUG;
     # Push signature and all args.
-    $bc.push($OPLIB{ $opname });
-    $bc.push($sig_idx);
+
+    my @op := $opname, $sig_idx;
+
     for @args -> $arg {
         # Handle :named params 
         if pir::isa__ips($arg.modifier, "Hash") {
             my $name := $arg.modifier<named> // $arg.name;
-            %context<bytecode>.push(
-                %context<constants>.get_or_create_string($name)
+            @op.push(
+                    %context<constants>.get_or_create_string($name)
             );
         }
-        self.to_pbc($arg, %context);
+        @op.push(self.to_op($arg, %context));
     }
+
+    $bc.push(@op);
 }
 
 our method build_args_signature(@args, %context) {
