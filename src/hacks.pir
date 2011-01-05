@@ -18,8 +18,8 @@
 .namespace ['PackfileConstantTable']
 .sub 'push' :method
     .param pmc value
-    $I0 = elements self
-    self[$I0] = value
+    $I0 = self.'pmc_count'()
+    push self, value
     .return($I0)
 .end
 
