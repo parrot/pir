@@ -27,7 +27,7 @@ INIT {
 method pbc($post, %adverbs) {
     #pir::trace(1);
     $OPLIB := pir::new__psp('OpLib', "core_ops");
-    $DEBUG := 1 || %adverbs<debug>;
+    $DEBUG := %adverbs<debug>;
 
     # Emitting context. Contains consts, etc.
     my %context := self.create_context($post);
@@ -153,6 +153,12 @@ our multi method to_pbc(POST::Sub $sub, %context) {
         $sub.constant_index($idx);
     }
 
+    # Remember :main sub
+    if (!%context<got_main_sub>) {
+        %context<bytecode>.main_sub($idx);
+        %context<got_main_sub> := $sub.main;
+        self.debug(":main sub is $idx") if $DEBUG;
+    }
 }
 
 our multi method to_pbc(POST::Op $op, %context) {
@@ -519,6 +525,9 @@ our method create_context($past) {
 
     # Generate bytecode
     %context<bytecode> := pir::new__PS('PackfileBytecodeSegment');
+    %context<bytecode>.main_sub(-1);
+    # Did we see real :main sub
+    %context<got_main_sub> := 0;
 
     # Store bytecode
     $pfdir<BYTECODE_hello.pir> := %context<bytecode>;
