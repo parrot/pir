@@ -27,7 +27,7 @@ INIT {
 method pbc($post, %adverbs) {
     #pir::trace(1);
     $OPLIB := pir::new__psp('OpLib', "core_ops");
-    $DEBUG := 1 || %adverbs<debug>;
+    $DEBUG := %adverbs<debug>;
 
     # Emitting context. Contains consts, etc.
     my %context := self.create_context($post);
@@ -603,7 +603,7 @@ our method fixup_labels($sub, $labels_todo, $bc) {
         my $op  := $bc.opmap{~@todo[2]};
         self.debug("Op length is { $op.length }") if $DEBUG;
 
-        my $delta  := $sub.label(@todo[0]).position + @todo[1] - $op.length * 2;
+        my $delta  := $sub.label(@todo[0]).position - @todo[1];
         # Shortcut - all ops have "in LABEL" as lst argument.
         $bc[$offset + $op.length] := $delta;
     }
