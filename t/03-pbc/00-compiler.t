@@ -83,8 +83,8 @@ ok($elt == 0x11, "... [0]");
 $signature := $c.build_args_signature(@args, %context);
 ok($signature.elements == 2, ":named produce 2 'args'");
 
-$POST::Compiler::OPLIB := pir::new__ps("OpLib");
-%context<bytecode> := pir::new__ps("PackfileRawSegment");
+$POST::Compiler::OPLIB := pir::new__psp("OpLib", "core_ops");
+%context<bytecode> := pir::new__ps("PackfileBytecodeSegment");
 %context<constants> := pir::new__ps("PackfileConstantTable");
 
 # Fill constants with some values

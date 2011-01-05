@@ -965,7 +965,7 @@ method create_label($name) {
 }
 
 method oplib() {
-    $!OPLIB := pir::new__ps('OpLib') unless pir::defined__ip($!OPLIB);
+    $!OPLIB := pir::new__psp('OpLib', "core_ops") unless pir::defined__ip($!OPLIB);
     $!OPLIB;
 }
 
