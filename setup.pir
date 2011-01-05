@@ -44,23 +44,23 @@ No Configure step, no Makefile generated.
 
     # build
     $P1 = new 'Hash'
-    $P1['src/PIR/Actions.pir']  = 'src/PIR/Actions.pm'
-    $P1['src/PIR/Grammar.pir']  = 'src/PIR/Grammar.pm'
-    $P1['src/PIR/Compiler.pir'] = 'src/PIR/Compiler.pm'
-    $P1['src/PIR/Patterns.pir'] = 'src/PIR/Patterns.pm'
+    $P1['gen/PIR/Actions.pir']  = 'src/PIR/Actions.pm'
+    $P1['gen/PIR/Grammar.pir']  = 'src/PIR/Grammar.pm'
+    $P1['gen/PIR/Compiler.pir'] = 'src/PIR/Compiler.pm'
+    $P1['gen/PIR/Patterns.pir'] = 'src/PIR/Patterns.pm'
 
-    $P1['src/POST/Compiler.pir'] = 'src/POST/Compiler.pm'
-    $P1['src/POST/File.pir']     = 'src/POST/File.pm'
-    $P1['src/POST/Call.pir']     = 'src/POST/Call.pm'
-    $P1['src/POST/Sub.pir']      = 'src/POST/Sub.pm'
-    $P1['src/POST/Value.pir']    = 'src/POST/Value.pm'
-    $P1['src/POST/Constant.pir'] = 'src/POST/Constant.pm'
-    $P1['src/POST/String.pir']   = 'src/POST/String.pm'
-    $P1['src/POST/Register.pir'] = 'src/POST/Register.pm'
-    $P1['src/POST/Label.pir']    = 'src/POST/Label.pm'
-    $P1['src/POST/Key.pir']      = 'src/POST/Key.pm'
+    $P1['gen/POST/Compiler.pir'] = 'src/POST/Compiler.pm'
+    $P1['gen/POST/File.pir']     = 'src/POST/File.pm'
+    $P1['gen/POST/Call.pir']     = 'src/POST/Call.pm'
+    $P1['gen/POST/Sub.pir']      = 'src/POST/Sub.pm'
+    $P1['gen/POST/Value.pir']    = 'src/POST/Value.pm'
+    $P1['gen/POST/Constant.pir'] = 'src/POST/Constant.pm'
+    $P1['gen/POST/String.pir']   = 'src/POST/String.pm'
+    $P1['gen/POST/Register.pir'] = 'src/POST/Register.pm'
+    $P1['gen/POST/Label.pir']    = 'src/POST/Label.pm'
+    $P1['gen/POST/Key.pir']      = 'src/POST/Key.pm'
 
-    $P1['src/POST/VanillaAllocator.pir'] = 'src/POST/VanillaAllocator.pm'
+    $P1['gen/POST/VanillaAllocator.pir'] = 'src/POST/VanillaAllocator.pm'
 
     # Functions for testing.
     $P1['t/parse.pir'] = 't/parse.nqp'
@@ -77,26 +77,27 @@ No Configure step, no Makefile generated.
     $P3 = new 'Hash'
     $P4 = split "\n", <<'SOURCES'
 pir.pir
+src/hacks.pir
 
-src/PIR/Actions.pir
-src/PIR/Grammar.pir
-src/PIR/Compiler.pir
-src/PIR/Patterns.pir
+gen/PIR/Actions.pir
+gen/PIR/Grammar.pir
+gen/PIR/Compiler.pir
+gen/PIR/Patterns.pir
 
-src/POST/Compiler.pir
-src/POST/File.pir
-src/POST/Call.pir
-src/POST/Sub.pir
+gen/POST/Compiler.pir
+gen/POST/File.pir
+gen/POST/Call.pir
+gen/POST/Sub.pir
 
-src/POST/Value.pir
-src/POST/Constant.pir
-src/POST/Register.pir
-src/POST/Key.pir
-src/POST/String.pir
+gen/POST/Value.pir
+gen/POST/Constant.pir
+gen/POST/Register.pir
+gen/POST/Key.pir
+gen/POST/String.pir
 
-src/POST/Label.pir
+gen/POST/Label.pir
 
-src/POST/VanillaAllocator.pir
+gen/POST/VanillaAllocator.pir
 
 SOURCES
     $P3['pir.pbc'] = $P4
