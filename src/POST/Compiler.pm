@@ -172,8 +172,9 @@ our multi method to_pbc(POST::Op $op, %context) {
 
     my @op := list($fullname);
     for @($op) {
-        self.to_op($_, %context);
+        @op.push(self.to_op($_, %context));
     }
+    self.debug("Op size { +@op }") if $DEBUG;
     %context<bytecode>.push(@op);
 }
 
