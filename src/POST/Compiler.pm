@@ -257,9 +257,11 @@ our multi method to_pbc(POST::Call $call, %context) {
                     }
 
                     $SUB := %context<sub>.symbol("!SUB");
-                    $bc.push($OPLIB<set_p_pc>);
-                    self.to_pbc($SUB, %context);
-                    $bc.push($idx);
+                    $bc.push([
+                        'set_p_pc',
+                        self.to_op($SUB, %context),
+                        $idx,
+                    ]);
 
                     $processed := 1;
                 }
@@ -268,9 +270,11 @@ our multi method to_pbc(POST::Call $call, %context) {
             unless $processed {
                 if $call.name.isa(POST::Constant) {
                     $SUB := %context<sub>.symbol("!SUB");
-                    $bc.push($OPLIB<find_sub_not_null_p_sc>);
-                    self.to_pbc($SUB, %context);
-                    self.to_pbc($call<name>, %context);
+                    $bc.push([
+                        'find_sub_not_null_p_sc',
+                        self.to_op($SUB, %context),
+                        self.to_op($call<name>, %context),
+                    ]);
                 }
                 else {
                     self.debug("Name is " ~ $call<name>.WHAT) if $DEBUG;
@@ -281,8 +285,7 @@ our multi method to_pbc(POST::Call $call, %context) {
             my $o := $is_tailcall ?? "tailcall_p" !! "invokecc_p";
 
             self.debug($o) if $DEBUG;
-            $bc.push($OPLIB{ $o });
-            self.to_pbc($SUB, %context);
+            $bc.push([ $o, self.to_op($SUB, %context) ]);
         }
 
         unless $is_tailcall {
