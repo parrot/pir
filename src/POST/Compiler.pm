@@ -97,7 +97,7 @@ our multi method to_pbc(POST::Sub $sub, %context) {
 
     # Default .return(). XXX We don't need it (probably)
     $bc.push([
-        'set_returns',
+        'set_returns_pc',
         0x000                      # id of FIA
     ]);
 
@@ -167,10 +167,11 @@ our multi method to_pbc(POST::Op $op, %context) {
     # Store op offset. It will be needed for calculating labels.
     %context<opcode_offset> := +%context<bytecode>;
 
-    %context<bytecode>.push($OPLIB{$fullname});
+    my @op := list($fullname);
     for @($op) {
-        self.to_pbc($_, %context);
+        self.to_op($_, %context);
     }
+    %context<bytecode>.push(@op);
 }
 
 # Some PIR sugar produces nested Nodes.
