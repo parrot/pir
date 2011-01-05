@@ -379,6 +379,18 @@ our multi method to_op(POST::Register $reg, %context) {
     $reg.regno;
 }
 
+our multi method to_op(POST::Label $l, %context) {
+    # Usage of Label. Put into todolist and reserve space.
+    my $bc  := %context<bytecode>;
+    my $pos := +$bc;
+    # FIXME!!! We do need exact position for fixup labels.
+    # $bc.push(0);
+    %context<labels_todo>{$pos} := list($l.name, %context<opcode_offset>);
+    self.debug("Todo label '{ $l.name }' at $pos, { %context<opcode_offset> }") if $DEBUG;
+
+    0;
+}
+
 # /Emiting pbc
 ##########################################
 
