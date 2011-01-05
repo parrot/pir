@@ -95,7 +95,10 @@ our multi method to_pbc(POST::Sub $sub, %context) {
         self.to_pbc($_, %context);
     }
 
+    self.debug("Middle { +$bc }") if $DEBUG;
+
     # Default .return(). XXX We don't need it (probably)
+    self.debug("Emitting default return") if $DEBUG;
     $bc.push([
         'set_returns_pc',
         0x000                      # id of FIA
@@ -507,6 +510,8 @@ our method create_context($past) {
     # We need some constants
     %context<constants> := pir::new__PS('PackfileConstantTable');
 
+    # Empty FIA for handling returns from "hello"
+    %context<constants>[0] := pir::new__PS('FixedIntegerArray');
 
     # Add PackfileConstantTable into directory.
     $pfdir<CONSTANTS_hello.pir> := %context<constants>;
