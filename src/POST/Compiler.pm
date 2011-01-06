@@ -338,8 +338,8 @@ our multi method to_op(POST::Key $key, %context) {
         .local int i0
         find_lex constants, "$constants"
         find_lex key_pmc, "$key_pmc"
-        i0 = elements constants
-        constants[i0] = key_pmc
+        i0 = constants.'pmc_count'()
+        push constants, key_pmc
 
         find_lex idx, "$idx"
         idx = i0
