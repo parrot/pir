@@ -144,20 +144,31 @@ our multi method to_pbc(POST::Sub $sub, %context) {
     # XXX Use .namespace for generating full name!
     my $idx := $sub.constant_index;
     if pir::defined__ip($idx) {
-        self.debug("Reusing old constant") if $DEBUG;
+        self.debug("Reusing old constant $idx") if $DEBUG;
         %context<constants>[$idx] := pir::new__PSP('Sub', %sub);
     }
     else {
-        self.debug("Allocate new constant") if $DEBUG;
         $idx := %context<constants>.push(pir::new__PSP('Sub', %sub));
         $sub.constant_index($idx);
+        self.debug("Allocate new constant $idx") if $DEBUG;
     }
 
     # Remember :main sub
     if (!%context<got_main_sub>) {
-        %context<bytecode>.main_sub($idx);
-        %context<got_main_sub> := $sub.main;
-        self.debug(":main sub is $idx") if $DEBUG;
+        self.debug("main_sub is { %context<bytecode>.main_sub }") if $DEBUG;
+        if $sub.main {
+            self.debug("Got first :main") if $DEBUG;
+            # We have true :main sub. First one.
+            %context<bytecode>.main_sub($idx);
+            %context<got_main_sub> := 1;
+        }
+        elsif %context<bytecode>.main_sub == -1 {
+            # First sub.
+            self.debug("Got first sub") if $DEBUG;
+            %context<bytecode>.main_sub($idx);
+        }
+
+        self.debug(":main sub is { %context<bytecode>.main_sub }") if $DEBUG;
     }
 }
 
@@ -249,13 +260,14 @@ our multi method to_pbc(POST::Call $call, %context) {
                 $full_name := %context<sub>.namespace.Str if %context<sub>.namespace;
                 $full_name := ~$full_name ~ ~$call<name><value>;
                 my $invocable_sub := %context<pir_file>.sub($full_name);
-                self.debug("invocable_sub $invocable_sub") if $DEBUG;
+                self.debug("invocable_sub '$full_name'") if $DEBUG;
                 if $invocable_sub {
                     my $idx := $invocable_sub.constant_index;
                     unless pir::defined__ip($idx) {
                         # Allocate new space in constant table. We'll reuse it later.
                         $idx := %context<constants>.push(pir::new__ps("Integer"));
                         $invocable_sub.constant_index($idx);
+                        self.debug("Allocate constant for it $idx") if $DEBUG;
                     }
 
                     $SUB := %context<sub>.symbol("!SUB");
