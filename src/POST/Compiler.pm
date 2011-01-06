@@ -308,7 +308,7 @@ our multi method to_pbc(POST::Call $call, %context) {
     }
     elsif $calltype eq 'return' {
         self.build_pcc_call("set_returns_pc", $call<params>, %context);
-        $bc.push($OPLIB<returncc>);
+        $bc.push(['returncc']);
     }
     elsif $calltype eq 'results' {
         # This is generated in eceptions handling
