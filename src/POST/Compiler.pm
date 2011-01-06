@@ -233,11 +233,13 @@ our multi method to_pbc(POST::Call $call, %context) {
 
         if $call.invocant {
             if $call.name.isa(POST::Constant) {
-                $bc.push($is_tailcall
-                            ?? $OPLIB<tailcallmethod_p_sc>
-                            !! $OPLIB<callmethodcc_p_sc>);
-                self.to_pbc($call.invocant, %context);
-                self.to_pbc($call.name, %context);
+                $bc.push([
+                    $is_tailcall
+                        ?? $OPLIB<tailcallmethod_p_sc>
+                        !! $OPLIB<callmethodcc_p_sc>,
+                    self.to_op($call.invocant, %context),
+                    self.to_op($call.name, %context),
+                ]);
             }
             else {
                 self.panic('NYI $P0.$S0()');
