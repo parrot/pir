@@ -206,22 +206,15 @@ our multi method to_pbc(POST::Node $node, %context) {
 
 our multi method to_pbc(POST::Label $l, %context) {
     my $bc := %context<bytecode>;
-    if $l.declared {
-        my $pos := +$bc;
-        self.debug("Declare label '{ $l.name }' at $pos") if $DEBUG;
-        # Declaration of Label. Update offset in Sub.labels.
-        $l.position($pos);
-        # We can have "enclosed" ops. Process them now.
-        for @($l) {
-            self.to_pbc($_, %context);
-        }
-    }
-    else {
-        # Usage of Label. Put into todolist and reserve space.
-        my $pos := +$bc;
-        $bc.push(0);
-        %context<labels_todo>{$pos} := list($l.name, %context<opcode_offset>);
-        self.debug("Todo label '{ $l.name }' at $pos, { %context<opcode_offset> }") if $DEBUG;
+    self.panic("Trying to emit undelcared label!") unless $l.declared;
+
+    my $pos := +$bc;
+    self.debug("Declare label '{ $l.name }' at $pos") if $DEBUG;
+    # Declaration of Label. Update offset in Sub.labels.
+    $l.position($pos);
+    # We can have "enclosed" ops. Process them now.
+    for @($l) {
+        self.to_pbc($_, %context);
     }
 }
 
