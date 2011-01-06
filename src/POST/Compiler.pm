@@ -383,7 +383,6 @@ our multi method to_op(POST::String $str, %context) {
             bb = s
         };
         $idx := %context<constants>.get_or_create_string($bb.get_string(
-            $str.charset,
             $str.encoding,
         ));
     }
