@@ -693,7 +693,7 @@ method call:sym<ident>($/) {
         :name(POST::String.new(
             :type<sc>,
             :value(~$<ident>),
-            :encoding<fixed_8>,
+            :encoding<binary>,
             :charset<ascii>,
         )),
     );
@@ -870,14 +870,14 @@ method string_constant($/) {
         make POST::String.new(
             :type<sc>,
             :value($<quote>.ast<value>),
-            :encoding<fixed_8>,
+            :encoding<binary>,
             :charset<ascii>,
         );
     }
     elsif $<typed_string> {
         my $encoding := +$<typed_string><encoding>
                      ?? ~$<typed_string><encoding>[0]
-                     !! 'fixed_8';
+                     !! 'binary';
         my $charset  := ~$<typed_string><charset>;
         make POST::String.new(
             :type<sc>,
@@ -934,7 +934,7 @@ method quote:sym<apos>($/) {
     make POST::String.new(
         :type<sc>,
         :value(~$<quote_EXPR>.ast<value>),
-        :encoding<fixed_8>,
+        :encoding<binary>,
         :charset<ascii>,
     );
 }
@@ -943,7 +943,7 @@ method quote:sym<dblq>($/) {
     make POST::String.new(
         :type<sc>,
         :value(~$<quote_EXPR>.ast<value>),
-        :encoding<fixed_8>,
+        :encoding<binary>,
         :charset<ascii>,
     );
 }
