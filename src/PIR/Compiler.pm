@@ -99,7 +99,7 @@ our method eliminate_constant_conditional ($post, *%adverbs) {
     $pattern.transform($post, &eliminate);
 }
 
-method fold_arithmetic($post) {
+method fold_arithmetic($post, *%adverbs) {
     my $foldable_binary := / add | sub | mul | div | fdiv | mod /;
     my $non_pmc := / ic | nc /;
     my $binary_pattern :=
@@ -186,7 +186,7 @@ method fold_arithmetic($post) {
 
 # Swapping "gt" and "ge" with "lt" and "le"
 # There is no gt_i_i_ic, so we have to swap it with lt
-method swap_gtge($post) {
+method swap_gtge($post, *%adverbs) {
     my $gtge    := /^[ gt | ge ]$/;
     my $non_pmc := /^[ i | ic | n | nc | s | sc ]$/;
     my $pattern := POST::Pattern::Op.new(
