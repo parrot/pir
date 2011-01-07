@@ -35,7 +35,7 @@ CODE
                 <type> => "pc"
                 [0] => PMC 'POST;String'  {
                     <charset> => "ascii"
-                    <encoding> => "fixed_8"
+                    <encoding> => "binary"
                     <type> => "sc"
                     <value> => "Foo"
                 }
@@ -64,7 +64,7 @@ CODE
             <name> => "main"
             <subid> => PMC 'POST;String'  {
                 <charset> => "ascii"
-                <encoding> => "fixed_8"
+                <encoding> => "binary"
                 <type> => "sc"
                 <value> => "the_main"
             }
