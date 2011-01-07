@@ -1,8 +1,10 @@
 test_post( "keyed getting and setting works", <<'CODE', <<'RESULT');
 .sub "main"
     $P0 = new 'Hash'
-    $P0['one';2;"three";4] = "Hello, keys."
-    $S0 = $P0['one';2;'three';4]
+    $P99 = new 'ResizablePMCArray'
+    $P0['one'] = $P99
+    $P0['one';2] = "Hello, keys."
+    $S0 = $P0['one';2]
     say $S0
 .end
 CODE
@@ -12,8 +14,10 @@ RESULT
 test_post( "desugared keyed getting and setting works", <<'CODE', <<'RESULT');
 .sub "main"
     $P0 = new 'Hash'
-    set $P0['one';2;"three";4],"Hello, keys."
-    set $S0, $P0['one';2;'three';4]
+    $P99 = new 'ResizablePMCArray'
+    set $P0['one'], $P99
+    set $P0['one';2], "Hello, keys."
+    set $S0, $P0['one';2]
     say $S0
 .end
 CODE
