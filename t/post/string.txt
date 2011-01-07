@@ -22,7 +22,7 @@ CODE
                 }
                 [1] => PMC 'POST;String'  {
                     <charset> => "unicode"
-                    <encoding> => "fixed_8"
+                    <encoding> => "binary"
                     <type> => "sc"
                     <value> => "a cow"
                 }

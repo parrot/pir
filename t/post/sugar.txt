@@ -22,7 +22,7 @@ CODE
                 }
                 [1] => PMC 'POST;String'  {
                     <charset> => "ascii"
-                    <encoding> => "fixed_8"
+                    <encoding> => "binary"
                     <type> => "sc"
                     <value> => "hello"
                 }
@@ -134,7 +134,7 @@ CODE
                 }
                 [1] => PMC 'POST;String'  {
                     <charset> => "ascii"
-                    <encoding> => "fixed_8"
+                    <encoding> => "binary"
                     <type> => "sc"
                     <value> => "hello"
                 }

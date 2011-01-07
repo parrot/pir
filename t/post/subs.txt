@@ -28,7 +28,7 @@ CODE
                 <pirop> => "say"
                 [0] => PMC 'POST;String'  {
                     <charset> => "ascii"
-                    <encoding> => "fixed_8"
+                    <encoding> => "binary"
                     <type> => "sc"
                     <value> => "Hello, World"
                 }
@@ -207,14 +207,14 @@ CODE
                 <calltype> => "call"
                 <name> => PMC 'POST;String'  {
                     <charset> => "ascii"
-                    <encoding> => "fixed_8"
+                    <encoding> => "binary"
                     <type> => "sc"
                     <value> => "hello"
                 }
                 <params> => ResizablePMCArray (size:1) [
                     PMC 'POST;String'  {
                         <charset> => "ascii"
-                        <encoding> => "fixed_8"
+                        <encoding> => "binary"
                         <type> => "sc"
                         <value> => "Hello, World"
                     }
@@ -241,13 +241,13 @@ CODE
                 <type> => "pc"
                 [0] => PMC 'POST;String'  {
                     <charset> => "ascii"
-                    <encoding> => "fixed_8"
+                    <encoding> => "binary"
                     <type> => "sc"
                     <value> => "Foo"
                 }
                 [1] => PMC 'POST;String'  {
                     <charset> => "ascii"
-                    <encoding> => "fixed_8"
+                    <encoding> => "binary"
                     <type> => "sc"
                     <value> => "Bar"
                 }

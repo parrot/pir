@@ -114,13 +114,13 @@ CODE
                     <type> => "pc"
                     [0] => PMC 'POST;String'  {
                         <charset> => "ascii"
-                        <encoding> => "fixed_8"
+                        <encoding> => "binary"
                         <type> => "sc"
                         <value> => "POST"
                     }
                     [1] => PMC 'POST;String'  {
                         <charset> => "ascii"
-                        <encoding> => "fixed_8"
+                        <encoding> => "binary"
                         <type> => "sc"
                         <value> => "Node"
                     }

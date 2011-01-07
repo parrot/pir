@@ -13,7 +13,7 @@ CODE
                 <pirop> => "say"
                 [0] => PMC 'POST;String'  {
                     <charset> => "ascii"
-                    <encoding> => "fixed_8"
+                    <encoding> => "binary"
                     <type> => "sc"
                     <value> => "42"
                 }

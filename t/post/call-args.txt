@@ -113,7 +113,7 @@ CODE
                 <params> => ResizablePMCArray (size:1) [
                     PMC 'POST;String'  {
                         <charset> => "ascii"
-                        <encoding> => "fixed_8"
+                        <encoding> => "binary"
                         <modifier> => Hash {
                             "named" => "parent"
                         }

@@ -18,7 +18,7 @@ CODE
                 <calltype> => "call"
                 <name> => PMC 'POST;String'  {
                     <charset> => "ascii"
-                    <encoding> => "fixed_8"
+                    <encoding> => "binary"
                     <type> => "sc"
                     <value> => "foo"
                 }
@@ -49,14 +49,14 @@ CODE
                 <calltype> => "call"
                 <name> => PMC 'POST;String'  {
                     <charset> => "ascii"
-                    <encoding> => "fixed_8"
+                    <encoding> => "binary"
                     <type> => "sc"
                     <value> => "foo"
                 }
                 <params> => ResizablePMCArray (size:2) [
                     PMC 'POST;String'  {
                         <charset> => "ascii"
-                        <encoding> => "fixed_8"
+                        <encoding> => "binary"
                         <type> => "sc"
                         <value> => "answer"
                     },
@@ -96,7 +96,7 @@ CODE
                 <calltype> => "call"
                 <name> => PMC 'POST;String'  {
                     <charset> => "ascii"
-                    <encoding> => "fixed_8"
+                    <encoding> => "binary"
                     <type> => "sc"
                     <value> => "foo"
                 }
@@ -142,7 +142,7 @@ CODE
                 <calltype> => "call"
                 <name> => PMC 'POST;String'  {
                     <charset> => "ascii"
-                    <encoding> => "fixed_8"
+                    <encoding> => "binary"
                     <type> => "sc"
                     <value> => "foo"
                 }
@@ -223,7 +223,7 @@ CODE
                 }
                 <name> => PMC 'POST;String'  {
                     <charset> => "ascii"
-                    <encoding> => "fixed_8"
+                    <encoding> => "binary"
                     <type> => "sc"
                     <value> => "foo"
                 }
@@ -287,7 +287,7 @@ CODE
                 <calltype> => "tailcall"
                 <name> => PMC 'POST;String'  {
                     <charset> => "ascii"
-                    <encoding> => "fixed_8"
+                    <encoding> => "binary"
                     <type> => "sc"
                     <value> => "main"
                 }
@@ -314,7 +314,7 @@ CODE
                 <params> => ResizablePMCArray (size:2) [
                     PMC 'POST;String'  {
                         <charset> => "ascii"
-                        <encoding> => "fixed_8"
+                        <encoding> => "binary"
                         <type> => "sc"
                         <value> => "answer"
                     },
@@ -346,7 +346,7 @@ CODE
                 <params> => ResizablePMCArray (size:2) [
                     PMC 'POST;String'  {
                         <charset> => "ascii"
-                        <encoding> => "fixed_8"
+                        <encoding> => "binary"
                         <type> => "sc"
                         <value> => "answer"
                     },
