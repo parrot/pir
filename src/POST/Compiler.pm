@@ -16,14 +16,12 @@ Iterate over todolist and replace labels with offset of Sub start.
 
 =end Labels
 
-our $DEBUG;
-
 method pbc($post, %adverbs) {
     #pir::trace(1);
-    $DEBUG := %adverbs<debug>;
 
     # Emitting context. Contains consts, etc.
     my %context := self.create_context($post, %adverbs);
+    %context<DEBUG> := 0;
 
     %context<pir_file> := $post;
 
@@ -56,8 +54,8 @@ our multi method to_pbc(POST::Sub $sub, %context) {
 
     # Allocate registers.
     my @n_regs_used := %context<regalloc>.process($sub);
-    self.debug('n_regs_used ' ~ @n_regs_used.join('-')) if $DEBUG;
-    self.dumper($sub, "sub") if $DEBUG;
+    self.debug('n_regs_used ' ~ @n_regs_used.join('-')) if %context<DEBUG>;
+    self.dumper($sub, "sub") if %context<DEBUG>;
 
     my $bc := %context<bytecode>;
 
@@ -69,11 +67,11 @@ our multi method to_pbc(POST::Sub $sub, %context) {
     $sb.push(~$sub.name);
     my $subname := ~$sb;
 
-    self.debug("Emitting $subname") if $DEBUG;
+    self.debug("Emitting $subname") if %context<DEBUG>;
     %context<constants>.get_or_create_string($subname);
 
     my $start_offset := +$bc;
-    self.debug("From $start_offset") if $DEBUG;
+    self.debug("From $start_offset") if %context<DEBUG>;
 
     # Handle params
     $sub<params> := list() unless $sub<params>;
@@ -88,10 +86,10 @@ our multi method to_pbc(POST::Sub $sub, %context) {
         self.to_pbc($_, %context);
     }
 
-    self.debug("Middle { +$bc }") if $DEBUG;
+    self.debug("Middle { +$bc }") if %context<DEBUG>;
 
     # Default .return(). XXX We don't need it (probably)
-    self.debug("Emitting default return") if $DEBUG;
+    self.debug("Emitting default return") if %context<DEBUG>;
     $bc.push([
         'set_returns_pc',
         0x000                      # id of FIA
@@ -102,10 +100,10 @@ our multi method to_pbc(POST::Sub $sub, %context) {
     ]);
 
     my $end_offset := +$bc;
-    self.debug("To $end_offset") if $DEBUG;
+    self.debug("To $end_offset") if %context<DEBUG>;
 
     # Fixup labels to set real offsets
-    self.fixup_labels($sub, %context<labels_todo>, %context<bytecode>);
+    self.fixup_labels($sub, %context<labels_todo>, %context<bytecode>, %context);
 
     # Now create Sub PMC using hash of values.
     my %sub := hash(
@@ -121,8 +119,8 @@ our multi method to_pbc(POST::Sub $sub, %context) {
 
         :n_regs_used(@n_regs_used),
 
-        :pf_flags(self.create_sub_pf_flags($sub)),
-        :comp_flags(self.create_sub_comp_flags($sub)),
+        :pf_flags(self.create_sub_pf_flags($sub, %context)),
+        :comp_flags(self.create_sub_comp_flags($sub, %context)),
     );
 
     if defined($sub.namespace) {
@@ -137,45 +135,45 @@ our multi method to_pbc(POST::Sub $sub, %context) {
     # XXX Use .namespace for generating full name!
     my $idx := $sub.constant_index;
     if defined($idx) {
-        self.debug("Reusing old constant $idx") if $DEBUG;
+        self.debug("Reusing old constant $idx") if %context<DEBUG>;
         %context<constants>[$idx] := new('Sub', %sub);
     }
     else {
         $idx := %context<constants>.push(new('Sub', %sub));
         $sub.constant_index($idx);
-        self.debug("Allocate new constant $idx") if $DEBUG;
+        self.debug("Allocate new constant $idx") if %context<DEBUG>;
     }
 
     # Remember :main sub
     if (!%context<got_main_sub>) {
-        self.debug("main_sub is { %context<bytecode>.main_sub }") if $DEBUG;
+        self.debug("main_sub is { %context<bytecode>.main_sub }") if %context<DEBUG>;
         if $sub.main {
-            self.debug("Got first :main") if $DEBUG;
+            self.debug("Got first :main") if %context<DEBUG>;
             # We have true :main sub. First one.
             %context<bytecode>.main_sub($idx);
             %context<got_main_sub> := 1;
         }
         elsif %context<bytecode>.main_sub == -1 {
             # First sub.
-            self.debug("Got first sub") if $DEBUG;
+            self.debug("Got first sub") if %context<DEBUG>;
             %context<bytecode>.main_sub($idx);
         }
 
-        self.debug(":main sub is { %context<bytecode>.main_sub }") if $DEBUG;
+        self.debug(":main sub is { %context<bytecode>.main_sub }") if %context<DEBUG>;
     }
 }
 
 our multi method to_pbc(POST::Op $op, %context) {
     # Generate full name
     my $fullname := $op.pirop;
-    self.debug("Short name $fullname") if $DEBUG;
+    self.debug("Short name $fullname") if %context<DEBUG>;
 
     for @($op) {
         my $type := $_.type || self.get_register($_.name, %context).type;
         $fullname := ~$fullname ~ '_' ~ ~$type;
     }
 
-    self.debug("Fullname $fullname") if $DEBUG;
+    self.debug("Fullname $fullname") if %context<DEBUG>;
 
     # Store op offset. It will be needed for calculating labels.
     %context<opcode_offset>     := +%context<bytecode>;
@@ -186,7 +184,7 @@ our multi method to_pbc(POST::Op $op, %context) {
     for @($op) {
         @op.push(self.to_op($_, %context));
     }
-    self.debug("Op size { +@op }") if $DEBUG;
+    self.debug("Op size { +@op }") if %context<DEBUG>;
     %context<bytecode>.push(@op);
 }
 
@@ -202,7 +200,7 @@ our multi method to_pbc(POST::Label $l, %context) {
     self.panic("Trying to emit undelcared label!") unless $l.declared;
 
     my $pos := +$bc;
-    self.debug("Declare label '{ $l.name }' at $pos") if $DEBUG;
+    self.debug("Declare label '{ $l.name }' at $pos") if %context<DEBUG>;
     # Declaration of Label. Update offset in Sub.labels.
     $l.position($pos);
     # We can have "enclosed" ops. Process them now.
@@ -248,14 +246,14 @@ our multi method to_pbc(POST::Call $call, %context) {
                 $full_name := %context<sub>.namespace.Str if %context<sub>.namespace;
                 $full_name := ~$full_name ~ ~$call<name><value>;
                 my $invocable_sub := %context<pir_file>.sub($full_name);
-                self.debug("invocable_sub '$full_name'") if $DEBUG;
+                self.debug("invocable_sub '$full_name'") if %context<DEBUG>;
                 if $invocable_sub {
                     my $idx := $invocable_sub.constant_index;
                     unless defined($idx) {
                         # Allocate new space in constant table. We'll reuse it later.
                         $idx := %context<constants>.push(new("Integer"));
                         $invocable_sub.constant_index($idx);
-                        self.debug("Allocate constant for it $idx") if $DEBUG;
+                        self.debug("Allocate constant for it $idx") if %context<DEBUG>;
                     }
 
                     $SUB := %context<sub>.symbol("!SUB");
@@ -279,14 +277,14 @@ our multi method to_pbc(POST::Call $call, %context) {
                     ]);
                 }
                 else {
-                    self.debug("Name is " ~ $call<name>.WHAT) if $DEBUG;
+                    self.debug("Name is " ~ $call<name>.WHAT) if %context<DEBUG>;
                     $SUB := $call<name>;
                 }
             }
 
             my $o := $is_tailcall ?? "tailcall_p" !! "invokecc_p";
 
-            self.debug($o) if $DEBUG;
+            self.debug($o) if %context<DEBUG>;
             $bc.push([ $o, self.to_op($SUB, %context) ]);
         }
 
@@ -312,9 +310,9 @@ our multi method to_pbc(POST::Call $call, %context) {
 
 our multi method to_op(POST::Key $key, %context) {
 
-    self.debug("Want key") if $DEBUG;
+    self.debug("Want key") if %context<DEBUG>;
     my $key_pmc := $key.to_pmc(%context)[0];
-    self.debug("Got key") if $DEBUG;
+    self.debug("Got key") if %context<DEBUG>;
 
     # XXX PackfileConstantTable can't Keys equivalense it. So just push it.
     # XXX PCC clone_key...
@@ -350,7 +348,7 @@ our multi method to_op(POST::Constant $op, %context) {
         self.panic("NYI");
     }
 
-    self.debug("Index $idx") if $DEBUG;
+    self.debug("Index $idx") if %context<DEBUG>;
     $idx;
 }
 
@@ -400,7 +398,7 @@ our multi method to_op(POST::Label $l, %context) {
     # FIXME!!! We do need exact position for fixup labels.
     # $bc.push(0);
     %context<labels_todo>{$pos} := list($l.name, %context<opcode_offset>, %context<opcode_fullname>);
-    self.debug("Todo label '{ $l.name }' at $pos, { %context<opcode_offset> }") if $DEBUG;
+    self.debug("Todo label '{ $l.name }' at $pos, { %context<opcode_offset> }") if %context<DEBUG>;
 
     0;
 }
@@ -416,9 +414,9 @@ our method build_pcc_call($opname, @args, %context) {
     my $signature := self.build_args_signature(@args, %context);
     my $sig_idx   := %context<constants>.get_or_create_pmc($signature);
 
-    self.debug("Sig: $sig_idx") if $DEBUG;
+    self.debug("Sig: $sig_idx") if %context<DEBUG>;
 
-    self.debug($opname) if $DEBUG;
+    self.debug($opname) if %context<DEBUG>;
     # Push signature and all args.
 
     my @op := list($opname, $sig_idx);
@@ -538,14 +536,14 @@ our method create_context($past, %adverbs) {
 
     # TODO pbc_disassemble crashes without proper debug.
     # Add a debug segment.
-    # %context<debug> := new('PackfileDebug');
+    # %context<DEBUG> := new('PackfileDebug');
 
     # Store the debug segment in bytecode
-    #$pfdir<BYTECODE_hello.pir_DB> := %context<debug>;
+    #$pfdir<BYTECODE_hello.pir_DB> := %context<DEBUG>;
 
     %context<regalloc> := POST::VanillaAllocator.new;
 
-    %context<debug>    := %adverbs<debug>;
+    %context<DEBUG>    := %adverbs<debug>;
 
     %context;
 }
@@ -559,7 +557,7 @@ our method enumerate_subs(POST::File $post) {
 }
 
 # Declare as multi to get "static" typecheck.
-our method create_sub_pf_flags(POST::Sub $sub) {
+our method create_sub_pf_flags(POST::Sub $sub, %context) {
     # This constants aren't exposed. So keep reference here.
     # SUB_FLAG_IS_OUTER     = PObj_private1_FLAG == 0x01
     # SUB_FLAG_PF_ANON      = PObj_private3_FLAG == 0x08
@@ -575,12 +573,12 @@ our method create_sub_pf_flags(POST::Sub $sub) {
     $res := $res + 0x40 * $sub.immediate;
     $res := $res + 0x80 * $sub.postcomp;
 
-    self.debug("pf_flags $res") if $DEBUG;
+    self.debug("pf_flags $res") if %context<DEBUG>;
 
     $res;
 }
 
-our method create_sub_comp_flags(POST::Sub $sub) {
+our method create_sub_comp_flags(POST::Sub $sub, %context) {
     #    SUB_COMP_FLAG_VTABLE    = SUB_COMP_FLAG_BIT_1   == 0x02
     #    SUB_COMP_FLAG_METHOD    = SUB_COMP_FLAG_BIT_2   == 0x04
     #    SUB_COMP_FLAG_PF_INIT   = SUB_COMP_FLAG_BIT_10  == 0x400
@@ -591,20 +589,20 @@ our method create_sub_comp_flags(POST::Sub $sub) {
     $res := $res + 0x400 if $sub.is_init;
     $res := $res + 0x800 if $sub.nsentry;  # XXX Check when to set ns_entry_name in .to_pbc!
 
-    self.debug("comp_flags $res") if $DEBUG;
+    self.debug("comp_flags $res") if %context<DEBUG>;
 
     $res;
 }
 
-our method fixup_labels($sub, $labels_todo, $bc) {
-    self.debug("Fixup labels") if $DEBUG;
+our method fixup_labels($sub, $labels_todo, $bc, %context) {
+    self.debug("Fixup labels") if %context<DEBUG>;
     for $labels_todo -> $kv {
         my $offset := $kv.key;
         my @todo   := $kv.value;
-        self.debug("Fixing '{ @todo[0] }' from op { @todo[2] } at { $offset }") if $DEBUG;
+        self.debug("Fixing '{ @todo[0] }' from op { @todo[2] } at { $offset }") if %context<DEBUG>;
         # We need op to calc position of LABEL within it.
         my $op  := $bc.opmap{~@todo[2]};
-        self.debug("Op length is { $op.length }") if $DEBUG;
+        self.debug("Op length is { $op.length }") if %context<DEBUG>;
 
         my $delta  := $sub.label(@todo[0]).position - @todo[1];
         # Shortcut - all ops have "in LABEL" as lst argument.
@@ -622,10 +620,8 @@ our method get_register($name, %context) {
 }
 
 method debug(*@args) {
-    if $DEBUG {
-        for @args {
-            pir::say($_);
-        }
+    for @args {
+        pir::say($_);
     }
 }
 
