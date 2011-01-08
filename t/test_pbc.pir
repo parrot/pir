@@ -27,7 +27,24 @@
 
     $S0 = slurp('tmp.out')
 
+    $S1 = substr expected, 0, 1
+    if $S1 == '/' goto like
+
     is($S0, expected, test_name)
+    goto done
+
+  like:
+    diag("CHECK LIKE")
+    expected = replace expected, 0, 1, ''
+    $I0 = length expected
+    dec $I0
+    dec $I0
+    expected = replace expected, $I0, 1, ''
+    diag(expected)
+    like($S0, expected, test_name)
+    goto done
+
+  done:
     .return()
 
   fail:
