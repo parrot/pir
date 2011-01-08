@@ -26,7 +26,7 @@ INIT {
 
 method pbc($post, %adverbs) {
     #pir::trace(1);
-    $OPLIB := pir::new__psp('OpLib', "core_ops");
+    $OPLIB := new('OpLib', "core_ops");
     $DEBUG := %adverbs<debug>;
 
     # Emitting context. Contains consts, etc.
@@ -72,7 +72,7 @@ our multi method to_pbc(POST::Sub $sub, %context) {
     %context<labels_todo> := hash();
 
     # Packfile poop his pants...
-    my $sb := pir::new__PS('StringBuilder');
+    my $sb := new('StringBuilder');
     $sb.push(~$sub.name);
     my $subname := ~$sb;
 
@@ -145,10 +145,10 @@ our multi method to_pbc(POST::Sub $sub, %context) {
     my $idx := $sub.constant_index;
     if defined($idx) {
         self.debug("Reusing old constant $idx") if $DEBUG;
-        %context<constants>[$idx] := pir::new__PSP('Sub', %sub);
+        %context<constants>[$idx] := new('Sub', %sub);
     }
     else {
-        $idx := %context<constants>.push(pir::new__PSP('Sub', %sub));
+        $idx := %context<constants>.push(new('Sub', %sub));
         $sub.constant_index($idx);
         self.debug("Allocate new constant $idx") if $DEBUG;
     }
@@ -260,7 +260,7 @@ our multi method to_pbc(POST::Call $call, %context) {
                     my $idx := $invocable_sub.constant_index;
                     unless defined($idx) {
                         # Allocate new space in constant table. We'll reuse it later.
-                        $idx := %context<constants>.push(pir::new__ps("Integer"));
+                        $idx := %context<constants>.push(new("Integer"));
                         $invocable_sub.constant_index($idx);
                         self.debug("Allocate constant for it $idx") if $DEBUG;
                     }
@@ -372,7 +372,7 @@ our multi method to_op(POST::String $str, %context) {
     }
     else {
         #create a ByteBuffer and convert it to a string with the given encoding/charset
-        my $bb := pir::new__ps('ByteBuffer');
+        my $bb := new('ByteBuffer');
         my $str_val := $str.value;
         Q:PIR{
             .local pmc str_val, bb
@@ -519,23 +519,23 @@ our method build_single_arg($arg, %context) {
 our method create_context($past) {
     my %context;
 
-    %context<packfile> := pir::new__PS("Packfile");
+    %context<packfile> := new("Packfile");
 
     # Scaffolding
     # Packfile will be created with fresh directory
     my $pfdir := %context<packfile>.get_directory;
 
     # We need some constants
-    %context<constants> := pir::new__PS('PackfileConstantTable');
+    %context<constants> := new('PackfileConstantTable');
 
     # Empty FIA for handling returns from "hello"
-    %context<constants>[0] := pir::new__PS('FixedIntegerArray');
+    %context<constants>[0] := new('FixedIntegerArray');
 
     # Add PackfileConstantTable into directory.
     $pfdir<CONSTANTS_hello.pir> := %context<constants>;
 
     # Generate bytecode
-    %context<bytecode> := pir::new__PS('PackfileBytecodeSegment');
+    %context<bytecode> := new('PackfileBytecodeSegment');
     %context<bytecode>.main_sub(-1);
     # Did we see real :main sub
     %context<got_main_sub> := 0;
@@ -545,7 +545,7 @@ our method create_context($past) {
 
     # TODO pbc_disassemble crashes without proper debug.
     # Add a debug segment.
-    # %context<debug> := pir::new__PS('PackfileDebug');
+    # %context<debug> := new('PackfileDebug');
 
     # Store the debug segment in bytecode
     #$pfdir<BYTECODE_hello.pir_DB> := %context<debug>;

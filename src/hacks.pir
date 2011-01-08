@@ -96,6 +96,20 @@
     .return ($I0)
 .end
 
+.sub "new" :multi(_)
+    .param string what
+    $P0 = new what
+    .return ($P0)
+.end
+
+.sub "new" :multi(_,_)
+    .param string what
+    .param pmc    how
+    $P0 = new what, how
+    .return ($P0)
+.end
+
+
 =head1 LICENSE
 
 Copyright (C) 2011, Parrot Foundation.
