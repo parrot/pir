@@ -40,10 +40,6 @@ method pbc($post, %adverbs) {
 ##########################################
 # Emiting pbc
 
-our multi method to_pbc($what, %context) {
-    self.panic($what.WHAT);
-}
-
 our multi method to_pbc(Undef $what, %context) {
     # Do nothing.
 }
