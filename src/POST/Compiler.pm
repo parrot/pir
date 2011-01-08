@@ -230,11 +230,8 @@ our multi method to_pbc(POST::Call $call, %context) {
             if $call.name.isa(POST::Constant) {
                 # Constant string. E.g. "foo"()
                 # Avoid find_sub_not_null when Sub is constant.
-                my $full_name;
-                $full_name := %context<sub>.namespace.Str if %context<sub>.namespace;
-                $full_name := ~$full_name ~ ~$call<name><value>;
-                my $invocable_sub := %context<pir_file>.sub($full_name);
-                self.debug("invocable_sub '$full_name'") if %context<DEBUG>;
+                my $invocable_sub := self.get_sub_to_call($call, %context);
+
                 if $invocable_sub {
                     my $idx := $invocable_sub.constant_index;
                     $SUB := %context<sub>.symbol("!SUB");
@@ -287,8 +284,54 @@ our multi method to_pbc(POST::Call $call, %context) {
         self.build_pcc_call("get_results_pc", $call<params>, %context);
     }
     else {
-        self.panic("NYI { $calltype }");
+        self.panic("NYI call { $calltype }");
     }
+}
+
+method get_sub_to_call(POST::Call $call, %context) {
+    my $invocable_sub;
+
+    if $call.name.isa(POST::String) {
+        my $full_name;
+        $full_name := %context<sub>.namespace.Str if %context<sub>.namespace;
+        $full_name := ~$full_name ~ ~$call.name.value;
+        $invocable_sub := %context<pir_file>.sub($full_name);
+    }
+    else {
+        # .const 'Sub' foo = <subid>
+        self.dumper(%context<sub>, "sub") if %context<DEBUG>;
+        my $symbol := %context<sub>.symbol($call.name.value);
+        self.dumper($symbol, "symbol") if %context<DEBUG>;
+
+        # We found constant with this name!
+        if defined($symbol) {
+            my $subid  := $symbol.value;
+            self.debug("subid '$subid'") if %context<DEBUG>;
+
+            for %context<pir_file><subs>.values -> $sub {
+                self.dumper($sub, "checking") if %context<DEBUG>;
+                # POST::Sub.subid will generate it. Poke inside.
+                if defined($sub<subid>) {
+                    $invocable_sub := $sub if $sub.subid eq $subid;
+                }
+                else {
+                    $invocable_sub := $sub if $sub.name eq $subid;
+                }
+            }
+
+            self.panic("Couldn't find sub '$subid'") unless $invocable_sub;
+        }
+        else {
+            # Fallback to string lookup
+            my $full_name;
+            $full_name := %context<sub>.namespace.Str if %context<sub>.namespace;
+            $full_name := ~$full_name ~ ~$call.name.value;
+            $invocable_sub := %context<pir_file>.sub($full_name);
+        }
+    }
+
+    self.debug("invocable_sub '{ $invocable_sub.full_name }'") if %context<DEBUG>;
+    $invocable_sub;
 }
 
 ##########
@@ -331,7 +374,7 @@ our multi method to_op(POST::Constant $op, %context) {
         $idx := %context<constants>.get_or_create_number($op.value);
     }
     else {
-        self.panic("NYI");
+        self.panic("NYI handling of Constant '$type'");
     }
 
     self.debug("Index $idx") if %context<DEBUG>;
