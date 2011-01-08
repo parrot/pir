@@ -90,6 +90,12 @@
     register_hll_lib lib
 .end
 
+.sub "defined"
+    .param pmc arg
+    $I0 = defined arg
+    .return ($I0)
+.end
+
 =head1 LICENSE
 
 Copyright (C) 2011, Parrot Foundation.

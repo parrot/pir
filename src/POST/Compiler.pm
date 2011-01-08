@@ -132,7 +132,7 @@ our multi method to_pbc(POST::Sub $sub, %context) {
         :comp_flags(self.create_sub_comp_flags($sub)),
     );
 
-    if pir::defined__ip($sub.namespace) {
+    if defined($sub.namespace) {
         my $nskey := $sub.namespace.to_pmc(%context)[0];
         if pir::typeof__sp($nskey) eq 'Key' {
             %sub<namespace_name>  := $nskey;
@@ -143,7 +143,7 @@ our multi method to_pbc(POST::Sub $sub, %context) {
     # We can have pre-allocated constant for this sub already.
     # XXX Use .namespace for generating full name!
     my $idx := $sub.constant_index;
-    if pir::defined__ip($idx) {
+    if defined($idx) {
         self.debug("Reusing old constant $idx") if $DEBUG;
         %context<constants>[$idx] := pir::new__PSP('Sub', %sub);
     }
@@ -258,7 +258,7 @@ our multi method to_pbc(POST::Call $call, %context) {
                 self.debug("invocable_sub '$full_name'") if $DEBUG;
                 if $invocable_sub {
                     my $idx := $invocable_sub.constant_index;
-                    unless pir::defined__ip($idx) {
+                    unless defined($idx) {
                         # Allocate new space in constant table. We'll reuse it later.
                         $idx := %context<constants>.push(pir::new__ps("Integer"));
                         $invocable_sub.constant_index($idx);
