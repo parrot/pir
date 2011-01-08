@@ -562,7 +562,7 @@ our method enumerate_subs(POST::File $post) {
 }
 
 # Declare as multi to get "static" typecheck.
-our multi method create_sub_pf_flags(POST::Sub $sub) {
+our method create_sub_pf_flags(POST::Sub $sub) {
     # This constants aren't exposed. So keep reference here.
     # SUB_FLAG_IS_OUTER     = PObj_private1_FLAG == 0x01
     # SUB_FLAG_PF_ANON      = PObj_private3_FLAG == 0x08
@@ -583,7 +583,7 @@ our multi method create_sub_pf_flags(POST::Sub $sub) {
     $res;
 }
 
-our multi method create_sub_comp_flags(POST::Sub $sub) {
+our method create_sub_comp_flags(POST::Sub $sub) {
     #    SUB_COMP_FLAG_VTABLE    = SUB_COMP_FLAG_BIT_1   == 0x02
     #    SUB_COMP_FLAG_METHOD    = SUB_COMP_FLAG_BIT_2   == 0x04
     #    SUB_COMP_FLAG_PF_INIT   = SUB_COMP_FLAG_BIT_10  == 0x400
