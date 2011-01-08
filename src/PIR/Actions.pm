@@ -167,6 +167,8 @@ method op($/) {
     # TODO We need 2 way passing here to create proper opname.
     my $oplib := self.oplib;
     my $op_family := $oplib.op_family(~$<name>);
+    $/.CURSOR.panic("Unknown op: $<name>") unless defined($op_family);
+
     my $pirop     := $op_family.shift;
 
     if $<op_params>[0] {
