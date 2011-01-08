@@ -688,11 +688,9 @@ method call:sym<ident>($/) {
 
     my $past := POST::Call.new(
         :calltype('call'),
-        :name(POST::String.new(
-            :type<sc>,
+        :name(POST::Constant.new(
+            :type('pc'),
             :value(~$<ident>),
-            :encoding<binary>,
-            :charset<ascii>,
         )),
     );
     self.handle_pcc_args($/, $past);
