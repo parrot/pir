@@ -23,7 +23,7 @@
     post = c.'compile'(code, "target" => 'pbc', "output" => 'tmp.pbc')
 
     # XXX It will probably not work on Windows...
-    $I0 = spawnw "parrot tmp.pbc 1>tmp.out 2>tmp.err"
+    $I0 = spawnw "parrot tmp.pbc 1>tmp.out 2>&1"
 
     $S0 = slurp('tmp.out')
 
