@@ -161,7 +161,7 @@ CODE
 ok
 RESULT
 
-test_post( 'new with a native type, no string constant', <<'CODE', <<'RESULT');
+test_post( 'new with a native type, no string constant', <<'CODE', <<'RESULT', "fail_like" => "'INTVAL'");
 .sub test :main
         $P1 = new INTVAL
     print "never\n"
@@ -201,7 +201,7 @@ CODE
 ok
 RESULT
 
-test_post( "undefined ident", <<'CODE', <<'RESULT' );
+test_post( "undefined ident", <<'CODE', <<'RESULT', "fail_like" => "'no_such'" );
 .sub test :main
     print no_such
 .end
