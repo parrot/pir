@@ -508,46 +508,6 @@ our method build_single_arg($arg, %context) {
 # /PCC related functions
 ##########################################
 
-our method create_context($past, %adverbs) {
-    my %context;
-
-    %context<packfile> := new("Packfile");
-
-    # Scaffolding
-    # Packfile will be created with fresh directory
-    my $pfdir := %context<packfile>.get_directory;
-
-    # We need some constants
-    %context<constants> := new('PackfileConstantTable');
-
-    # Empty FIA for handling returns from "hello"
-    %context<constants>[0] := new('FixedIntegerArray');
-
-    # Add PackfileConstantTable into directory.
-    $pfdir<CONSTANTS_hello.pir> := %context<constants>;
-
-    # Generate bytecode
-    %context<bytecode> := new('PackfileBytecodeSegment');
-    %context<bytecode>.main_sub(-1);
-    # Did we see real :main sub
-    %context<got_main_sub> := 0;
-
-    # Store bytecode
-    $pfdir<BYTECODE_hello.pir> := %context<bytecode>;
-
-    # TODO pbc_disassemble crashes without proper debug.
-    # Add a debug segment.
-    # %context<DEBUG> := new('PackfileDebug');
-
-    # Store the debug segment in bytecode
-    #$pfdir<BYTECODE_hello.pir_DB> := %context<DEBUG>;
-
-    %context<regalloc> := POST::VanillaAllocator.new;
-
-    %context<DEBUG>    := %adverbs<debug>;
-
-    %context;
-}
 
 # XXX This is required only for PAST->POST generated tree.
 our method enumerate_subs(POST::File $post) {
@@ -626,6 +586,48 @@ method debug(*@args) {
     }
 }
 
+our method create_context($past, %adverbs) {
+    my %context;
+
+    %context<compiler> := self;
+
+    %context<packfile> := new("Packfile");
+
+    # Scaffolding
+    # Packfile will be created with fresh directory
+    my $pfdir := %context<packfile>.get_directory;
+
+    # We need some constants
+    %context<constants> := new('PackfileConstantTable');
+
+    # Empty FIA for handling returns from "hello"
+    %context<constants>[0] := new('FixedIntegerArray');
+
+    # Add PackfileConstantTable into directory.
+    $pfdir<CONSTANTS_hello.pir> := %context<constants>;
+
+    # Generate bytecode
+    %context<bytecode> := new('PackfileBytecodeSegment');
+    %context<bytecode>.main_sub(-1);
+    # Did we see real :main sub
+    %context<got_main_sub> := 0;
+
+    # Store bytecode
+    $pfdir<BYTECODE_hello.pir> := %context<bytecode>;
+
+    # TODO pbc_disassemble crashes without proper debug.
+    # Add a debug segment.
+    # %context<DEBUG> := new('PackfileDebug');
+
+    # Store the debug segment in bytecode
+    #$pfdir<BYTECODE_hello.pir_DB> := %context<DEBUG>;
+
+    %context<regalloc> := POST::VanillaAllocator.new;
+
+    %context<DEBUG>    := %adverbs<debug>;
+
+    %context;
+}
 INIT {
     pir::load_bytecode('nqp-setting.pbc');
 }
