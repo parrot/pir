@@ -30,9 +30,7 @@ method pbc($post, %adverbs) {
     # PCC call handling.
     self.enumerate_subs($post, %context);
 
-    for @($post) -> $s {
-        self.to_pbc($s, %context);
-    }
+    self.to_pbc($_, %context) for @($post);
 
     %context<packfile>;
 };
@@ -78,9 +76,7 @@ our multi method to_pbc(POST::Sub $sub, %context) {
     }
 
     # Emit ops.
-    for @($sub) {
-        self.to_pbc($_, %context);
-    }
+    self.to_pbc($_, %context) for @($sub);
 
     self.debug("Middle { +$bc }") if %context<DEBUG>;
 
@@ -169,18 +165,15 @@ our multi method to_pbc(POST::Op $op, %context) {
     %context<opcode_fullname>   := $fullname;
 
     my @op := list($fullname);
-    for @($op) {
-        @op.push(self.to_op($_, %context));
-    }
+    @op.push(self.to_op($_, %context)) for @($op);
+
     self.debug("Op size { +@op }") if %context<DEBUG>;
     %context<bytecode>.push(@op);
 }
 
 # Some PIR sugar produces nested Nodes.
 our multi method to_pbc(POST::Node $node, %context) {
-    for @($node) {
-        self.to_pbc($_, %context);
-    }
+    self.to_pbc($_, %context) for @($node);
 }
 
 our multi method to_pbc(POST::Label $l, %context) {
@@ -192,9 +185,7 @@ our multi method to_pbc(POST::Label $l, %context) {
     # Declaration of Label. Update offset in Sub.labels.
     $l.position($pos);
     # We can have "enclosed" ops. Process them now.
-    for @($l) {
-        self.to_pbc($_, %context);
-    }
+    self.to_pbc($_, %context) for @($l);
 }
 
 our multi method to_pbc(POST::Call $call, %context) {
@@ -620,9 +611,7 @@ our method get_register($name, %context) {
 }
 
 method debug(*@args) {
-    for @args {
-        pir::say($_);
-    }
+    pir::say($_) for @args;
 }
 
 our method create_context($past, %adverbs) {
