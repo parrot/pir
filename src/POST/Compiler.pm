@@ -117,7 +117,7 @@ our multi method to_pbc(POST::Sub $sub, %context) {
 
     if defined($sub.namespace) {
         my $nskey := $sub.namespace.to_pmc(%context)[0];
-        if pir::typeof__sp($nskey) eq 'Key' {
+        if pir::typeof($nskey) eq 'Key' {
             %sub<namespace_name>  := $nskey;
         }
     }
@@ -448,7 +448,7 @@ our method build_pcc_call($opname, @args, %context) {
 
     for @args -> $arg {
         # Handle :named params 
-        if pir::isa__ips($arg.modifier, "Hash") {
+        if pir::isa($arg.modifier, "Hash") {
             my $name := $arg.modifier<named> // $arg.name;
             @op.push(
                  %context<constants>.get_or_create_string($name)
@@ -465,7 +465,7 @@ our method build_args_signature(@args, %context) {
     for @args -> $arg {
         # build_single_arg can return 2 values, but @a.push can't handle it
         my $s := self.build_single_arg($arg, %context);
-        if pir::isa__ips($s, 'Integer') {
+        if pir::isa($s, 'Integer') {
             @sig.push($s);
         }
         else {
@@ -513,7 +513,7 @@ our method build_single_arg($arg, %context) {
 
     my $mod := $arg.modifier;
     if $mod {
-        if pir::isa__ips($mod, "Hash")  {
+        if pir::isa($mod, "Hash")  {
             # named
             # First is string constant with :named flag
             $res := list(0x1 + 0x10 + 0x200, $res + 0x200)
@@ -645,10 +645,10 @@ our method create_context($past, %adverbs) {
 
     # TODO pbc_disassemble crashes without proper debug.
     # Add a debug segment.
-    # %context<DEBUG> := new('PackfileDebug');
+    %context<DEBUG_hello.pir> := new('PackfileDebug');
 
     # Store the debug segment in bytecode
-    #$pfdir<BYTECODE_hello.pir_DB> := %context<DEBUG>;
+    $pfdir<BYTECODE_hello.pir_DB> := %context<DEBUG_hello.pir>;
 
     %context<regalloc> := POST::VanillaAllocator.new;
 
