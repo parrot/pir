@@ -283,4 +283,39 @@ CODE
 dummy
 RESULT
 
+test_post( "Unknown subid", <<'CODE', <<'RESULT', "fail_like" => "find sub 'bar'");
+.sub "main"
+    .const "Sub" foo = "bar"
+    foo()
+.end
+CODE
+dummy
+RESULT
+
+test_post( "Unknown subid. Use name", <<'CODE', <<'RESULT');
+.sub "main"
+    .const "Sub" foo = "bar"
+    foo()
+.end
+
+.sub "bar"
+    say "Hello, World"
+.end
+CODE
+Hello, World
+RESULT
+
+test_post( "Found subid", <<'CODE', <<'RESULT');
+.sub "main"
+    .const "Sub" foo = "bar"
+    foo()
+.end
+
+.sub "something" :subid("bar")
+    say "Hello, World"
+.end
+CODE
+Hello, World
+RESULT
+
 # vim: ft=perl
