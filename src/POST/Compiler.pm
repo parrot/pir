@@ -23,7 +23,7 @@ method pbc($post, %adverbs) {
     $DEBUG := %adverbs<debug>;
 
     # Emitting context. Contains consts, etc.
-    my %context := self.create_context($post);
+    my %context := self.create_context($post, %adverbs);
 
     %context<pir_file> := $post;
 
@@ -509,7 +509,7 @@ our method build_single_arg($arg, %context) {
 # /PCC related functions
 ##########################################
 
-our method create_context($past) {
+our method create_context($past, %adverbs) {
     my %context;
 
     %context<packfile> := new("Packfile");
@@ -544,6 +544,8 @@ our method create_context($past) {
     #$pfdir<BYTECODE_hello.pir_DB> := %context<debug>;
 
     %context<regalloc> := POST::VanillaAllocator.new;
+
+    %context<debug>    := %adverbs<debug>;
 
     %context;
 }
