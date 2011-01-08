@@ -397,7 +397,12 @@ our multi method to_op(POST::Label $l, %context) {
     my $pos := +$bc;
     # FIXME!!! We do need exact position for fixup labels.
     # $bc.push(0);
-    %context<labels_todo>{$pos} := list($l.name, %context<opcode_offset>, %context<opcode_fullname>);
+    %context<labels_todo>{$pos} := hash(
+            :name($l.name),
+            :offset(%context<opcode_offset>),
+            :opname(%context<opcode_fullname>),
+    );
+
     self.debug("Todo label '{ $l.name }' at $pos, { %context<opcode_offset> }") if %context<DEBUG>;
 
     0;
@@ -598,13 +603,13 @@ our method fixup_labels($sub, $labels_todo, $bc, %context) {
     self.debug("Fixup labels") if %context<DEBUG>;
     for $labels_todo -> $kv {
         my $offset := $kv.key;
-        my @todo   := $kv.value;
-        self.debug("Fixing '{ @todo[0] }' from op { @todo[2] } at { $offset }") if %context<DEBUG>;
+        my %todo   := $kv.value;
+        self.debug("Fixing '{ %todo<name> }' from op { %todo<opname> } at { $offset }") if %context<DEBUG>;
         # We need op to calc position of LABEL within it.
-        my $op  := $bc.opmap{~@todo[2]};
+        my $op  := $bc.opmap{ ~%todo<opname> };
         self.debug("Op length is { $op.length }") if %context<DEBUG>;
 
-        my $delta  := $sub.label(@todo[0]).position - @todo[1];
+        my $delta  := $sub.label(%todo<name>).position - %todo<offset>;
         # Shortcut - all ops have "in LABEL" as lst argument.
         $bc[$offset + $op.length] := $delta;
     }
