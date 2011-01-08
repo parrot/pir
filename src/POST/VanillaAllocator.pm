@@ -24,8 +24,9 @@ our method process(POST::Sub $sub) {
     my @n_regs_used := (0, 0, 0, 0);
     for $sub.symtable {
         # TODO Skip constants.
+        next if $_.value.type ~~ /c$/;
         my $idx := %type2idx{$_.value.type};
-        pir::die("Unknown type") unless pir::defined__ip($idx);
+        pir::die("Unknown type { $_.value.type } of { $_.value }") unless pir::defined__ip($idx);
         $_.value.regno(+@n_regs_used[$idx]);
         @n_regs_used[$idx]++;
     }
