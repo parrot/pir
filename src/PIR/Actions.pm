@@ -105,9 +105,9 @@ method compilation_unit:sym<sub>($/, $key?) {
 }
 
 # Parametrized modifiers
-method sub_modifier:sym<nsentry>($/)    { make $<string_constant>.ast<value> }
+method sub_modifier:sym<nsentry>($/)    { make $<string_constant> ?? $<string_constant>[0].ast<value> !! '' }
 # TODO validate vtable name for existence
-method sub_modifier:sym<vtable>($/)     { make $<string_constant> ?? $<string_constant>.ast<value> !! '' }
+method sub_modifier:sym<vtable>($/)     { make $<string_constant> ?? $<string_constant>[0].ast<value> !! '' }
 method sub_modifier:sym<outer>($/)      { make $<subname>.ast<value> }
 method sub_modifier:sym<subid>($/)      { make $<string_constant>.ast<value> }
 #token sub_modifier:sym<multi>      { ':' <sym> '(' [ [<.ws><multi_type><.ws>] ** ',' ]? ')' }

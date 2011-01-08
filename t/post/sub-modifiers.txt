@@ -69,6 +69,71 @@ CODE
 }
 RESULT
 
+test_post( ":nsentry", <<'CODE', <<'RESULT');
+.sub "main" :nsentry
+.end
+CODE
+"post" => PMC 'POST;File'  {
+    <main_sub> => "main"
+    <subs> => Hash {
+        "main" => PMC 'POST;Sub'  {
+            <name> => "main"
+            <nsentry> => ""
+        }
+    }
+    [0] => \post["main"]
+}
+RESULT
+
+test_post( ":nsentry('foo')", <<'CODE', <<'RESULT');
+.sub "main" :nsentry("foo")
+.end
+CODE
+"post" => PMC 'POST;File'  {
+    <main_sub> => "main"
+    <subs> => Hash {
+        "main" => PMC 'POST;Sub'  {
+            <name> => "main"
+            <nsentry> => "foo"
+        }
+    }
+    [0] => \post["main"]
+}
+RESULT
+
+
+test_post( ":vtable", <<'CODE', <<'RESULT');
+.sub "main" :vtable
+.end
+CODE
+"post" => PMC 'POST;File'  {
+    <main_sub> => "main"
+    <subs> => Hash {
+        "main" => PMC 'POST;Sub'  {
+            <name> => "main"
+            <vtable> => ""
+        }
+    }
+    [0] => \post["main"]
+}
+RESULT
+
+test_post( ":vtable('foo')", <<'CODE', <<'RESULT');
+.sub "main" :vtable("foo")
+.end
+CODE
+"post" => PMC 'POST;File'  {
+    <main_sub> => "main"
+    <subs> => Hash {
+        "main" => PMC 'POST;Sub'  {
+            <name> => "main"
+            <vtable> => "foo"
+        }
+    }
+    [0] => \post["main"]
+}
+RESULT
+
 
 
 # vim: ft=perl6
