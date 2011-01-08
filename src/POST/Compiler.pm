@@ -16,7 +16,6 @@ Iterate over todolist and replace labels with offset of Sub start.
 
 =end Labels
 
-our $OPLIB;
 our $DEBUG;
 
 our $REGALLOC;
@@ -26,7 +25,6 @@ INIT {
 
 method pbc($post, %adverbs) {
     #pir::trace(1);
-    $OPLIB := new('OpLib', "core_ops");
     $DEBUG := %adverbs<debug>;
 
     # Emitting context. Contains consts, etc.
@@ -235,8 +233,8 @@ our multi method to_pbc(POST::Call $call, %context) {
             if $call.name.isa(POST::Constant) {
                 $bc.push([
                     $is_tailcall
-                        ?? $OPLIB<tailcallmethod_p_sc>
-                        !! $OPLIB<callmethodcc_p_sc>,
+                        ?? 'tailcallmethod_p_sc'
+                        !! 'callmethodcc_p_sc',
                     self.to_op($call.invocant, %context),
                     self.to_op($call.name, %context),
                 ]);
