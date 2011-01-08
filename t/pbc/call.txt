@@ -275,6 +275,12 @@ CODE
 Answer is 42
 RESULT
 
-
+test_post( "Wrong variable type for dynamic call", <<'CODE', <<'RESULT', "fail_like" => "Sub '$S0' isn't a PMC");
+.sub "main"
+    $S0()
+.end
+CODE
+dummy
+RESULT
 
 # vim: ft=perl

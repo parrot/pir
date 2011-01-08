@@ -262,6 +262,10 @@ our multi method to_pbc(POST::Call $call, %context) {
                     $processed := 1;
                 }
             }
+            elsif $call.name.type ne 'p' {
+                # Variable call. It should be PMC.
+                self.panic("Sub '{ $call.name.name }' isn't a PMC");
+            }
 
             unless $processed {
                 if $call.name.isa(POST::Constant) {
@@ -526,13 +530,12 @@ our method create_sub_pf_flags(POST::Sub $sub, %context) {
     # SUB_FLAG_PF_LOAD      = PObj_private5_FLAG == 0x20
     # SUB_FLAG_PF_IMMEDIATE = PObj_private6_FLAG == 0x40
     # SUB_FLAG_PF_POSTCOMP  = PObj_private7_FLAG == 0x80
-    my $res := 0;
-    $res := $res + 0x01 * $sub.outer;
-    $res := $res + 0x08 * $sub.anon;
-    $res := $res + 0x10 * $sub.main;
-    $res := $res + 0x20 * $sub.load;
-    $res := $res + 0x40 * $sub.immediate;
-    $res := $res + 0x80 * $sub.postcomp;
+    my $res := 0x01 * $sub.outer
+             + 0x08 * $sub.anon
+             + 0x10 * $sub.main
+             + 0x20 * $sub.load
+             + 0x40 * $sub.immediate
+             + 0x80 * $sub.postcomp;
 
     self.debug("pf_flags $res") if %context<DEBUG>;
 
@@ -544,11 +547,11 @@ our method create_sub_comp_flags(POST::Sub $sub, %context) {
     #    SUB_COMP_FLAG_METHOD    = SUB_COMP_FLAG_BIT_2   == 0x04
     #    SUB_COMP_FLAG_PF_INIT   = SUB_COMP_FLAG_BIT_10  == 0x400
     #    SUB_COMP_FLAG_NSENTRY   = SUB_COMP_FLAG_BIT_11  == 0x800
-    my $res := 0;
-    $res := $res + 0x002 if $sub.vtable;
-    $res := $res + 0x004 if $sub.is_method;
-    $res := $res + 0x400 if $sub.is_init;
-    $res := $res + 0x800 if $sub.nsentry;  # XXX Check when to set ns_entry_name in .to_pbc!
+    my $res := 0x002 * ( $sub.vtable ?? 1 !! 0 )
+             + 0x004 * ( $sub.is_method ?? 1 !! 0 )
+             + 0x400 * ( $sub.is_init ?? 1 !! 0 )
+             + 0x800 * ( $sub.nsentry ?? 1 !! 0 );
+    # XXX Check when to set ns_entry_name in .to_pbc!
 
     self.debug("comp_flags $res") if %context<DEBUG>;
 
