@@ -19,22 +19,22 @@
 .end
 
 
-.loadlib 'src/PIR/Actions.pbc'
-.loadlib 'src/PIR/Grammar.pbc'
-.loadlib 'src/PIR/Compiler.pbc'
+.loadlib 'gen/PIR/Actions.pbc'
+.loadlib 'gen/PIR/Grammar.pbc'
+.loadlib 'gen/PIR/Compiler.pbc'
 
 #.HLL 'parrot'
-.loadlib 'src/POST/VanillaAllocator.pbc'
-.loadlib 'src/POST/Compiler.pbc'
-.loadlib 'src/POST/File.pbc'
-.loadlib 'src/POST/Sub.pbc'
-.loadlib 'src/POST/Call.pbc'
-.loadlib 'src/POST/Value.pbc'
-.loadlib 'src/POST/Constant.pbc'
-.loadlib 'src/POST/String.pbc'
-.loadlib 'src/POST/Register.pbc'
-.loadlib 'src/POST/Label.pbc'
-.loadlib 'src/POST/Key.pbc'
+.loadlib 'gen/POST/VanillaAllocator.pbc'
+.loadlib 'gen/POST/Compiler.pbc'
+.loadlib 'gen/POST/File.pbc'
+.loadlib 'gen/POST/Sub.pbc'
+.loadlib 'gen/POST/Call.pbc'
+.loadlib 'gen/POST/Value.pbc'
+.loadlib 'gen/POST/Constant.pbc'
+.loadlib 'gen/POST/String.pbc'
+.loadlib 'gen/POST/Register.pbc'
+.loadlib 'gen/POST/Label.pbc'
+.loadlib 'gen/POST/Key.pbc'
 
 #.HLL 'PIRATE'
 

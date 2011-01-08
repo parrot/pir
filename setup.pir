@@ -128,25 +128,25 @@ SOURCES
     # Build self-hosted version
     $P9 = new ['OrderedHash']
 
-    $P9['src/POST/Compiler.pbc'] = 'src/POST/Compiler.pir'
-    $P9['src/POST/File.pbc'] = 'src/POST/File.pir'
-    $P9['src/POST/Call.pbc'] = 'src/POST/Call.pir'
-    $P9['src/POST/Sub.pbc'] = 'src/POST/Sub.pir'
+    $P9['gen/POST/Compiler.pbc'] = 'gen/POST/Compiler.pir'
+    $P9['gen/POST/File.pbc'] = 'gen/POST/File.pir'
+    $P9['gen/POST/Call.pbc'] = 'gen/POST/Call.pir'
+    $P9['gen/POST/Sub.pbc'] = 'gen/POST/Sub.pir'
 
-    $P9['src/POST/Value.pbc'] = 'src/POST/Value.pir'
-    $P9['src/POST/Constant.pbc'] = 'src/POST/Constant.pir'
-    $P9['src/POST/Register.pbc'] = 'src/POST/Register.pir'
-    $P9['src/POST/Key.pbc'] = 'src/POST/Key.pir'
-    $P9['src/POST/String.pbc'] = 'src/POST/String.pir'
+    $P9['gen/POST/Value.pbc'] = 'gen/POST/Value.pir'
+    $P9['gen/POST/Constant.pbc'] = 'gen/POST/Constant.pir'
+    $P9['gen/POST/Register.pbc'] = 'gen/POST/Register.pir'
+    $P9['gen/POST/Key.pbc'] = 'gen/POST/Key.pir'
+    $P9['gen/POST/String.pbc'] = 'gen/POST/String.pir'
 
-    $P9['src/POST/Label.pbc'] = 'src/POST/Label.pir'
+    $P9['gen/POST/Label.pbc'] = 'gen/POST/Label.pir'
 
-    $P9['src/POST/VanillaAllocator.pbc'] = 'src/POST/VanillaAllocator.pir'
+    $P9['gen/POST/VanillaAllocator.pbc'] = 'gen/POST/VanillaAllocator.pir'
 
-    $P9['src/PIR/Actions.pbc'] = 'src/PIR/Actions.pir'
-    $P9['src/PIR/Compiler.pbc'] = 'src/PIR/Compiler.pir'
-    $P9['src/PIR/Patterns.pbc'] = 'src/PIR/Patterns.pir'
-    $P9['src/PIR/Grammar.pbc'] = 'src/PIR/Grammar.pir'
+    $P9['gen/PIR/Actions.pbc'] = 'gen/PIR/Actions.pir'
+    $P9['gen/PIR/Compiler.pbc'] = 'gen/PIR/Compiler.pir'
+    $P9['gen/PIR/Patterns.pbc'] = 'gen/PIR/Patterns.pir'
+    $P9['gen/PIR/Grammar.pbc'] = 'gen/PIR/Grammar.pir'
 
     $P9['pirate.pbc'] = 'pirate.pir'
 
