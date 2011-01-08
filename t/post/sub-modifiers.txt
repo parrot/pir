@@ -62,12 +62,7 @@ CODE
     <subs> => Hash {
         "main" => PMC 'POST;Sub'  {
             <name> => "main"
-            <subid> => PMC 'POST;String'  {
-                <charset> => "ascii"
-                <encoding> => "binary"
-                <type> => "sc"
-                <value> => "the_main"
-            }
+            <subid> => "the_main"
         }
     }
     [0] => \post["main"]

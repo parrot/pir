@@ -105,11 +105,11 @@ method compilation_unit:sym<sub>($/, $key?) {
 }
 
 # Parametrized modifiers
-method sub_modifier:sym<nsentry>($/)    { make $<string_constant>.ast }
+method sub_modifier:sym<nsentry>($/)    { make $<string_constant>.ast<value> }
 # TODO validate vtable name for existence
-method sub_modifier:sym<vtable>($/)     { make $<string_constant> ?? $<string_constant>.ast !! '' }
-method sub_modifier:sym<outer>($/)      { make $<subname>.ast }
-method sub_modifier:sym<subid>($/)      { make $<string_constant>.ast }
+method sub_modifier:sym<vtable>($/)     { make $<string_constant> ?? $<string_constant>.ast<value> !! '' }
+method sub_modifier:sym<outer>($/)      { make $<subname>.ast<value> }
+method sub_modifier:sym<subid>($/)      { make $<string_constant>.ast<value> }
 #token sub_modifier:sym<multi>      { ':' <sym> '(' [ [<.ws><multi_type><.ws>] ** ',' ]? ')' }
 
 method compilation_unit:sym<.include>($/) {
@@ -358,7 +358,7 @@ method const_declaration:sym<pmc>($/) {
     make POST::Constant.new(
         :type('pc'),
         :name(~$<variable>),
-        :value(~$<value>.ast),
+        :value($<value>.ast<value>),
     );
 }
 

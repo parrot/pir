@@ -285,10 +285,8 @@ CODE
             }
             [0] => PMC 'POST;Call'  {
                 <calltype> => "tailcall"
-                <name> => PMC 'POST;String'  {
-                    <charset> => "ascii"
-                    <encoding> => "binary"
-                    <type> => "sc"
+                <name> => PMC 'POST;Constant'  {
+                    <type> => "pc"
                     <value> => "main"
                 }
             }
