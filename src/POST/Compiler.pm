@@ -28,7 +28,7 @@ method pbc($post, %adverbs) {
     # Iterate over Subs and put them into POST::File table.
     # Used for discriminating find_sub_not_null vs "constant Subs" in
     # PCC call handling.
-    self.enumerate_subs($post);
+    self.enumerate_subs($post, %context);
 
     for @($post) -> $s {
         self.to_pbc($s, %context);
@@ -130,15 +130,7 @@ our multi method to_pbc(POST::Sub $sub, %context) {
     # We can have pre-allocated constant for this sub already.
     # XXX Use .namespace for generating full name!
     my $idx := $sub.constant_index;
-    if defined($idx) {
-        self.debug("Reusing old constant $idx") if %context<DEBUG>;
-        %context<constants>[$idx] := new('Sub', %sub);
-    }
-    else {
-        $idx := %context<constants>.push(new('Sub', %sub));
-        $sub.constant_index($idx);
-        self.debug("Allocate new constant $idx") if %context<DEBUG>;
-    }
+    %context<constants>[$idx] := new('Sub', %sub);
 
     # Remember :main sub
     if (!%context<got_main_sub>) {
@@ -245,14 +237,8 @@ our multi method to_pbc(POST::Call $call, %context) {
                 self.debug("invocable_sub '$full_name'") if %context<DEBUG>;
                 if $invocable_sub {
                     my $idx := $invocable_sub.constant_index;
-                    unless defined($idx) {
-                        # Allocate new space in constant table. We'll reuse it later.
-                        $idx := %context<constants>.push(new("Integer"));
-                        $invocable_sub.constant_index($idx);
-                        self.debug("Allocate constant for it $idx") if %context<DEBUG>;
-                    }
-
                     $SUB := %context<sub>.symbol("!SUB");
+
                     $bc.push([
                         'set_p_pc',
                         self.to_op($SUB, %context),
@@ -514,10 +500,17 @@ our method build_single_arg($arg, %context) {
 
 
 # XXX This is required only for PAST->POST generated tree.
-our method enumerate_subs(POST::File $post) {
+our method enumerate_subs(POST::File $post, %context) {
     for @($post) -> $sub {
         # XXX Should we emit warning on duplicates?
-        $post.sub($sub.full_name, $sub) if $sub.isa(POST::Sub);
+        next unless $sub.isa(POST::Sub);
+
+        # Allocate new constant index for it.
+        my $idx := %context<constants>.push(new("Integer"));
+        $sub.constant_index($idx);
+
+        # Store in lookup hash.
+        $post.sub($sub.full_name, $sub);
     }
 }
 
