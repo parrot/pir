@@ -18,11 +18,6 @@ Iterate over todolist and replace labels with offset of Sub start.
 
 our $DEBUG;
 
-our $REGALLOC;
-INIT {
-    $REGALLOC := POST::VanillaAllocator.new;
-}
-
 method pbc($post, %adverbs) {
     #pir::trace(1);
     $DEBUG := %adverbs<debug>;
@@ -60,7 +55,7 @@ our multi method to_pbc(POST::Sub $sub, %context) {
     %context<sub> := $sub;
 
     # Allocate registers.
-    my @n_regs_used := $REGALLOC.process($sub);
+    my @n_regs_used := %context<regalloc>.process($sub);
     self.debug('n_regs_used ' ~ @n_regs_used.join('-')) if $DEBUG;
     self.dumper($sub, "sub") if $DEBUG;
 
@@ -547,6 +542,8 @@ our method create_context($past) {
 
     # Store the debug segment in bytecode
     #$pfdir<BYTECODE_hello.pir_DB> := %context<debug>;
+
+    %context<regalloc> := POST::VanillaAllocator.new;
 
     %context;
 }
